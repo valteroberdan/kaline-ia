@@ -184,7 +184,60 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
                           </div>
                         </div>
                       )}
+
+                      {/* VitalDB Surgical & Hemodynamic Markers */}
+                      <div className="pt-2 border-t border-slate-200 space-y-1.5 text-[11px]">
+                        <span className="text-slate-400 block text-[10px] uppercase font-bold">
+                          Marcadores Cirúrgicos do VitalDB:
+                        </span>
+                        <div className="grid grid-cols-2 gap-1.5">
+                          <div className="bg-white p-1.5 rounded border border-slate-200">
+                            <span className="text-slate-500 block text-[9px] uppercase font-bold">Sangramento (EBL)</span>
+                            <span className={`font-bold ${c.ebl_ml && c.ebl_ml >= 500 ? 'text-red-600' : 'text-slate-800'}`}>
+                              {c.ebl_ml !== undefined ? `${c.ebl_ml} mL` : 'N/A'}
+                            </span>
+                          </div>
+                          <div className="bg-white p-1.5 rounded border border-slate-200">
+                            <span className="text-slate-500 block text-[9px] uppercase font-bold">Transfusão</span>
+                            <span className={`font-bold ${c.transfusion_units ? 'text-red-600' : 'text-emerald-700'}`}>
+                              {c.transfusion_units ? `${c.transfusion_units} Bolsas (CH)` : 'Não transfundido'}
+                            </span>
+                          </div>
+                        </div>
+
+                        {c.vasopressors && (
+                          <div className="bg-white p-1.5 rounded border border-slate-200 flex items-center justify-between">
+                            <span className="text-slate-500 text-[9px] uppercase font-bold">Vasopressor</span>
+                            <span className="font-bold text-slate-800 truncate">{c.vasopressors}</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
+
+                    {/* Timeline of Real Clinical Events */}
+                    {c.events && c.events.length > 0 && (
+                      <div className="space-y-1.5 bg-slate-50 border border-slate-200 rounded-lg p-2.5">
+                        <span className="text-[10px] font-mono text-slate-500 uppercase font-bold block flex items-center gap-1">
+                          <Clock className="h-3 w-3 text-slate-600" />
+                          Marcos de Eventos do Caso:
+                        </span>
+                        <div className="space-y-1">
+                          {c.events.slice(0, 3).map((ev, idx) => (
+                            <div key={idx} className="flex items-center gap-1.5 text-[11px] font-mono">
+                              <span className="bg-slate-200 text-slate-700 px-1 py-0.2 rounded text-[10px] font-bold">
+                                {Math.floor(ev.time_sec / 60)}:{(ev.time_sec % 60).toString().padStart(2, '0')}
+                              </span>
+                              <span className="text-slate-800 truncate">{ev.label}</span>
+                            </div>
+                          ))}
+                          {c.events.length > 3 && (
+                            <div className="text-[10px] text-slate-500 font-mono italic">
+                              + {c.events.length - 3} outros marcos clínicos no replay
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
 
                     {/* Clinical Scenario Description */}
                     <div className="space-y-1">

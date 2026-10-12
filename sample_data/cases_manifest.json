@@ -2,7 +2,7 @@
   {
     "caseid": 7,
     "title": "Caso #07 - Normotenso com Instabilidade Oculta (HPI ~80% • Queda aos 10 min)",
-    "op": "Hemicolectomia Direta",
+    "op": "Hemicolectomia Direta / Lobectomia",
     "age": 72,
     "gender": "M",
     "asa": 3,
@@ -11,9 +11,47 @@
     "preop_dm": 1,
     "preop_hb": 11.4,
     "preop_cr": 1.2,
-    "scenario": "Paciente NORMOTENSO (PAM 83 mmHg) no início. A Kaline IA detecta instabilidade oculta na morfometria arterial (VPP elevada e perda de contratilidade) e emite HPI de ~80% predizendo queda da PAM abaixo de 65 mmHg exatamente aos 10 minutos.",
+    "scenario": "Paciente NORMOTENSO (PAM 83 mmHg) no início. A Kaline IA detecta instabilidade oculta na morfometria arterial (VPP elevada de 18.5%, contratilidade reduzida e complacência baixa em idoso hipertenso) emitindo HPI de ~80-84%. Aos 10 minutos a PAM cruza o limiar crítico de 65 mmHg.",
     "risk_profile": "Alerta Precoce (+10 min • HPI 80-85%)",
-    "source": "VitalDB SNUADC/ART 100 Hz"
+    "source": "VitalDB SNUADC/ART 100 Hz",
+    "ebl_ml": 100,
+    "transfusion_units": 0,
+    "vasopressors": "Efedrina 10 mg (resgate)",
+    "fluids": "Cristaloides 700 mL",
+    "events": [
+      {
+        "time_sec": 120,
+        "label": "Indução Anestésica",
+        "type": "induction",
+        "drug_dose": "Propofol 140 mg + Fentanil 200 mcg + Rocurônio 50 mg",
+        "details": "Início da indução e perda do tônus simpático."
+      },
+      {
+        "time_sec": 240,
+        "label": "Ventilação Mecânica / VPP",
+        "type": "fluid",
+        "details": "Intubação orotraqueal e início da ventilação com pressão positiva (VPP = 18.5%)."
+      },
+      {
+        "time_sec": 420,
+        "label": "Alerta Precoce Kaline IA",
+        "type": "hpi_alert",
+        "details": "HPI atinge 82% prevendo hipotensão iminente em 10 minutos (PAM ainda em 81 mmHg)."
+      },
+      {
+        "time_sec": 600,
+        "label": "Queda Crítica PAM < 65 mmHg",
+        "type": "hypotension",
+        "details": "PAM atinge 61.5 mmHg (Hipotensão confirmada exatamente aos 10 minutos)."
+      },
+      {
+        "time_sec": 660,
+        "label": "Intervenção Hemodinâmica",
+        "type": "vasopressor",
+        "drug_dose": "Efedrina 10 mg IV + 500 mL Cristaloide",
+        "details": "Administração de vasopressor e reposição volêmica para recuperação da PAM."
+      }
+    ]
   },
   {
     "caseid": 20,
@@ -27,14 +65,58 @@
     "preop_dm": 1,
     "preop_hb": 11.8,
     "preop_cr": 1.1,
-    "scenario": "Início normotenso (PAM 80 mmHg) com rápida transição para hipotensão (PAM 55 mmHg) a partir dos 6 minutos após indução anestésica.",
-    "risk_profile": "Queda Intermediária (+6 min)",
-    "source": "VitalDB SNUADC/ART 100 Hz"
+    "scenario": "Início normotenso (PAM 80 mmHg) com rápida transição para hipotensão severa (PAM 55 mmHg) a partir dos 6 minutos devido a sangramento torácico agudo de 800 mL e resposta vasodilatadora.",
+    "risk_profile": "Queda Intermediária (+6 min • EBL 800 mL)",
+    "source": "VitalDB SNUADC/ART 100 Hz",
+    "ebl_ml": 800,
+    "transfusion_units": 2,
+    "vasopressors": "Fenilefrina 250 mcg + Efedrina 5 mg",
+    "fluids": "Cristaloides 2.300 mL + Coloides 500 mL",
+    "events": [
+      {
+        "time_sec": 86,
+        "label": "Indução Anestésica",
+        "type": "induction",
+        "drug_dose": "Propofol + Rocurônio",
+        "details": "Indução rápida registrada no VitalDB aos 86 segundos."
+      },
+      {
+        "time_sec": 210,
+        "label": "Sangramento Torácico Agudo",
+        "type": "bleeding",
+        "details": "Início de sangramento intraoperatório torácico expressivo (EBL 800 mL)."
+      },
+      {
+        "time_sec": 270,
+        "label": "Alerta Crítico Kaline IA",
+        "type": "hpi_alert",
+        "details": "HPI sobe para 88% prevendo descompensação aguda."
+      },
+      {
+        "time_sec": 360,
+        "label": "Hipotensão Severa (PAM 55)",
+        "type": "hypotension",
+        "details": "Queda abrupta da PAM para 55 mmHg aos 6 minutos."
+      },
+      {
+        "time_sec": 420,
+        "label": "Vasopressor de Resgate",
+        "type": "vasopressor",
+        "drug_dose": "Fenilefrina 250 mcg em bolus",
+        "details": "Aporte de vasoconstritor arterial de ação rápida."
+      },
+      {
+        "time_sec": 540,
+        "label": "Transfusão Sanguínea",
+        "type": "transfusion",
+        "details": "Início da infusão de 2 bolsas de Concentrado de Hemácias registradas no VitalDB."
+      }
+    ]
   },
   {
     "caseid": 12,
-    "title": "Caso #12 - Hipotensão Crítica Aguda (+5 min • Urgência ASA III)",
-    "op": "Cirurgia de Urgência / Choque",
+    "title": "Caso #12 - Hipotensão Crítica Aguda (+5 min • Choque EBL 1300 mL)",
+    "op": "Transplante Hepático / Cirurgia de Choque",
     "age": 69,
     "gender": "F",
     "asa": 3,
@@ -43,9 +125,40 @@
     "preop_dm": 0,
     "preop_hb": 9.8,
     "preop_cr": 1.4,
-    "scenario": "Início em PAM 77 mmHg com queda rápida e abrupta para PAM 51 mmHg em 4-5 minutos devido a sangramento intraoperatório agudo.",
+    "scenario": "Início em PAM 77 mmHg com colapso abrupto para PAM 51 mmHg em 4-5 minutos devido a sangramento intraoperatório maciço de 1.300 mL registrado no VitalDB.",
     "risk_profile": "Risco Iminente (+5 min • Choque Agudo)",
-    "source": "VitalDB SNUADC/ART 100 Hz"
+    "source": "VitalDB SNUADC/ART 100 Hz",
+    "ebl_ml": 1300,
+    "transfusion_units": 0,
+    "vasopressors": "Efedrina 20 mg",
+    "fluids": "Cristaloides 4.800 mL + Coloides 200 mL",
+    "events": [
+      {
+        "time_sec": 60,
+        "label": "Sangramento Vascular Maciço",
+        "type": "bleeding",
+        "details": "Hemorragia aguda de grande volume (perda total estimada em 1.300 mL)."
+      },
+      {
+        "time_sec": 180,
+        "label": "Alerta de Choque Iminente",
+        "type": "hpi_alert",
+        "details": "HPI atinge 95% indicando falência hemodinâmica iminente."
+      },
+      {
+        "time_sec": 280,
+        "label": "Colapso Hemodinâmico (PAM 51)",
+        "type": "hypotension",
+        "details": "PAM cai para 51 mmHg (choque hipovolêmico grave)."
+      },
+      {
+        "time_sec": 340,
+        "label": "Ressuscitação & Vasopressor",
+        "type": "vasopressor",
+        "drug_dose": "Efedrina 20 mg + 4.800 mL Cristaloides",
+        "details": "Infusão agressiva de volume e inotrópico para reversão do choque."
+      }
+    ]
   },
   {
     "caseid": 1,
@@ -59,9 +172,33 @@
     "preop_dm": 0,
     "preop_hb": 12.5,
     "preop_cr": 1.0,
-    "scenario": "Paciente normotenso e estável (PAM 85 mmHg) durante todo o procedimento, validando a alta especificidade da Kaline IA (ausência de alarmes falsos, HPI < 5%).",
+    "scenario": "Paciente normotenso e estável (PAM 85 mmHg) durante todo o procedimento, validando a alta especificidade da Kaline IA (ausência de alarmes falsos, HPI < 15%).",
     "risk_profile": "Estável / Normotenso (Controle Negativo)",
-    "source": "VitalDB SNUADC/ART 100 Hz"
+    "source": "VitalDB SNUADC/ART 100 Hz",
+    "ebl_ml": 50,
+    "transfusion_units": 0,
+    "vasopressors": "Efedrina 10 mg",
+    "fluids": "Cristaloides 350 mL",
+    "events": [
+      {
+        "time_sec": 60,
+        "label": "Manutenção Anestésica Estável",
+        "type": "induction",
+        "details": "Plano anestésico equilibrado (Sevoflurano 2% + Remifentanil)."
+      },
+      {
+        "time_sec": 300,
+        "label": "Incisão Cirúrgica",
+        "type": "incision",
+        "details": "Início da ressecção anterior retal sem instabilidade."
+      },
+      {
+        "time_sec": 480,
+        "label": "Estabilidade Validada",
+        "type": "fluid",
+        "details": "Kaline IA confirma estabilidade hemodinâmica (HPI < 15%, sem alarmes falsos)."
+      }
+    ]
   },
   {
     "caseid": 4,
@@ -77,7 +214,32 @@
     "preop_cr": 1.2,
     "scenario": "Variação da Pressão de Pulso moderada com tônus vascular preservado (PAM 84 mmHg). A IA mantém score controlado sem falsos alertas de colapso.",
     "risk_profile": "Responsivo a Volume Compensado",
-    "source": "VitalDB SNUADC/ART 100 Hz"
+    "source": "VitalDB SNUADC/ART 100 Hz",
+    "ebl_ml": 100,
+    "transfusion_units": 0,
+    "vasopressors": "Efedrina 50 mg",
+    "fluids": "Cristaloides 2.700 mL",
+    "events": [
+      {
+        "time_sec": 120,
+        "label": "Ressuscitação Volêmica Dirigida",
+        "type": "fluid",
+        "details": "Infusão volêmica guiada por metas (Cristaloides 2.700 mL)."
+      },
+      {
+        "time_sec": 360,
+        "label": "Incisão e Dissecção Gástrica",
+        "type": "incision",
+        "details": "Manipulação cirúrgica com resposta hemodinâmica compensada."
+      },
+      {
+        "time_sec": 540,
+        "label": "Efedrina Profilática",
+        "type": "vasopressor",
+        "drug_dose": "Efedrina 10 mg fracionada",
+        "details": "Manutenção do tônus arterial sem episódios hipotensivos."
+      }
+    ]
   },
   {
     "caseid": 10,
@@ -91,8 +253,33 @@
     "preop_dm": 0,
     "preop_hb": 13.0,
     "preop_cr": 1.1,
-    "scenario": "Paciente idoso com comorbidades e complacência vascular reduzida, mantendo PAM estável (86 mmHg) sem risco de descompensação.",
+    "scenario": "Paciente idoso com comorbidades e complacência vascular reduzida, mantendo PAM estável (86 mmHg) sem risco de descompensação sob titulação rigorosa de fenilefrina.",
     "risk_profile": "Cardiopata Estável (ASA III)",
-    "source": "VitalDB SNUADC/ART 100 Hz"
+    "source": "VitalDB SNUADC/ART 100 Hz",
+    "ebl_ml": 200,
+    "transfusion_units": 0,
+    "vasopressors": "Fenilefrina 500 mcg + Efedrina 20 mg",
+    "fluids": "Cristaloides 1.100 mL",
+    "events": [
+      {
+        "time_sec": 90,
+        "label": "Incisão Cirúrgica",
+        "type": "incision",
+        "details": "Abertura de parede abdominal / laparotomia."
+      },
+      {
+        "time_sec": 300,
+        "label": "Perda Volêmica Cirúrgica",
+        "type": "bleeding",
+        "details": "Sangramento intraoperatório moderado de 200 mL registrado no VitalDB."
+      },
+      {
+        "time_sec": 450,
+        "label": "Titulação de Fenilefrina",
+        "type": "vasopressor",
+        "drug_dose": "Fenilefrina 500 mcg em infusão",
+        "details": "Sustentação de pós-carga e estabilidade coronariana em paciente ASA III."
+      }
+    ]
   }
 ]

@@ -9,6 +9,7 @@ import { ForecastTrend } from './components/ForecastTrend';
 import { PatientForm } from './components/PatientForm';
 import { PredictiveLockGate } from './components/PredictiveLockGate';
 import { CaseSelectionView } from './components/CaseSelectionView';
+import { ClinicalTimeline } from './components/ClinicalTimeline';
 import { wsClient } from './services/websocket';
 import { fetchCases } from './services/api';
 import { SimulationCase, KalinePrediction } from './types';
@@ -184,6 +185,8 @@ export const App: React.FC = () => {
   }
 
   // 2. TELA DO CASO SELECIONADO: MONITOR CLÍNICO & VALIDAÇÃO PROTÓTIPO
+  const currentCase = cases.find((c) => c.caseid === selectedCaseId);
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col text-slate-900 font-sans selection:bg-slate-800 selection:text-white overflow-x-hidden">
       {/* Top Clinical Prototype Header Bar */}
@@ -225,6 +228,16 @@ export const App: React.FC = () => {
               height={220}
               vitals={telemetry.hemodynamic_vitals}
             />
+
+            {/* Linha do Tempo Cirúrgica Interativa VitalDB */}
+            {currentCase?.events && (
+              <ClinicalTimeline
+                events={currentCase.events}
+                elapsedSec={elapsedSec}
+                totalSec={totalSec}
+                onSeek={handleSeek}
+              />
+            )}
 
             {/* Sinais Vitais Numéricos (6 Tiles) */}
             <KalineVitalsPanel vitals={telemetry.hemodynamic_vitals} />

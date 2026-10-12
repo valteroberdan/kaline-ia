@@ -77,6 +77,14 @@ export interface KalinePrediction {
   explainability: ExplainabilityData;
 }
 
+export interface ClinicalEventMarker {
+  time_sec: number;
+  label: string;
+  type: 'induction' | 'incision' | 'bleeding' | 'hpi_alert' | 'hypotension' | 'vasopressor' | 'transfusion' | 'fluid';
+  drug_dose?: string;
+  details?: string;
+}
+
 export interface SimulationCase {
   caseid: number;
   title: string;
@@ -92,6 +100,11 @@ export interface SimulationCase {
   scenario?: string;
   risk_profile?: string;
   source?: string;
+  ebl_ml?: number;
+  transfusion_units?: number;
+  vasopressors?: string;
+  fluids?: string;
+  events?: ClinicalEventMarker[];
 }
 
 export interface BenchmarkMetrics {
