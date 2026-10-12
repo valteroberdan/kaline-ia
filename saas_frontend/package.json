@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "app": "electron ../desktop_app",
-    "build:app": "npm run build && rm -rf ../desktop_app/dist && cp -R dist ../desktop_app/dist && ./node_modules/.bin/electron-packager ../desktop_app 'Kaline IA' --platform=darwin --arch=arm64 --electron-version=44.7.0 --out=../release --overwrite"
+    "build:app": "npm run build && rm -rf ../desktop_app/dist && cp -R dist ../desktop_app/dist && ./node_modules/.bin/electron-packager ../desktop_app 'Kaline IA' --platform=darwin --arch=arm64 --electron-version=44.7.0 --icon=../desktop_app/app.icns --out=../release --overwrite"
   },
   "dependencies": {
     "clsx": "^2.1.1",

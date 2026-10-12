@@ -31,22 +31,27 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
       <header className="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-slate-900 flex items-center justify-center text-white font-bold shrink-0 shadow-sm">
-              <Activity className="h-5 w-5 text-red-500" />
-            </div>
+            <img
+              src="./logo_icon.png"
+              alt="Kaline IA"
+              className="h-11 w-11 object-contain shrink-0 rounded-lg shadow-xs"
+            />
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
-                  Kaline IA Protótipo
+                <h1 className="text-lg sm:text-xl font-black text-[#0b2827] tracking-tight">
+                  Kaline<sup className="text-xs font-bold text-[#c78a3b] ml-0.5">IA</sup>
                 </h1>
-                <span className="text-xs px-2 py-0.5 rounded bg-slate-100 border border-slate-300 text-slate-700 font-mono font-medium">
-                  Validação Clínica
+                <span className="text-[11px] px-2 py-0.5 rounded bg-slate-100 border border-slate-300 text-slate-800 font-mono font-bold uppercase tracking-wider">
+                  Protótipo
+                </span>
+                <span className="text-xs px-2 py-0.5 rounded bg-teal-50 border border-teal-200 text-teal-800 font-mono font-semibold">
+                  Inteligência Preditiva
                 </span>
                 <span className="text-xs px-2 py-0.5 rounded bg-red-50 border border-red-200 text-red-700 font-mono font-semibold">
                   VitalDB 100 Hz
                 </span>
               </div>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 font-mono">
                 Sistema Preditivo Precoce de Hipotensão Arterial Intraoperatória (+5m, +10m, +15m)
               </p>
             </div>

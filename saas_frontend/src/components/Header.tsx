@@ -83,24 +83,26 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 flex flex-col md:flex-row md:items-center justify-between gap-2.5 border-b border-slate-100">
         {/* Row 1: Logo & Case Title */}
         <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="h-9 w-9 rounded-lg bg-slate-900 flex items-center justify-center text-white font-bold shrink-0 shadow-xs">
-              <Activity className="h-4 w-4 text-red-500" />
-            </div>
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <img
+              src="./logo_icon.png"
+              alt="Kaline IA"
+              className="h-10 w-10 object-contain shrink-0 rounded-lg shadow-2xs"
+            />
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-sm sm:text-base font-bold text-slate-900 tracking-tight">
-                  Kaline IA
+                <span className="text-base sm:text-lg font-black text-[#0b2827] tracking-tight">
+                  Kaline<sup className="text-xs font-bold text-[#c78a3b] ml-0.5">IA</sup>
                 </span>
-                <span className="text-[11px] px-2 py-0.5 rounded bg-slate-100 border border-slate-300 text-slate-800 font-mono font-bold">
+                <span className="text-[10px] px-2 py-0.5 rounded bg-slate-100 border border-slate-300 text-slate-800 font-mono font-bold uppercase tracking-wider">
                   Protótipo
                 </span>
-                <span className="text-[11px] px-1.5 py-0.5 rounded bg-red-50 border border-red-200 text-red-700 font-mono font-medium">
-                  VitalDB 100 Hz
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-teal-50 border border-teal-200 text-teal-800 font-mono font-semibold">
+                  Inteligência Preditiva
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 hidden xs:block">
-                Linha Arterial Invasiva • Predição Precoce de Hipotensão
+              <p className="text-[10px] text-slate-500 font-mono hidden xs:block">
+                Linha Arterial Invasiva • VitalDB SNUADC/ART 100 Hz
               </p>
             </div>
           </div>

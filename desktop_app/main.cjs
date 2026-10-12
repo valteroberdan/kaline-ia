@@ -95,6 +95,7 @@ function createMainWindow() {
     minWidth: 960,
     minHeight: 650,
     title: 'Kaline IA Protótipo - Monitor Clínico Preditivo (VitalDB)',
+    icon: path.join(__dirname, 'dist', 'logo_icon.png'),
     backgroundColor: '#f8fafc',
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
