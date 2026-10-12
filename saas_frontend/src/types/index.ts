@@ -101,6 +101,14 @@ export interface SimulationCase {
   scenario?: string;
   risk_profile?: string;
   source?: string;
+  is_synthetic_simulation?: boolean;
+  provenance?: string;
+  provenance_metadata?: {
+    channel?: string;
+    original_interval_sec?: number[];
+    raw_signal_sha256?: string;
+    transformations?: string[];
+  };
   ebl_ml?: number;
   transfusion_units?: number;
   vasopressors?: string;

@@ -137,7 +137,7 @@ export const KalineAutoCorrectionPanel: React.FC = () => {
               Ciclos de Auto-Ajuste
             </span>
             <div className="text-xl sm:text-2xl font-black font-mono text-emerald-700 mt-1">
-              5 / 5
+              {report.cycles_history?.length || 5} Ciclos
             </div>
             <span className="text-[11px] text-emerald-700">Otimização Youden J</span>
           </div>
@@ -147,9 +147,19 @@ export const KalineAutoCorrectionPanel: React.FC = () => {
               AUROC Médio Final
             </span>
             <div className="text-xl sm:text-2xl font-black font-mono text-slate-900 mt-1">
-              1.000
+              {(() => {
+                if (report.final_test_metrics) {
+                  const vals = Object.values(report.final_test_metrics)
+                    .map((m) => m.auroc)
+                    .filter((v) => typeof v === 'number' && !isNaN(v));
+                  if (vals.length > 0) {
+                    return (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(3);
+                  }
+                }
+                return '--';
+              })()}
             </div>
-            <span className="text-[11px] text-slate-500">Em Teste Independente</span>
+            <span className="text-[11px] text-slate-500">Média Teste Independente</span>
           </div>
 
           <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-lg">
@@ -157,7 +167,7 @@ export const KalineAutoCorrectionPanel: React.FC = () => {
               Erro Médio da PAM (MAE)
             </span>
             <div className="text-xl sm:text-2xl font-black font-mono text-purple-700 mt-1">
-              {horizonMetrics ? `${horizonMetrics.mae_map_mmhg.toFixed(2)}` : '4.68'}{' '}
+              {horizonMetrics ? `${horizonMetrics.mae_map_mmhg.toFixed(2)}` : '--'}{' '}
               <span className="text-xs font-normal text-slate-500">mmHg</span>
             </div>
             <span className="text-[11px] text-purple-700">vs 7.1 mmHg (Literatura)</span>

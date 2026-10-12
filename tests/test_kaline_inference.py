@@ -135,3 +135,43 @@ def test_dataset_builder_forbids_silent_synthetic_mixing():
     with pytest.raises(ValueError, match="dados hospitalares reais insuficientes"):
         builder.build_dataset_from_cases([])
 
+
+def test_real_cases_have_cryptographic_provenance():
+    """
+    AUDIT TEST (Item 1): Real demonstration cases must have is_synthetic_simulation == False,
+    exact hospital channel 'SNUADC/ART', interval registered, and SHA-256 hash.
+    """
+    import json
+    from kaline_core.config import SAMPLE_DATA_DIR
+
+    real_case_file = SAMPLE_DATA_DIR / "case_1.json"
+    assert real_case_file.exists()
+
+    with open(real_case_file, "r") as f:
+        c1 = json.load(f)
+
+    assert c1["is_synthetic_simulation"] is False
+    assert "Registro Clínico Real VitalDB" in c1["source"]
+    assert "provenance_metadata" in c1
+    meta = c1["provenance_metadata"]
+    assert meta["channel"] == "SNUADC/ART"
+    assert len(meta["original_interval_sec"]) == 2
+    assert len(meta["raw_signal_sha256"]) == 64  # Valid SHA-256 hex string
+
+
+def test_synthetic_cases_are_explicitly_flagged():
+    """
+    AUDIT TEST (Item 1): Synthetic demonstration cases must have is_synthetic_simulation == True
+    and describe that they are parametric simulations.
+    """
+    import json
+    from kaline_core.config import SAMPLE_DATA_DIR
+
+    case_file = SAMPLE_DATA_DIR / "case_7.json"
+    with open(case_file, "r") as f:
+        c7 = json.load(f)
+
+    assert c7["is_synthetic_simulation"] is True
+    assert "Simulação Sintética" in c7["source"]
+
+

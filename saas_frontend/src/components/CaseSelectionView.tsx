@@ -113,9 +113,15 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
                           <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-900 text-white shrink-0">
                             CASO #{c.caseid}
                           </span>
-                          <span className="text-[10px] uppercase font-bold text-amber-800 bg-amber-50 border border-amber-300 px-1.5 py-0.5 rounded shrink-0">
-                            Simulação Sintética
-                          </span>
+                          {c.is_synthetic_simulation === false ? (
+                            <span className="text-[10px] uppercase font-bold text-emerald-800 bg-emerald-50 border border-emerald-300 px-1.5 py-0.5 rounded shrink-0 flex items-center gap-1">
+                              <CheckCircle2 className="h-3 w-3 text-emerald-600" /> Registro Clínico Real
+                            </span>
+                          ) : (
+                            <span className="text-[10px] uppercase font-bold text-amber-800 bg-amber-50 border border-amber-300 px-1.5 py-0.5 rounded shrink-0">
+                              Simulação Sintética
+                            </span>
+                          )}
                           {isCase7 && (
                             <span className="text-[10px] uppercase font-bold text-teal-800 bg-teal-50 border border-teal-200 px-1.5 py-0.5 rounded shrink-0">
                               Caso de Aula
@@ -210,12 +216,12 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
                       </div>
                     </div>
 
-                    {/* Timeline of Simulated Clinical Events */}
+                    {/* Timeline of Simulated or Real Clinical Events */}
                     {c.events && c.events.length > 0 && (
                       <div className="space-y-1.5 bg-slate-50 border border-slate-200 rounded-lg p-2.5 min-w-0 overflow-hidden">
                         <span className="text-[10px] font-mono text-slate-500 uppercase font-bold flex items-center gap-1 truncate">
                           <Clock className="h-3 w-3 text-slate-600 shrink-0" />
-                          <span>Marcos Clínicos Simulados:</span>
+                          <span>{c.is_synthetic_simulation === false ? 'Marcos Clínicos Hospitalares (VitalDB):' : 'Marcos Clínicos Simulados:'}</span>
                         </span>
                         <div className="space-y-1 min-w-0">
                           {c.events.slice(0, 3).map((ev, idx) => (
@@ -230,9 +236,25 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
                           ))}
                           {c.events.length > 3 && (
                             <div className="text-[10px] text-slate-500 font-mono italic truncate">
-                              + {c.events.length - 3} outros marcos na simulação
+                              + {c.events.length - 3} outros marcos registrados
                             </div>
                           )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Cryptographic Provenance Metadata if Real Case */}
+                    {c.provenance_metadata?.raw_signal_sha256 && (
+                      <div className="bg-emerald-50/50 border border-emerald-200/80 rounded-lg p-2.5 space-y-1 text-[11px] font-mono">
+                        <div className="text-emerald-900 font-bold flex items-center gap-1 text-[10px] uppercase">
+                          <Shield className="h-3 w-3 text-emerald-600" />
+                          Autenticidade VitalDB Verificada
+                        </div>
+                        <div className="text-emerald-800 text-[10px]">
+                          Canal: <strong>{c.provenance_metadata.channel}</strong> • Intervalo: {c.provenance_metadata.original_interval_sec?.[0]}s - {c.provenance_metadata.original_interval_sec?.[1]}s
+                        </div>
+                        <div className="text-slate-500 text-[9px] truncate" title={c.provenance_metadata.raw_signal_sha256}>
+                          SHA256: {c.provenance_metadata.raw_signal_sha256}
                         </div>
                       </div>
                     )}

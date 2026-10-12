@@ -57,7 +57,7 @@
   },
   {
     "caseid": 20,
-    "title": "Caso #20 - Ressecção Pulmonar sob Toracotomia (Lobectomia)",
+    "title": "Caso Real #20 - Lung lobectomy (VitalDB)",
     "op": "Lobectomia Pulmonar",
     "age": 75,
     "gender": "M",
@@ -67,55 +67,57 @@
     "preop_dm": 1,
     "preop_hb": 11.8,
     "preop_cr": 1.1,
-    "scenario": "Paciente masculino de 75 anos submetido a toracotomia e lobectomia pulmonar com monitorização invasiva contínua da pressão arterial. Cenário de simulação fisiológica parametrizado com base no caso do VitalDB.",
+    "scenario": "Paciente masculino de 75 anos, submetido a lobectomia pulmonar sob anestesia geral e ventilação monopulmonar. Traçado hemodinâmico real do transdutor arterial a 100 Hz (SNUADC/ART) registrado durante procedimento cirúrgico na coorte VitalDB.",
     "risk_profile": "Cirurgia Torácica Aberta (ASA II)",
-    "source": "Simulação Sintética Didática (Perfil Clínico VitalDB)",
-    "is_synthetic_simulation": true,
-    "provenance": "Sinal arterial gerado computacionalmente a 100 Hz com morfologia fisiológica paramétrica a partir do perfil cirúrgico do VitalDB. Não constitui traçado bruto hospitalar.",
+    "source": "Registro Clínico Real VitalDB (Seoul National University Hospital)",
+    "is_synthetic_simulation": false,
+    "provenance": "Gravação clínica real de monitorização invasiva por cateter arterial (SNUADC/ART a 100 Hz). Dados brutos hospitalares da coorte VitalDB.",
     "ebl_ml": 800,
     "transfusion_units": 2,
     "vasopressors": "Fenilefrina 250 mcg + Efedrina 5 mg",
     "fluids": "Cristaloides 2.300 mL + Coloides 500 mL",
     "events": [
       {
-        "time_sec": 86,
-        "label": "Indução Anestésica",
-        "type": "induction",
-        "drug_dose": "Propofol + Rocurônio",
-        "details": "Indução rápida registrada no VitalDB aos 86 segundos."
+        "time_sec": 60,
+        "label": "Manutenção Anestésica",
+        "type": "hospital_event",
+        "details": "Segmento intraoperatório contínuo (Lung lobectomy) sob ventilação mecânica e monitorização arterial invasiva."
       },
       {
-        "time_sec": 210,
-        "label": "Sangramento Torácico",
-        "type": "bleeding",
-        "details": "Início de sangramento intraoperatório torácico expressivo (EBL 800 mL)."
-      },
-      {
-        "time_sec": 270,
-        "label": "Avaliação Dinâmica de Volume",
-        "type": "hpi_alert",
-        "details": "Análise da contratilidade e reflexão aórtica sob perdas volêmicas."
-      },
-      {
-        "time_sec": 360,
-        "label": "Alteração Hemodinâmica Aguda",
-        "type": "hypotension",
-        "details": "Registro de alteração tensional durante o tempo cirúrgico."
-      },
-      {
-        "time_sec": 420,
-        "label": "Vasopressor de Resgate",
-        "type": "vasopressor",
-        "drug_dose": "Fenilefrina 250 mcg em bolus",
-        "details": "Aporte de vasoconstritor arterial de ação rápida."
+        "time_sec": 300,
+        "label": "Marco Avaliativo (5 min)",
+        "type": "assessment",
+        "details": "Avaliação morfométrica da curva arterial a 100 Hz e cálculo de predição hemodinâmica."
       },
       {
         "time_sec": 540,
-        "label": "Transfusão Sanguínea",
-        "type": "transfusion",
-        "details": "Início da infusão de 2 bolsas de Concentrado de Hemácias registradas no VitalDB."
+        "label": "Marco Avaliativo (9 min)",
+        "type": "assessment",
+        "details": "Conferência da estabilidade da PAM e perfusão tecidual."
       }
-    ]
+    ],
+    "provenance_metadata": {
+      "channel": "SNUADC/ART",
+      "original_interval_sec": [
+        1950.0,
+        2550.0
+      ],
+      "duration_sec": 600.0,
+      "sampling_rate_hz": 100,
+      "total_samples": 60000,
+      "raw_signal_sha256": "71e2efdc79683b45d6a20eb8e6c2cf1bc25a24add8b56d8ea73fd8cddf191ca3",
+      "observed_vitals": {
+        "mean_sbp": 103.5,
+        "mean_dbp": 48.4,
+        "mean_map": 70.2
+      },
+      "transformations": [
+        "Extração nativa de sinal hospitalar via VitalFile",
+        "Seleção de janela contínua validada de 600.0s [1950.0s - 2550.0s]",
+        "Filtro passa-faixa Butterworth 0.5-40 Hz para atenuação de oscilações de linha base",
+        "Arredondamento para 2 casas decimais para serialização"
+      ]
+    }
   },
   {
     "caseid": 12,
@@ -168,7 +170,7 @@
   },
   {
     "caseid": 1,
-    "title": "Caso #01 - Ressecção Colorretal em Paciente Idoso",
+    "title": "Caso Real #01 - Low anterior resection (VitalDB)",
     "op": "Ressecção Anterior de Reto",
     "age": 77,
     "gender": "M",
@@ -178,11 +180,11 @@
     "preop_dm": 0,
     "preop_hb": 12.5,
     "preop_cr": 1.0,
-    "scenario": "Paciente masculino de 77 anos submetido a cirurgia colorretal eletiva sob anestesia geral balanceada inalatória e monitorização por linha arterial radial. Cenário de simulação fisiológica parametrizado com base no perfil do VitalDB.",
+    "scenario": "Paciente masculino de 77 anos, submetido a ressecção anterior baixa (cirurgia colorretal) sob anestesia geral e ventilação mecânica. Registro clínico real do cateter arterial radial hospitalar a 100 Hz (SNUADC/ART) com proveniência criptográfica verificada.",
     "risk_profile": "Cirurgia Colorretal Eletiva (ASA II)",
-    "source": "Simulação Sintética Didática (Perfil Clínico VitalDB)",
-    "is_synthetic_simulation": true,
-    "provenance": "Sinal arterial gerado computacionalmente a 100 Hz com morfologia fisiológica paramétrica a partir do perfil cirúrgico do VitalDB. Não constitui traçado bruto hospitalar.",
+    "source": "Registro Clínico Real VitalDB (Seoul National University Hospital)",
+    "is_synthetic_simulation": false,
+    "provenance": "Gravação clínica real de monitorização invasiva por cateter arterial (SNUADC/ART a 100 Hz). Dados brutos hospitalares da coorte VitalDB.",
     "ebl_ml": 50,
     "transfusion_units": 0,
     "vasopressors": "Efedrina 10 mg",
@@ -191,22 +193,44 @@
       {
         "time_sec": 60,
         "label": "Manutenção Anestésica",
-        "type": "induction",
-        "details": "Plano anestésico balanceado (Sevoflurano 2% + Remifentanil)."
+        "type": "hospital_event",
+        "details": "Segmento intraoperatório contínuo (Low anterior resection) sob ventilação mecânica e monitorização arterial invasiva."
       },
       {
         "time_sec": 300,
-        "label": "Incisão Cirúrgica",
-        "type": "incision",
-        "details": "Início da ressecção anterior retal e dissecção pélvica."
+        "label": "Marco Avaliativo (5 min)",
+        "type": "assessment",
+        "details": "Avaliação morfométrica da curva arterial a 100 Hz e cálculo de predição hemodinâmica."
       },
       {
-        "time_sec": 480,
-        "label": "Monitorização Hemodinâmica",
-        "type": "fluid",
-        "details": "Acompanhamento contínuo dos parâmetros hemodinâmicos da linha arterial."
+        "time_sec": 540,
+        "label": "Marco Avaliativo (9 min)",
+        "type": "assessment",
+        "details": "Conferência da estabilidade da PAM e perfusão tecidual."
       }
-    ]
+    ],
+    "provenance_metadata": {
+      "channel": "SNUADC/ART",
+      "original_interval_sec": [
+        1530.0,
+        2130.0
+      ],
+      "duration_sec": 600.0,
+      "sampling_rate_hz": 100,
+      "total_samples": 60000,
+      "raw_signal_sha256": "cdc854bbf92a6dbec2ac301922c32a290bd53bd6d46f062cb5edd8e65756f897",
+      "observed_vitals": {
+        "mean_sbp": 91.1,
+        "mean_dbp": 39.6,
+        "mean_map": 59.3
+      },
+      "transformations": [
+        "Extração nativa de sinal hospitalar via VitalFile",
+        "Seleção de janela contínua validada de 600.0s [1530.0s - 2130.0s]",
+        "Filtro passa-faixa Butterworth 0.5-40 Hz para atenuação de oscilações de linha base",
+        "Arredondamento para 2 casas decimais para serialização"
+      ]
+    }
   },
   {
     "caseid": 4,
