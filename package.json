@@ -1,0 +1,10 @@
+{
+  "name": "kaline-ia-project",
+  "version": "1.0.0",
+  "description": "Kaline IA Protótipo - Predição de Hipotensão Intraoperatória (VitalDB)",
+  "scripts": {
+    "app": "npm --prefix saas_frontend run app",
+    "build:app": "npm --prefix saas_frontend run build:app",
+    "open:app": "open 'Kaline IA.app'"
+  }
+}

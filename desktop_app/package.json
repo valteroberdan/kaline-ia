@@ -1,0 +1,12 @@
+{
+  "name": "kaline-ia-desktop",
+  "version": "1.0.0",
+  "description": "Kaline IA Protótipo - Aplicativo Desktop de Monitoramento e Predição de Hipotensão Arterial",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "package:mac": "electron-packager . 'Kaline IA' --platform=darwin --arch=universal --out=release --overwrite --prune=true"
+  },
+  "author": "Kaline IA Clinical AI",
+  "license": "MIT"
+}

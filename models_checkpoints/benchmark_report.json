@@ -1,0 +1,176 @@
+{
+  "model_name": "IA Kaline (Intraoperative Predictive AI)",
+  "dataset": "VitalDB High-Resolution Perioperative Dataset",
+  "target_definition": "MAP < 65 mmHg sustained for >= 1 min",
+  "horizons": {
+    "5min": {
+      "kaline_metrics": {
+        "auroc": 1.0,
+        "sensitivity": 100.0,
+        "specificity": 95.2,
+        "ppv": 94.7,
+        "npv": 100.0,
+        "f1": 0.973,
+        "mae_map_mmhg": 4.68,
+        "confusion_matrix": {
+          "tp": 18,
+          "fp": 1,
+          "tn": 20,
+          "fn": 0
+        },
+        "roc_curve": [
+          {
+            "fpr": 0.0,
+            "tpr": 0.0
+          },
+          {
+            "fpr": 0.0,
+            "tpr": 0.1111
+          },
+          {
+            "fpr": 0.0,
+            "tpr": 0.2222
+          },
+          {
+            "fpr": 0.0,
+            "tpr": 0.4444
+          },
+          {
+            "fpr": 0.0,
+            "tpr": 0.5556
+          },
+          {
+            "fpr": 0.0,
+            "tpr": 1.0
+          },
+          {
+            "fpr": 0.619,
+            "tpr": 1.0
+          },
+          {
+            "fpr": 0.7143,
+            "tpr": 1.0
+          },
+          {
+            "fpr": 0.8095,
+            "tpr": 1.0
+          },
+          {
+            "fpr": 1.0,
+            "tpr": 1.0
+          }
+        ]
+      },
+      "bja_2021_reference": {
+        "auroc": 0.932,
+        "sensitivity": 85.8,
+        "specificity": 85.8,
+        "ppv": 78.6,
+        "npv": 90.9,
+        "mae_map_mmhg": 7.1
+      }
+    },
+    "10min": {
+      "kaline_metrics": {
+        "auroc": 1.0,
+        "sensitivity": 100.0,
+        "specificity": 100.0,
+        "ppv": 100.0,
+        "npv": 100.0,
+        "f1": 1.0,
+        "mae_map_mmhg": 4.65,
+        "confusion_matrix": {
+          "tp": 18,
+          "fp": 0,
+          "tn": 26,
+          "fn": 0
+        },
+        "roc_curve": [
+          {
+            "fpr": 0.0,
+            "tpr": 0.0
+          },
+          {
+            "fpr": 0.0,
+            "tpr": 0.0556
+          },
+          {
+            "fpr": 0.0,
+            "tpr": 1.0
+          },
+          {
+            "fpr": 0.3846,
+            "tpr": 1.0
+          },
+          {
+            "fpr": 0.4615,
+            "tpr": 1.0
+          },
+          {
+            "fpr": 0.6923,
+            "tpr": 1.0
+          },
+          {
+            "fpr": 1.0,
+            "tpr": 1.0
+          }
+        ]
+      },
+      "bja_2021_reference": {
+        "auroc": 0.912,
+        "sensitivity": 83.5,
+        "specificity": 83.4,
+        "ppv": 74.9,
+        "npv": 89.5,
+        "mae_map_mmhg": 7.5
+      }
+    },
+    "15min": {
+      "kaline_metrics": {
+        "auroc": 1.0,
+        "sensitivity": 100.0,
+        "specificity": 100.0,
+        "ppv": 100.0,
+        "npv": 100.0,
+        "f1": 1.0,
+        "mae_map_mmhg": 5.66,
+        "confusion_matrix": {
+          "tp": 17,
+          "fp": 0,
+          "tn": 20,
+          "fn": 0
+        },
+        "roc_curve": [
+          {
+            "fpr": 0.0,
+            "tpr": 0.0
+          },
+          {
+            "fpr": 0.0,
+            "tpr": 0.0588
+          },
+          {
+            "fpr": 0.0,
+            "tpr": 1.0
+          },
+          {
+            "fpr": 0.85,
+            "tpr": 1.0
+          },
+          {
+            "fpr": 1.0,
+            "tpr": 1.0
+          }
+        ]
+      },
+      "bja_2021_reference": {
+        "auroc": 0.897,
+        "sensitivity": 81.4,
+        "specificity": 81.4,
+        "ppv": 71.1,
+        "npv": 88.6,
+        "mae_map_mmhg": 7.8
+      }
+    }
+  }
+}
