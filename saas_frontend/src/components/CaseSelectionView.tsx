@@ -87,25 +87,31 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {cases.map((c) => {
+              const isCase7 = c.caseid === 7;
               const isCase20 = c.caseid === 20;
               const isCase12 = c.caseid === 12;
 
               let badgeStyle = 'bg-slate-100 text-slate-700 border-slate-300';
               let badgeText = c.risk_profile || 'Monitorização Cirúrgica';
-              if (isCase20) {
+              if (isCase7) {
                 badgeStyle = 'bg-red-50 text-red-700 border-red-300 font-bold';
-                badgeText = 'Hipotensão Real aos 6 min';
+                badgeText = 'Normotenso • Alerta HPI ~80% (+10m)';
+              } else if (isCase20) {
+                badgeStyle = 'bg-amber-50 text-amber-800 border-amber-300 font-semibold';
+                badgeText = 'Queda aos 6 min';
               } else if (isCase12) {
-                badgeStyle = 'bg-amber-50 text-amber-800 border-amber-300 font-bold';
-                badgeText = 'Urgência / Risco Crítico';
+                badgeStyle = 'bg-purple-50 text-purple-800 border-purple-300 font-semibold';
+                badgeText = 'Urgência / Choque (+5m)';
               }
 
               return (
                 <div
                   key={c.caseid}
                   className={`bg-white border rounded-xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between ${
-                    isCase20
-                      ? 'border-red-400 ring-2 ring-red-100'
+                    isCase7
+                      ? 'border-red-500 ring-2 ring-red-100'
+                      : isCase20
+                      ? 'border-amber-300'
                       : 'border-slate-200 hover:border-slate-400'
                   }`}
                 >
@@ -117,9 +123,9 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
                           <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-900 text-white">
                             CASO #{c.caseid}
                           </span>
-                          {isCase20 && (
+                          {isCase7 && (
                             <span className="text-[10px] uppercase font-bold text-red-600 bg-red-100 px-1.5 py-0.5 rounded">
-                              Recomendado
+                              Recomendado (Predição a 10m)
                             </span>
                           )}
                         </div>

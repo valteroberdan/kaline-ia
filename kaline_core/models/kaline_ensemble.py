@@ -114,7 +114,7 @@ class KalineAI:
             p10 = float(np.clip(risk_base * 1.0, 0.03, 0.97))
             p15 = float(np.clip(risk_base * 0.9, 0.04, 0.95))
 
-            hpi_score = round(((p5 * 0.45) + (p10 * 0.35) + (p15 * 0.20)) * 100.0, 1)
+            hpi_score = round(((max(p5, p10, p15) * 0.75) + (((p5 + p10 + p15) / 3.0) * 0.25)) * 100.0, 1)
             gbm_results = {
                 "prob_5min": round(p5, 4),
                 "prob_10min": round(p10, 4),

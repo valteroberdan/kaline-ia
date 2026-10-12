@@ -6,123 +6,123 @@
   "top_biomarkers": [
     {
       "rank": 1,
-      "biomarker": "sample_entropy",
-      "importance_pct": 3.61,
-      "category": "Morfometria N\u00e3o-Linear & Complexidade"
+      "biomarker": "ppv",
+      "importance_pct": 4.25,
+      "category": "Variabilidade & Din\u00e2mica Respirat\u00f3ria"
     },
     {
       "rank": 2,
-      "biomarker": "ppv",
-      "importance_pct": 3.55,
-      "category": "Variabilidade & Din\u00e2mica Respirat\u00f3ria"
+      "biomarker": "sample_entropy",
+      "importance_pct": 4.18,
+      "category": "Morfometria N\u00e3o-Linear & Complexidade"
     },
     {
       "rank": 3,
-      "biomarker": "mean_map",
-      "importance_pct": 3.42,
-      "category": "Press\u00f5es Basais & Rela\u00e7\u00f5es"
-    },
-    {
-      "rank": 4,
       "biomarker": "svv_proxy",
-      "importance_pct": 3.21,
+      "importance_pct": 3.64,
       "category": "Variabilidade & Din\u00e2mica Respirat\u00f3ria"
     },
     {
-      "rank": 5,
+      "rank": 4,
       "biomarker": "auc_systole",
-      "importance_pct": 2.98,
+      "importance_pct": 2.88,
       "category": "Windkessel & \u00c1reas de Eje\u00e7\u00e3o"
     },
     {
+      "rank": 5,
+      "biomarker": "fft_dominant_freq",
+      "importance_pct": 2.46,
+      "category": "Espectro de Frequ\u00eancia & Balan\u00e7o Auton\u00f4mico"
+    },
+    {
       "rank": 6,
-      "biomarker": "mean_sbp",
-      "importance_pct": 2.84,
-      "category": "Press\u00f5es Basais & Rela\u00e7\u00f5es"
+      "biomarker": "heart_rate",
+      "importance_pct": 2.45,
+      "category": "Variabilidade & Din\u00e2mica Respirat\u00f3ria"
     },
     {
       "rank": 7,
       "biomarker": "auc_total_beat",
-      "importance_pct": 2.47,
+      "importance_pct": 2.38,
       "category": "Windkessel & \u00c1reas de Eje\u00e7\u00e3o"
     },
     {
       "rank": 8,
-      "biomarker": "mean_pp",
-      "importance_pct": 2.36,
-      "category": "Press\u00f5es Basais & Rela\u00e7\u00f5es"
+      "biomarker": "time_to_notch_ms",
+      "importance_pct": 2.37,
+      "category": "Incisura D\u00edcrota & Reflex\u00e3o de Onda"
     },
     {
       "rank": 9,
-      "biomarker": "dp_dt_max",
-      "importance_pct": 2.18,
-      "category": "Contratilidade & Derivadas da Onda"
+      "biomarker": "augmentation_index",
+      "importance_pct": 2.33,
+      "category": "Incisura D\u00edcrota & Reflex\u00e3o de Onda"
     },
     {
       "rank": 10,
-      "biomarker": "fft_dominant_freq",
-      "importance_pct": 2.11,
-      "category": "Espectro de Frequ\u00eancia & Balan\u00e7o Auton\u00f4mico"
+      "biomarker": "mean_pp",
+      "importance_pct": 2.32,
+      "category": "Press\u00f5es Basais & Rela\u00e7\u00f5es"
     },
     {
       "rank": 11,
-      "biomarker": "heart_rate",
-      "importance_pct": 2.06,
-      "category": "Variabilidade & Din\u00e2mica Respirat\u00f3ria"
+      "biomarker": "pp_sbp_ratio",
+      "importance_pct": 2.32,
+      "category": "Press\u00f5es Basais & Rela\u00e7\u00f5es"
     },
     {
       "rank": 12,
-      "biomarker": "augmentation_index",
-      "importance_pct": 2.03,
-      "category": "Incisura D\u00edcrota & Reflex\u00e3o de Onda"
+      "biomarker": "dbp_sbp_ratio",
+      "importance_pct": 2.3,
+      "category": "Press\u00f5es Basais & Rela\u00e7\u00f5es"
     },
     {
       "rank": 13,
-      "biomarker": "auc_diastole",
-      "importance_pct": 2.02,
-      "category": "Windkessel & \u00c1reas de Eje\u00e7\u00e3o"
+      "biomarker": "map_pp_ratio",
+      "importance_pct": 2.24,
+      "category": "Press\u00f5es Basais & Rela\u00e7\u00f5es"
     },
     {
       "rank": 14,
-      "biomarker": "time_to_notch_ms",
-      "importance_pct": 1.98,
-      "category": "Incisura D\u00edcrota & Reflex\u00e3o de Onda"
+      "biomarker": "dp_dt_max",
+      "importance_pct": 2.22,
+      "category": "Contratilidade & Derivadas da Onda"
     },
     {
       "rank": 15,
-      "biomarker": "fft_total_power",
-      "importance_pct": 1.94,
-      "category": "Espectro de Frequ\u00eancia & Balan\u00e7o Auton\u00f4mico"
-    },
-    {
-      "rank": 16,
-      "biomarker": "stroke_volume_proxy",
-      "importance_pct": 1.91,
-      "category": "Windkessel & \u00c1reas de Eje\u00e7\u00e3o"
-    },
-    {
-      "rank": 17,
-      "biomarker": "notch_pressure",
-      "importance_pct": 1.88,
-      "category": "Incisura D\u00edcrota & Reflex\u00e3o de Onda"
-    },
-    {
-      "rank": 18,
       "biomarker": "cycle_duration_ms",
-      "importance_pct": 1.83,
+      "importance_pct": 2.16,
       "category": "Perfil Cl\u00ednico & Antropometria"
     },
     {
+      "rank": 16,
+      "biomarker": "preop_cr",
+      "importance_pct": 2.14,
+      "category": "Perfil Cl\u00ednico & Antropometria"
+    },
+    {
+      "rank": 17,
+      "biomarker": "stroke_volume_proxy",
+      "importance_pct": 2.13,
+      "category": "Windkessel & \u00c1reas de Eje\u00e7\u00e3o"
+    },
+    {
+      "rank": 18,
+      "biomarker": "auc_diastole",
+      "importance_pct": 2.04,
+      "category": "Windkessel & \u00c1reas de Eje\u00e7\u00e3o"
+    },
+    {
       "rank": 19,
-      "biomarker": "mean_dbp",
-      "importance_pct": 1.82,
+      "biomarker": "mean_sbp",
+      "importance_pct": 2.01,
       "category": "Press\u00f5es Basais & Rela\u00e7\u00f5es"
     },
     {
       "rank": 20,
-      "biomarker": "preop_cr",
-      "importance_pct": 1.81,
-      "category": "Perfil Cl\u00ednico & Antropometria"
+      "biomarker": "downstroke_time_ms",
+      "importance_pct": 1.91,
+      "category": "Windkessel & \u00c1reas de Eje\u00e7\u00e3o"
     }
   ],
   "cycles_history": [
@@ -130,31 +130,31 @@
       "cycle": 1,
       "name": "Linha de Base Multi-Param\u00e9trica",
       "action": "Treinamento histogram-based gradient boosting com 61 biomarcadores arteriais",
-      "mean_auroc": 0.997,
-      "mean_mae_map": 6.05,
+      "mean_auroc": 0.979,
+      "mean_mae_map": 6.6,
       "horizons": {
         "5": {
           "auroc": 1.0,
           "sensitivity": 100.0,
-          "specificity": 100.0,
-          "f1": 1.0,
-          "mae_map_mmhg": 6.02,
+          "specificity": 95.2,
+          "f1": 0.973,
+          "mae_map_mmhg": 5.68,
           "threshold": 0.5
         },
         "10": {
-          "auroc": 0.993,
-          "sensitivity": 94.4,
-          "specificity": 96.0,
-          "f1": 0.944,
-          "mae_map_mmhg": 5.69,
+          "auroc": 0.947,
+          "sensitivity": 83.3,
+          "specificity": 100.0,
+          "f1": 0.909,
+          "mae_map_mmhg": 6.7,
           "threshold": 0.5
         },
         "15": {
-          "auroc": 0.997,
+          "auroc": 0.989,
           "sensitivity": 100.0,
-          "specificity": 95.2,
-          "f1": 0.971,
-          "mae_map_mmhg": 6.44,
+          "specificity": 90.5,
+          "f1": 0.944,
+          "mae_map_mmhg": 7.41,
           "threshold": 0.5
         }
       }
@@ -163,31 +163,31 @@
       "cycle": 2,
       "name": "Minera\u00e7\u00e3o de Casos Dif\u00edceis (Focal Weighting)",
       "action": "Re-pondera\u00e7\u00e3o adaptativa focada em descompensa\u00e7\u00f5es limiares e transi\u00e7\u00f5es r\u00e1pidas",
-      "mean_auroc": 0.999,
-      "mean_mae_map": 6.05,
+      "mean_auroc": 0.981,
+      "mean_mae_map": 6.6,
       "horizons": {
         "5": {
           "auroc": 1.0,
           "sensitivity": 100.0,
-          "specificity": 100.0,
-          "f1": 1.0,
-          "mae_map_mmhg": 6.02,
+          "specificity": 95.2,
+          "f1": 0.973,
+          "mae_map_mmhg": 5.68,
           "threshold": 0.5
         },
         "10": {
-          "auroc": 0.996,
-          "sensitivity": 94.4,
-          "specificity": 96.0,
-          "f1": 0.944,
-          "mae_map_mmhg": 5.69,
+          "auroc": 0.956,
+          "sensitivity": 77.8,
+          "specificity": 100.0,
+          "f1": 0.875,
+          "mae_map_mmhg": 6.7,
           "threshold": 0.5
         },
         "15": {
-          "auroc": 1.0,
-          "sensitivity": 100.0,
-          "specificity": 95.2,
-          "f1": 0.971,
-          "mae_map_mmhg": 6.44,
+          "auroc": 0.986,
+          "sensitivity": 94.1,
+          "specificity": 90.5,
+          "f1": 0.914,
+          "mae_map_mmhg": 7.41,
           "threshold": 0.5
         }
       }
@@ -195,32 +195,32 @@
     {
       "cycle": 4,
       "name": "Auto-Sintonia de Hiperpar\u00e2metros",
-      "action": "Busca adaptativa de profundidade e taxa de aprendizado: {5: {'learning_rate': 0.03, 'max_depth': 5}, 10: {'learning_rate': 0.04, 'max_depth': 5}, 15: {'learning_rate': 0.05, 'max_depth': 5}}",
-      "mean_auroc": 0.999,
-      "mean_mae_map": 6.07,
+      "action": "Busca adaptativa de profundidade e taxa de aprendizado: {5: {'learning_rate': 0.03, 'max_depth': 5}, 10: {'learning_rate': 0.04, 'max_depth': 5}, 15: {'learning_rate': 0.04, 'max_depth': 5}}",
+      "mean_auroc": 0.983,
+      "mean_mae_map": 6.62,
       "horizons": {
         "5": {
           "auroc": 1.0,
           "sensitivity": 100.0,
-          "specificity": 100.0,
-          "f1": 1.0,
-          "mae_map_mmhg": 5.8,
+          "specificity": 95.2,
+          "f1": 0.973,
+          "mae_map_mmhg": 5.87,
           "threshold": 0.5
         },
         "10": {
-          "auroc": 0.998,
-          "sensitivity": 94.4,
-          "specificity": 96.0,
-          "f1": 0.944,
-          "mae_map_mmhg": 5.7,
+          "auroc": 0.956,
+          "sensitivity": 83.3,
+          "specificity": 100.0,
+          "f1": 0.909,
+          "mae_map_mmhg": 6.46,
           "threshold": 0.5
         },
         "15": {
-          "auroc": 1.0,
+          "auroc": 0.994,
           "sensitivity": 100.0,
           "specificity": 95.2,
           "f1": 0.971,
-          "mae_map_mmhg": 6.7,
+          "mae_map_mmhg": 7.54,
           "threshold": 0.5
         }
       }
@@ -228,16 +228,16 @@
   ],
   "optimal_thresholds": {
     "5": 0.25,
-    "10": 0.25,
-    "15": 0.31
+    "10": 0.49,
+    "15": 0.5
   },
   "final_test_metrics": {
     "5": {
-      "auroc": 1.0,
+      "auroc": 0.997,
       "sensitivity": 100.0,
       "specificity": 95.2,
       "f1": 0.973,
-      "mae_map_mmhg": 4.68,
+      "mae_map_mmhg": 5.1,
       "threshold": 0.25
     },
     "10": {
@@ -245,28 +245,28 @@
       "sensitivity": 100.0,
       "specificity": 100.0,
       "f1": 1.0,
-      "mae_map_mmhg": 4.65,
-      "threshold": 0.25
+      "mae_map_mmhg": 4.72,
+      "threshold": 0.49
     },
     "15": {
-      "auroc": 1.0,
-      "sensitivity": 100.0,
-      "specificity": 100.0,
-      "f1": 1.0,
-      "mae_map_mmhg": 5.66,
-      "threshold": 0.31
+      "auroc": 0.974,
+      "sensitivity": 82.4,
+      "specificity": 95.0,
+      "f1": 0.875,
+      "mae_map_mmhg": 6.53,
+      "threshold": 0.5
     }
   },
   "benchmark_comparison": {
     "5min": {
       "kaline_metrics": {
-        "auroc": 1.0,
+        "auroc": 0.997,
         "sensitivity": 100.0,
         "specificity": 95.2,
         "ppv": 94.7,
         "npv": 100.0,
         "f1": 0.973,
-        "mae_map_mmhg": 4.68,
+        "mae_map_mmhg": 5.1,
         "confusion_matrix": {
           "tp": 18,
           "fp": 1,
@@ -280,26 +280,26 @@
           },
           {
             "fpr": 0.0,
-            "tpr": 0.1111
+            "tpr": 0.0556
           },
           {
             "fpr": 0.0,
-            "tpr": 0.2222
+            "tpr": 0.9444
           },
           {
-            "fpr": 0.0,
-            "tpr": 0.4444
+            "fpr": 0.0476,
+            "tpr": 0.9444
           },
           {
-            "fpr": 0.0,
-            "tpr": 0.5556
-          },
-          {
-            "fpr": 0.0,
+            "fpr": 0.0476,
             "tpr": 1.0
           },
           {
-            "fpr": 0.619,
+            "fpr": 0.5714,
+            "tpr": 1.0
+          },
+          {
+            "fpr": 0.6667,
             "tpr": 1.0
           },
           {
@@ -308,6 +308,10 @@
           },
           {
             "fpr": 0.8095,
+            "tpr": 1.0
+          },
+          {
+            "fpr": 0.8571,
             "tpr": 1.0
           },
           {
@@ -333,7 +337,7 @@
         "ppv": 100.0,
         "npv": 100.0,
         "f1": 1.0,
-        "mae_map_mmhg": 4.65,
+        "mae_map_mmhg": 4.72,
         "confusion_matrix": {
           "tp": 18,
           "fp": 0,
@@ -354,15 +358,19 @@
             "tpr": 1.0
           },
           {
-            "fpr": 0.3846,
+            "fpr": 0.2308,
             "tpr": 1.0
           },
           {
-            "fpr": 0.4615,
+            "fpr": 0.3077,
             "tpr": 1.0
           },
           {
-            "fpr": 0.6923,
+            "fpr": 0.7308,
+            "tpr": 1.0
+          },
+          {
+            "fpr": 0.9231,
             "tpr": 1.0
           },
           {
@@ -382,18 +390,18 @@
     },
     "15min": {
       "kaline_metrics": {
-        "auroc": 1.0,
-        "sensitivity": 100.0,
-        "specificity": 100.0,
-        "ppv": 100.0,
-        "npv": 100.0,
-        "f1": 1.0,
-        "mae_map_mmhg": 5.66,
+        "auroc": 0.974,
+        "sensitivity": 82.4,
+        "specificity": 95.0,
+        "ppv": 93.3,
+        "npv": 86.4,
+        "f1": 0.875,
+        "mae_map_mmhg": 6.53,
         "confusion_matrix": {
-          "tp": 17,
-          "fp": 0,
-          "tn": 20,
-          "fn": 0
+          "tp": 14,
+          "fp": 1,
+          "tn": 19,
+          "fn": 3
         },
         "roc_curve": [
           {
@@ -406,10 +414,22 @@
           },
           {
             "fpr": 0.0,
-            "tpr": 1.0
+            "tpr": 0.7059
           },
           {
-            "fpr": 0.85,
+            "fpr": 0.05,
+            "tpr": 0.7059
+          },
+          {
+            "fpr": 0.05,
+            "tpr": 0.9412
+          },
+          {
+            "fpr": 0.25,
+            "tpr": 0.9412
+          },
+          {
+            "fpr": 0.25,
             "tpr": 1.0
           },
           {

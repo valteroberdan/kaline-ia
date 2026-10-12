@@ -5,13 +5,13 @@
   "horizons": {
     "5min": {
       "kaline_metrics": {
-        "auroc": 1.0,
+        "auroc": 0.997,
         "sensitivity": 100.0,
         "specificity": 95.2,
         "ppv": 94.7,
         "npv": 100.0,
         "f1": 0.973,
-        "mae_map_mmhg": 4.68,
+        "mae_map_mmhg": 5.1,
         "confusion_matrix": {
           "tp": 18,
           "fp": 1,
@@ -25,26 +25,26 @@
           },
           {
             "fpr": 0.0,
-            "tpr": 0.1111
+            "tpr": 0.0556
           },
           {
             "fpr": 0.0,
-            "tpr": 0.2222
+            "tpr": 0.9444
           },
           {
-            "fpr": 0.0,
-            "tpr": 0.4444
+            "fpr": 0.0476,
+            "tpr": 0.9444
           },
           {
-            "fpr": 0.0,
-            "tpr": 0.5556
-          },
-          {
-            "fpr": 0.0,
+            "fpr": 0.0476,
             "tpr": 1.0
           },
           {
-            "fpr": 0.619,
+            "fpr": 0.5714,
+            "tpr": 1.0
+          },
+          {
+            "fpr": 0.6667,
             "tpr": 1.0
           },
           {
@@ -53,6 +53,10 @@
           },
           {
             "fpr": 0.8095,
+            "tpr": 1.0
+          },
+          {
+            "fpr": 0.8571,
             "tpr": 1.0
           },
           {
@@ -78,7 +82,7 @@
         "ppv": 100.0,
         "npv": 100.0,
         "f1": 1.0,
-        "mae_map_mmhg": 4.65,
+        "mae_map_mmhg": 4.72,
         "confusion_matrix": {
           "tp": 18,
           "fp": 0,
@@ -99,15 +103,19 @@
             "tpr": 1.0
           },
           {
-            "fpr": 0.3846,
+            "fpr": 0.2308,
             "tpr": 1.0
           },
           {
-            "fpr": 0.4615,
+            "fpr": 0.3077,
             "tpr": 1.0
           },
           {
-            "fpr": 0.6923,
+            "fpr": 0.7308,
+            "tpr": 1.0
+          },
+          {
+            "fpr": 0.9231,
             "tpr": 1.0
           },
           {
@@ -127,18 +135,18 @@
     },
     "15min": {
       "kaline_metrics": {
-        "auroc": 1.0,
-        "sensitivity": 100.0,
-        "specificity": 100.0,
-        "ppv": 100.0,
-        "npv": 100.0,
-        "f1": 1.0,
-        "mae_map_mmhg": 5.66,
+        "auroc": 0.974,
+        "sensitivity": 82.4,
+        "specificity": 95.0,
+        "ppv": 93.3,
+        "npv": 86.4,
+        "f1": 0.875,
+        "mae_map_mmhg": 6.53,
         "confusion_matrix": {
-          "tp": 17,
-          "fp": 0,
-          "tn": 20,
-          "fn": 0
+          "tp": 14,
+          "fp": 1,
+          "tn": 19,
+          "fn": 3
         },
         "roc_curve": [
           {
@@ -151,10 +159,22 @@
           },
           {
             "fpr": 0.0,
-            "tpr": 1.0
+            "tpr": 0.7059
           },
           {
-            "fpr": 0.85,
+            "fpr": 0.05,
+            "tpr": 0.7059
+          },
+          {
+            "fpr": 0.05,
+            "tpr": 0.9412
+          },
+          {
+            "fpr": 0.25,
+            "tpr": 0.9412
+          },
+          {
+            "fpr": 0.25,
             "tpr": 1.0
           },
           {

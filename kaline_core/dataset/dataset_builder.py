@@ -231,20 +231,38 @@ class DatasetBuilder:
             preop_alb = float(np.random.normal(3.7 if is_hypo else 4.2, 0.4))
 
             # Realistic Hemodynamic State & Waveform Generation
+            # Clinically accurate HPI paradigm: At t = -10 min and t = -15 min, the patient is
+            # STILL NORMOTENSIVE (MAP ~78-85 mmHg) due to temporary autonomic compensation,
+            # but reveals impending collapse through arterial morphometry (high PPV, falling dP/dt, negative slope).
             if is_hypo:
-                base_map = float(np.random.normal(67.0 - (15 - horizon) * 0.45, 4.2))
-                base_pp = float(np.random.normal(30.0, 5.0))
-                ppv = float(np.random.normal(16.8, 3.8))
-                hr = float(np.random.normal(79.0, 11.0))
-                map_slope = float(np.random.normal(-0.9 - (0.06 * (16 - horizon)), 0.35))
-                future_map = float(np.random.normal(55.5, 4.2))
+                if horizon == 15:
+                    base_map = float(np.random.normal(83.0, 4.5))
+                    base_pp = float(np.random.normal(38.0, 4.5))
+                    ppv = float(np.random.normal(15.5, 3.0))
+                    hr = float(np.random.normal(76.0, 9.0))
+                    map_slope = float(np.random.normal(-0.45, 0.25))
+                    future_map = float(np.random.normal(58.0, 3.8))
+                elif horizon == 10:
+                    base_map = float(np.random.normal(80.5, 4.2))
+                    base_pp = float(np.random.normal(35.0, 4.5))
+                    ppv = float(np.random.normal(17.2, 3.2))
+                    hr = float(np.random.normal(79.0, 10.0))
+                    map_slope = float(np.random.normal(-0.85, 0.30))
+                    future_map = float(np.random.normal(57.0, 3.5))
+                else:  # horizon == 5
+                    base_map = float(np.random.normal(73.5, 4.0))
+                    base_pp = float(np.random.normal(32.0, 4.5))
+                    ppv = float(np.random.normal(18.5, 3.5))
+                    hr = float(np.random.normal(82.0, 10.0))
+                    map_slope = float(np.random.normal(-1.20, 0.35))
+                    future_map = float(np.random.normal(55.0, 3.5))
             else:
-                base_map = float(np.random.normal(83.0, 6.0))
-                base_pp = float(np.random.normal(44.0, 6.0))
-                ppv = float(np.random.normal(8.2, 2.2))
-                hr = float(np.random.normal(67.0, 8.5))
-                map_slope = float(np.random.normal(0.04, 0.22))
-                future_map = float(np.random.normal(81.0, 5.8))
+                base_map = float(np.random.normal(84.0, 5.5))
+                base_pp = float(np.random.normal(44.0, 5.5))
+                ppv = float(np.random.normal(8.5, 2.0))
+                hr = float(np.random.normal(68.0, 8.0))
+                map_slope = float(np.random.normal(0.05, 0.20))
+                future_map = float(np.random.normal(82.5, 5.0))
 
             freq = hr / 60.0
             resp_freq = 0.22

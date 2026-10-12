@@ -136,12 +136,14 @@ class KalineGBMPipeline:
             results[f"map_{horizon}min"] = round(pred_map, 1)
 
         # Composite Kaline HPI Score (0 to 100)
-        # Weighted higher towards earlier warning (5min 45%, 10min 35%, 15min 20%)
-        composite_score = (
-            results.get("prob_5min", 0.5) * 0.45
-            + results.get("prob_10min", 0.5) * 0.35
-            + results.get("prob_15min", 0.5) * 0.20
-        ) * 100.0
+        # Represents cumulative probability of developing hypotension within the 15-minute predictive window.
+        # Dominated by peak imminent horizon risk (75%) modulated by multi-horizon progression (25%).
+        p5 = results.get("prob_5min", 0.0)
+        p10 = results.get("prob_10min", 0.0)
+        p15 = results.get("prob_15min", 0.0)
+        max_risk = max(p5, p10, p15)
+        mean_risk = (p5 + p10 + p15) / 3.0
+        composite_score = ((max_risk * 0.75) + (mean_risk * 0.25)) * 100.0
 
         results["kaline_hpi_score"] = round(composite_score, 1)
         results["alert_level"] = (
