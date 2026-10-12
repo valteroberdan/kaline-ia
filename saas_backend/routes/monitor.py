@@ -115,11 +115,20 @@ async def websocket_monitor_endpoint(websocket: WebSocket, caseid: int):
             return
 
     total_samples = len(raw_art)
-    current_sample_idx = 3000  # Start with 30s buffer
+    # Acumen HPI Standard: 20-second continuous arterial window (2000 samples @ 100 Hz)
+    hpi_window_sec = 20.0
+    hpi_window_samples = int(hpi_window_sec * fs)
+    current_sample_idx = hpi_window_samples  # Start with full 20s buffer
     playback_speed = 1.0
     is_paused = False
-    chunk_size = 50  # Send 50 points (0.5s) per tick
+    chunk_size = 50  # Send 50 points (0.5s) per tick for oscilloscope sweep
     is_first_tick = True
+
+    # HPI update cadence: updated on 20-second epochs (Acumen standard)
+    hpi_update_interval_sec = 20.0
+    last_hpi_calc_sec = -999.0
+    cached_prediction: Optional[Dict[str, Any]] = None
+    smoothed_hpi_score: Optional[float] = None
 
     try:
         while True:
@@ -136,19 +145,48 @@ async def websocket_monitor_endpoint(websocket: WebSocket, caseid: int):
                     playback_speed = float(cmd.get("speed", 1.0))
                 elif action == "seek":
                     target_sec = float(cmd.get("time_sec", 0.0))
-                    current_sample_idx = max(3000, min(int(target_sec * fs), total_samples - chunk_size))
+                    current_sample_idx = max(hpi_window_samples, min(int(target_sec * fs), total_samples - chunk_size))
+                    # Reset epoch on seek so it recalculates immediately at the new position
+                    last_hpi_calc_sec = -999.0
+                    smoothed_hpi_score = None
             except asyncio.TimeoutError:
                 pass
 
             if not is_paused:
-                # Get current 30-sec window for Kaline AI inference
-                window_start = max(0, current_sample_idx - WINDOW_SAMPLES)
-                current_window = raw_art[window_start:current_sample_idx]
+                elapsed_seconds = round(current_sample_idx / fs, 1)
 
-                # Run inference with simulation transparency flag
-                prediction = kaline_engine.predict_from_waveform(
-                    current_window, patient_profile, fs, is_simulation=is_simulation
+                # Check if a 20-second Acumen epoch has elapsed or if it's the first tick / seek
+                need_hpi_recalc = (
+                    cached_prediction is None
+                    or (elapsed_seconds - last_hpi_calc_sec) >= hpi_update_interval_sec
+                    or (elapsed_seconds < last_hpi_calc_sec)  # rewind / seek backwards
                 )
+
+                if need_hpi_recalc:
+                    # Get exact 20-second window (2000 samples)
+                    window_start = max(0, current_sample_idx - hpi_window_samples)
+                    current_window = raw_art[window_start:current_sample_idx]
+
+                    # Run inference on 20-second window
+                    new_prediction = kaline_engine.predict_from_waveform(
+                        current_window, patient_profile, fs, is_simulation=is_simulation
+                    )
+
+                    if new_prediction.get("predictions"):
+                        raw_hpi = new_prediction["predictions"].get("kaline_hpi_score")
+                        if raw_hpi is not None:
+                            if smoothed_hpi_score is None:
+                                smoothed_hpi_score = float(raw_hpi)
+                            else:
+                                # Temporal smoothing across 20-second epochs (eliminates beat-to-beat flutter)
+                                smoothed_hpi_score = 0.80 * float(raw_hpi) + 0.20 * float(smoothed_hpi_score)
+                            new_prediction["predictions"]["kaline_hpi_score"] = round(smoothed_hpi_score, 0)
+
+                        new_prediction["predictions"]["hpi_window_sec"] = int(hpi_window_sec)
+                        new_prediction["predictions"]["hpi_epoch_interval_sec"] = int(hpi_update_interval_sec)
+
+                    cached_prediction = new_prediction
+                    last_hpi_calc_sec = elapsed_seconds
 
                 # Next chunk for canvas oscilloscope (first tick sends 300 pts so wave appears immediately)
                 next_chunk_end = min(current_sample_idx + chunk_size, total_samples)
@@ -159,7 +197,24 @@ async def websocket_monitor_endpoint(websocket: WebSocket, caseid: int):
                 else:
                     waveform_chunk = raw_art[current_sample_idx:next_chunk_end].tolist()
 
-                elapsed_seconds = round(current_sample_idx / fs, 1)
+                # Build active telemetry: HPI is locked to the 20s epoch, while immediate vitals track the pulse
+                active_telemetry = json.loads(json.dumps(cached_prediction)) if cached_prediction else {}
+                latest_chunk_start = max(0, current_sample_idx - int(2.5 * fs))
+                latest_pulse = raw_art[latest_chunk_start:current_sample_idx]
+
+                if (
+                    len(latest_pulse) > 30
+                    and active_telemetry.get("status") not in ["SIGNAL_INVALID", "DISCONNECTED"]
+                    and "hemodynamic_vitals" in active_telemetry
+                ):
+                    inst_max = float(np.max(latest_pulse))
+                    inst_min = float(np.min(latest_pulse))
+                    inst_mean = float(np.mean(latest_pulse))
+                    if not (np.isnan(inst_max) or np.isnan(inst_min) or np.isnan(inst_mean)):
+                        active_telemetry["hemodynamic_vitals"]["sbp"] = round(inst_max, 0)
+                        active_telemetry["hemodynamic_vitals"]["dbp"] = round(inst_min, 0)
+                        active_telemetry["hemodynamic_vitals"]["map"] = round(inst_mean, 0)
+                        active_telemetry["hemodynamic_vitals"]["pp"] = round(inst_max - inst_min, 0)
 
                 payload = {
                     "caseid": caseid,
@@ -172,7 +227,7 @@ async def websocket_monitor_endpoint(websocket: WebSocket, caseid: int):
                     "is_synthetic_simulation": is_simulation,
                     "source": source_desc,
                     "provenance": provenance_desc,
-                    "telemetry": prediction,
+                    "telemetry": active_telemetry,
                 }
 
                 await websocket.send_json(payload)
@@ -180,7 +235,8 @@ async def websocket_monitor_endpoint(websocket: WebSocket, caseid: int):
                 # Advance index
                 current_sample_idx += chunk_size
                 if current_sample_idx >= total_samples - chunk_size:
-                    current_sample_idx = 3000  # Loop simulation
+                    current_sample_idx = hpi_window_samples  # Loop simulation
+                    last_hpi_calc_sec = -999.0
 
             # Sleep interval scaled by playback speed (e.g. 0.5s / speed)
             sleep_time = max(0.02, (chunk_size / fs) / playback_speed)

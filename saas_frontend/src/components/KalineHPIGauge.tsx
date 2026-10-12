@@ -72,7 +72,7 @@ export const KalineHPIGauge: React.FC<KalineHPIGaugeProps> = ({
               Score Preditivo Experimental Kaline
             </h3>
             <p className="text-[11px] text-slate-500">
-              Combinação Ponderada [0.70 × max + 0.30 × média] • Não equivalente ao Acumen HPI
+              Janela Contínua de 20s (Padrão Acumen) • Atualização Estável a cada 20s • Sem oscilação batimento a batimento
             </p>
           </div>
         </div>

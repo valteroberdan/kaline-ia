@@ -19,8 +19,9 @@ NON_HYPOTENSION_MIN_DURATION_SEC = 1200  # minimum 20 minutes stable
 
 # Signal Processing
 SAMPLING_RATE_HZ = 100  # Resampled waveform frequency
-WINDOW_SECONDS = 30  # 30-second observation window
-WINDOW_SAMPLES = SAMPLING_RATE_HZ * WINDOW_SECONDS  # 3000 samples per window
+WINDOW_SECONDS = 20  # 20-second observation window (standard Acumen HPI window)
+WINDOW_SAMPLES = SAMPLING_RATE_HZ * WINDOW_SECONDS  # 2000 samples per window
+HPI_UPDATE_INTERVAL_SEC = 20.0  # HPI score update cadence (every 20s epoch)
 
 # Target Horizons (in minutes)
 PREDICTION_HORIZONS = [5, 10, 15]
