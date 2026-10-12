@@ -1,5 +1,8 @@
 # Kaline IA Protótipo — Monitor Clínico & Predição Precoce de Hipotensão Intraoperatória
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688.svg)](https://fastapi.tiangolo.com/)
 [![React](https://img.shields.io/badge/Frontend-React%2019%20%2B%20TypeScript-61DAFB.svg)](https://reactjs.org/)
@@ -87,3 +90,24 @@ PYTHONPATH=. .venv/bin/pytest tests/ -v
 - Sistema concebido para fins de pesquisa e validação preditiva pré-clínica.
 - Compatível com a base aberta de dados fisiológicos de alta resolução **VitalDB** (*Seoul National University Hospital*).
 - O módulo preditivo contínuo é bloqueado por padrão e requer o PIN clínico padrão: `7777`.
+
+---
+
+## 🤝 Como Contribuir
+
+Contribuições da comunidade são muito bem-vindas! Você pode colaborar propondo novos biomarcadores hemodinâmicos, melhorias na arquitetura neural ou refinamentos de interface.
+- Consulte o nosso [Guia de Contribuição (CONTRIBUTING.md)](CONTRIBUTING.md) para detalhes sobre fluxo de trabalho, padrões de commit e testes.
+- Leia o nosso [Código de Conduta (CODE_OF_CONDUCT.md)](CODE_OF_CONDUCT.md).
+- Para reportar vulnerabilidades ou questões de dados, confira nossa [Política de Segurança (SECURITY.md)](SECURITY.md).
+
+---
+
+## 📜 Licença
+
+Este projeto é distribuído como software livre e de código aberto sob os termos da **[Licença MIT](LICENSE)**.
+
+---
+
+## ⚖️ Disclaimer Médico
+
+O **Kaline IA Protótipo** é um projeto de pesquisa acadêmica em engenharia biomédica e aprendizado de máquina. Não é um dispositivo médico certificado por agências regulatórias (ANVISA, FDA, CE-mark). O software não deve ser utilizado como única base para tomadas de decisão terapêutica ou diagnóstica em seres humanos reais. O suporte de decisão clínica permanece sob julgamento e responsabilidade exclusiva do médico anestesiologista ou intensivista.
