@@ -54,6 +54,9 @@ export const Header: React.FC<HeaderProps> = ({
   isPredictiveUnlocked,
 }) => {
   const currentCase = cases.find((c) => c.caseid === selectedCaseId);
+  const currentEvent = currentCase?.events
+    ?.filter((e) => e.time_sec <= elapsedSec)
+    .sort((a, b) => b.time_sec - a.time_sec)[0];
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -245,6 +248,13 @@ export const Header: React.FC<HeaderProps> = ({
             onChange={(e) => onSeek(Number(e.target.value))}
             className="flex-1 min-w-[60px] max-w-[120px] sm:max-w-[150px] h-1.5 bg-slate-300 rounded appearance-none cursor-pointer accent-slate-900"
           />
+
+          {currentEvent && (
+            <div className="hidden lg:flex items-center gap-1 font-mono text-[10px] bg-red-100 text-red-800 px-2 py-0.5 rounded border border-red-200 shrink-0">
+              <span className="text-red-600 font-bold">Fase:</span>
+              <span className="font-bold truncate max-w-[130px]">{currentEvent.label}</span>
+            </div>
+          )}
 
           <div className="flex items-center gap-0.5 bg-white px-1 py-0.5 rounded border border-slate-200 font-mono text-[10px] shrink-0">
             {[1, 2, 5, 10].map((spd) => (
