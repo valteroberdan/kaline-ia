@@ -4,7 +4,7 @@ interface WaveformCanvasProps {
   waveformBuffer: number[];
   fs?: number;
   height?: number;
-  alertLevel?: 'NORMAL' | 'WARNING' | 'CRITICAL';
+  alertLevel?: 'NORMAL' | 'WARNING' | 'CRITICAL' | 'SIGNAL_INVALID' | 'MODEL_UNAVAILABLE' | 'DISCONNECTED' | string;
   vitals?: {
     sbp: number;
     dbp: number;

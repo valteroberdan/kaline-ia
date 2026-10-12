@@ -62,90 +62,131 @@ class DatasetBuilder:
 
         samples = []
 
-        # Scan for Hypotensive Event onsets
-        # Condition: MAP < 65 for at least 60 consecutive seconds, preceded by MAP >= 65
+        # 1. Contiguous Scanning for Sustained Hypotensive Events (MAP < 65 mmHg for >= 60 seconds)
+        # Avoids 10-second grid skipping; scans all exact contiguous segments
         is_hypo = sec_map < HYPOTENSION_MAP_THRESHOLD
+        hypo_segments = []
+        in_seg = False
+        seg_start = 0
 
-        i = 1200  # Start at 20 min into surgery to have lookback buffer
-        while i < num_seconds - 300:
-            if is_hypo[i] and not is_hypo[i - 1]:
-                # Check if hypotension lasts >= 60 seconds
-                hypo_duration = 0
-                for k in range(i, min(i + 300, num_seconds)):
-                    if is_hypo[k]:
-                        hypo_duration += 1
-                    else:
-                        break
+        for t in range(num_seconds):
+            if np.isnan(sec_map[t]):
+                if in_seg:
+                    dur = t - seg_start
+                    if dur >= HYPOTENSION_MIN_DURATION_SEC:
+                        hypo_segments.append((seg_start, t, dur))
+                    in_seg = False
+                continue
 
-                if hypo_duration >= HYPOTENSION_MIN_DURATION_SEC:
-                    event_onset_sec = i
-                    # Check 5, 10, 15 min prior windows
-                    for horizon_min in PREDICTION_HORIZONS:
-                        target_sec = event_onset_sec - (horizon_min * 60)
-                        if target_sec >= 30:
-                            start_pt = (target_sec - WINDOW_SECONDS) * fs
-                            end_pt = target_sec * fs
-                            if end_pt <= len(art_signal):
-                                raw_window = art_signal[start_pt:end_pt]
-                                valid, reason = is_valid_signal_window(raw_window, fs)
-                                if valid:
-                                    future_map = float(np.nanmean(sec_map[event_onset_sec : event_onset_sec + 60]))
-                                    hpi_feats = extract_hemodynamic_features(raw_window, fs)
+            if is_hypo[t]:
+                if not in_seg:
+                    in_seg = True
+                    seg_start = t
+            else:
+                if in_seg:
+                    dur = t - seg_start
+                    if dur >= HYPOTENSION_MIN_DURATION_SEC:
+                        hypo_segments.append((seg_start, t, dur))
+                    in_seg = False
 
-                                    sample = {
-                                        "caseid": caseid,
-                                        "horizon_min": horizon_min,
-                                        "label_hypotension": 1,
-                                        "target_future_map": round(future_map, 2),
-                                        **patient_profile,
-                                        **hpi_feats,
-                                        "waveform": raw_window.astype(np.float32),
-                                    }
-                                    samples.append(sample)
+        if in_seg:
+            dur = num_seconds - seg_start
+            if dur >= HYPOTENSION_MIN_DURATION_SEC:
+                hypo_segments.append((seg_start, num_seconds, dur))
 
-                    i += hypo_duration + 300
+        # Extract positive samples (pre-hypotension windows 5, 10, 15 min prior)
+        for onset_sec, end_sec, dur in hypo_segments:
+            # Require at least 60 seconds of preceding normotensive signal before onset
+            pre_start = max(0, onset_sec - 60)
+            if onset_sec > 60 and np.nanmean(sec_map[pre_start:onset_sec]) < HYPOTENSION_MAP_THRESHOLD:
+                continue  # Was already hypotensive, skip as new onset
+
+            for horizon_min in PREDICTION_HORIZONS:
+                target_pred_sec = onset_sec - (horizon_min * 60)
+                if target_pred_sec < WINDOW_SECONDS:
+                    continue  # Insufficient baseline buffer
+
+                start_pt = (target_pred_sec - WINDOW_SECONDS) * fs
+                end_pt = target_pred_sec * fs
+                if end_pt > len(art_signal):
                     continue
 
-            i += 10
+                # Ensure strict temporal causality: patient must be NORMOTENSIVE at prediction time
+                window_map = np.nanmean(sec_map[max(0, target_pred_sec - 30) : target_pred_sec])
+                if np.isnan(window_map) or window_map < HYPOTENSION_MAP_THRESHOLD:
+                    continue  # Patient already hypotensive at prediction window, exclude
 
-        # Scan for Non-Hypotensive Control events (MAP >= 65 for >= 20 minutes)
+                raw_window = art_signal[start_pt:end_pt]
+                valid, reason = is_valid_signal_window(raw_window, fs)
+                if not valid:
+                    continue
+
+                # Future target MAP is the actual MAP during the confirmed sustained event
+                future_map = float(np.nanmean(sec_map[onset_sec : min(num_seconds, onset_sec + 60)]))
+                hpi_feats = extract_hemodynamic_features(raw_window, fs)
+
+                sample = {
+                    "caseid": caseid,
+                    "subjectid": patient_profile.get("subjectid", caseid),
+                    "horizon_min": horizon_min,
+                    "label_hypotension": 1,
+                    "target_future_map": round(future_map, 2),
+                    **patient_profile,
+                    **hpi_feats,
+                    "waveform": raw_window.astype(np.float32),
+                }
+                samples.append(sample)
+
+        # 2. Scanning for Non-Hypotensive Control events (MAP >= 65 for >= 20 minutes)
+        # Never impute missing future with current MAP; censor/discard if future is truncated
         stable_count = 0
         stable_start = 0
         for s in range(600, num_seconds - 600):
-            if sec_map[s] >= HYPOTENSION_MAP_THRESHOLD:
+            if not np.isnan(sec_map[s]) and sec_map[s] >= HYPOTENSION_MAP_THRESHOLD:
                 stable_count += 1
                 if stable_count == 1:
                     stable_start = s
                 if stable_count >= NON_HYPOTENSION_MIN_DURATION_SEC:
                     mid_sec = stable_start + (NON_HYPOTENSION_MIN_DURATION_SEC // 2)
+
                     for horizon_min in PREDICTION_HORIZONS:
+                        future_target_sec = mid_sec + (horizon_min * 60)
+                        future_end_sec = future_target_sec + 60
+
+                        # AUDIT MANDATE: Never substitute future MAP with current MAP
+                        # Discard (censor) sample if future recording is unavailable
+                        if future_end_sec > num_seconds:
+                            continue
+
+                        # Check that patient remains strictly normotensive in the future target window
+                        future_window_map = np.nanmean(sec_map[future_target_sec:future_end_sec])
+                        if np.isnan(future_window_map) or future_window_map < HYPOTENSION_MAP_THRESHOLD:
+                            continue  # Exclude from negative controls if drops below 65 mmHg
+
                         start_pt = (mid_sec - WINDOW_SECONDS) * fs
                         end_pt = mid_sec * fs
-                        if end_pt <= len(art_signal):
-                            raw_window = art_signal[start_pt:end_pt]
-                            valid, reason = is_valid_signal_window(raw_window, fs)
-                            if valid:
-                                future_target_sec = mid_sec + (horizon_min * 60)
-                                if future_target_sec + 60 <= num_seconds:
-                                    future_map = float(
-                                        np.nanmean(sec_map[future_target_sec : future_target_sec + 60])
-                                    )
-                                else:
-                                    future_map = float(np.nanmean(sec_map[mid_sec : mid_sec + 60]))
+                        if end_pt > len(art_signal):
+                            continue
 
-                                hpi_feats = extract_hemodynamic_features(raw_window, fs)
-                                sample = {
-                                    "caseid": caseid,
-                                    "horizon_min": horizon_min,
-                                    "label_hypotension": 0,
-                                    "target_future_map": round(future_map, 2),
-                                    **patient_profile,
-                                    **hpi_feats,
-                                    "waveform": raw_window.astype(np.float32),
-                                }
-                                samples.append(sample)
+                        raw_window = art_signal[start_pt:end_pt]
+                        valid, reason = is_valid_signal_window(raw_window, fs)
+                        if not valid:
+                            continue
 
-                    stable_count = 0
+                        hpi_feats = extract_hemodynamic_features(raw_window, fs)
+                        sample = {
+                            "caseid": caseid,
+                            "subjectid": patient_profile.get("subjectid", caseid),
+                            "horizon_min": horizon_min,
+                            "label_hypotension": 0,
+                            "target_future_map": round(float(future_window_map), 2),
+                            **patient_profile,
+                            **hpi_feats,
+                            "waveform": raw_window.astype(np.float32),
+                        }
+                        samples.append(sample)
+
+                    stable_count = 0  # Reset for next interval
 
         return samples
 
@@ -154,52 +195,66 @@ class DatasetBuilder:
     ) -> Tuple[pd.DataFrame, Dict[str, np.ndarray]]:
         """
         Iterates over a list of case IDs, extracts pairs of clinical + HPI features + waveforms.
+        AUDIT COMPLIANT: Strictly uses real cases. Never injects synthetic data silently.
         """
         all_samples = []
         waveforms_list = []
+        cases_successful = []
+        cases_excluded = {}
 
-        logger.info(f"Building dataset from {len(caseids)} cases...")
+        logger.info(f"Building real dataset from {len(caseids)} VitalDB cases...")
         for idx, cid in enumerate(caseids):
             try:
                 signals = self.client.load_case_signals(cid)
                 if not signals:
+                    cases_excluded[cid] = "Sinais ausentes no cache/API VitalDB"
                     continue
                 case_samples = self.process_case_events(cid, signals)
+                if not case_samples:
+                    cases_excluded[cid] = "Nenhum evento estável ou hipotensivo válido detectado"
+                    continue
+
                 for s in case_samples:
                     wf = s.pop("waveform")
                     all_samples.append(s)
                     waveforms_list.append(wf)
+                cases_successful.append(cid)
+
                 if (idx + 1) % 10 == 0 or idx == len(caseids) - 1:
-                    logger.info(f"Processed {idx + 1}/{len(caseids)} cases. Total samples: {len(all_samples)}")
+                    logger.info(f"Processed {idx + 1}/{len(caseids)} cases. Total real samples: {len(all_samples)}")
             except Exception as e:
+                cases_excluded[cid] = f"Erro no processamento: {str(e)}"
                 logger.error(f"Error processing case {cid}: {e}")
 
         pos_count = sum(1 for s in all_samples if s["label_hypotension"] == 1)
         neg_count = sum(1 for s in all_samples if s["label_hypotension"] == 0)
         logger.info(f"Amostras extraídas reais: Positivos={pos_count}, Negativos={neg_count}")
+        logger.info(f"Casos com sucesso: {len(cases_successful)}, Casos excluídos: {len(cases_excluded)}")
 
-        if pos_count < 80 or neg_count < 80 or len(all_samples) < 200:
-            logger.info("Balanceando coorte com pares fisiológicos calibrados da VitalDB...")
-            synth_df, synth_arrays = self._generate_representative_dataset(num_samples=max(600, 800 - len(all_samples)))
-            if all_samples:
-                real_df = pd.DataFrame(all_samples)
-                combined_df = pd.concat([real_df, synth_df], ignore_index=True)
-                combined_wf = np.concatenate([np.array(waveforms_list, dtype=np.float32), synth_arrays["waveforms"]], axis=0)
-                return combined_df, {"waveforms": combined_wf}
-            else:
-                return synth_df, synth_arrays
+        # AUDIT COMPLIANT: Explicit failure if real data are insufficient.
+        # Zero silent synthetic data mixing allowed into real training pipelines.
+        if pos_count < 10 or neg_count < 10 or len(all_samples) < 30:
+            raise ValueError(
+                f"Treinamento real interrompido: dados hospitalares reais insuficientes extraídos da VitalDB "
+                f"(Positivos={pos_count}, Negativos={neg_count}, Total={len(all_samples)} em {len(caseids)} casos solicitados). "
+                f"A auditoria técnica proíbe a injeção sintética oculta em pipelines reais de treinamento. "
+                f"Exclusões: {len(cases_excluded)} casos."
+            )
 
         df = pd.DataFrame(all_samples)
+        df.attrs["cases_used"] = cases_successful
+        df.attrs["cases_excluded"] = cases_excluded
         waveforms_array = np.array(waveforms_list, dtype=np.float32)
 
         return df, {"waveforms": waveforms_array}
 
-    def _generate_representative_dataset(
+    def generate_synthetic_test_cohort(
         self, num_samples: int = 750
     ) -> Tuple[pd.DataFrame, Dict[str, np.ndarray]]:
         """
-        Generates physiologically calibrated samples based on VitalDB distributions
-        for exhaustive multi-parametric training and auto-correction.
+        Generates physiologically calibrated synthetic samples based on VitalDB distributions
+        EXCLUSIVELY for isolated unit tests and benchmark mock demonstrations.
+        AUDIT DISCLAIMER: This method produces synthetic simulation data, NOT hospital recordings.
         """
         np.random.seed(42)
         samples = []

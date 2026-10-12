@@ -78,3 +78,60 @@ def test_kaline_inference_from_waveform():
     assert res["signal_status"]["valid"] is True
     assert res["predictions"]["alert_level"] in ["NORMAL", "WARNING", "CRITICAL"]
     assert res["hemodynamic_vitals"]["map"] > 60
+
+
+def test_flatline_blocks_prediction_and_recommends_zero_vasopressors():
+    """
+    AUDIT TEST (Item 8): Flatline signal at 80 mmHg must NOT predict high HPI score
+    nor recommend vasoactive drugs. It must explicitly block prediction and return SIGNAL_INVALID.
+    """
+    ai = KalineAI()
+    fs = 100
+    # Line at constant 80 mmHg with zero pulse amplitude
+    flatline = np.full(3000, 80.0, dtype=np.float32)
+
+    res = ai.predict_from_waveform(flatline, fs=fs)
+
+    assert res["status"] == "SIGNAL_INVALID"
+    assert res["signal_status"]["valid"] is False
+    assert res["predictions"] is None
+    assert res["kaline_hpi_score"] is None
+    assert res["alert_level"] == "SIGNAL_INVALID"
+
+    recs = res["explainability"]["clinical_recommendations_structured"]
+    assert recs["vasoactive_drug_support"] == [], "Vasoactive drugs must NEVER be recommended on invalid arterial signals!"
+    assert any("cateter" in r.lower() or "arterial" in r.lower() for r in recs["monitoring_action"])
+
+
+def test_honest_metrics_no_fallback_088():
+    """
+    AUDIT TEST (Item 7): If the evaluation cohort has only one class, AUROC must return None
+    accompanied by an explicit reason, NEVER a fabricated 0.88.
+    """
+    from kaline_core.training.evaluate_metrics import compute_comprehensive_metrics
+
+    # Single class cohort (all negatives)
+    y_true_single = np.zeros(20, dtype=int)
+    y_probs = np.linspace(0.1, 0.4, 20)
+    y_reg_true = np.full(20, 80.0)
+    y_reg_pred = np.full(20, 78.0)
+
+    m = compute_comprehensive_metrics(y_true_single, y_probs, y_reg_true, y_reg_pred)
+
+    assert m["auroc"] is None, "AUROC must be None when only one class is present in test set!"
+    assert "Indisponível" in m["auroc_status"]
+    assert m["ci_95_auroc"] is None
+
+
+def test_dataset_builder_forbids_silent_synthetic_mixing():
+    """
+    AUDIT TEST (Item 2): dataset_builder must raise ValueError if real VitalDB cases
+    yield insufficient samples, prohibiting silent synthetic data concatenation in real training.
+    """
+    from kaline_core.dataset.dataset_builder import DatasetBuilder
+
+    builder = DatasetBuilder()
+    # Processing an empty case list must fail explicitly
+    with pytest.raises(ValueError, match="dados hospitalares reais insuficientes"):
+        builder.build_dataset_from_cases([])
+

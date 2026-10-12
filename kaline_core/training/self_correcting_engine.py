@@ -94,7 +94,7 @@ class KalineSelfCorrectionEngine:
         for h in PREDICTION_HORIZONS:
             mask = train_df["horizon_min"] == h
             if not np.any(mask):
-                mask = np.ones(len(train_df), dtype=bool)
+                continue
 
             clf = self.pipeline.classifiers[h]
             X_h = X_train[mask]
@@ -144,7 +144,7 @@ class KalineSelfCorrectionEngine:
         for h in PREDICTION_HORIZONS:
             mask = train_df["horizon_min"] == h
             if not np.any(mask):
-                mask = np.ones(len(train_df), dtype=bool)
+                continue
 
             X_h = X_train[mask]
             y_cls = train_df.loc[mask, "label_hypotension"].values
@@ -168,10 +168,10 @@ class KalineSelfCorrectionEngine:
                     )
                     candidate.fit(X_h, y_cls, sample_weight=weights)
 
-                    # Validate with safety fallback
+                    # Validate strictly on this horizon without cross-horizon mixing
                     val_mask = val_df["horizon_min"] == h
-                    if not np.any(val_mask) or len(np.unique(val_df.loc[val_mask, "label_hypotension"])) < 2:
-                        val_mask = np.ones(len(val_df), dtype=bool)
+                    if not np.any(val_mask):
+                        continue
 
                     X_val = self.pipeline.prepare_features(val_df)[val_mask]
                     y_val = val_df.loc[val_mask, "label_hypotension"].values
@@ -218,14 +218,14 @@ class KalineSelfCorrectionEngine:
         # =========================================================================
         logger.info("[Ciclo 5/5] Calibração de Probabilidades & Limiar Ótimo de Decisão...")
         optimal_thresholds = {}
-        calibrated_classifiers = {}
 
         X_val_all = self.pipeline.prepare_features(val_df)
         for h in PREDICTION_HORIZONS:
             clf = self.pipeline.classifiers[h]
             val_mask = val_df["horizon_min"] == h
             if not np.any(val_mask):
-                val_mask = np.ones(len(val_df), dtype=bool)
+                optimal_thresholds[h] = 0.50
+                continue
 
             X_v = X_val_all[val_mask]
             y_v = val_df.loc[val_mask, "label_hypotension"].values
@@ -256,6 +256,35 @@ class KalineSelfCorrectionEngine:
         # =========================================================================
         logger.info("Avaliando IA Kaline Auto-Corrigida no Conjunto de Teste Independente...")
         test_eval = self._evaluate_cohort(test_df, tag="Avaliação Final Teste", thresholds=optimal_thresholds)
+
+        # Export individual predictions for auditability
+        from kaline_core.training.evaluate_metrics import save_individual_predictions
+        pred_records = []
+        X_test_all = self.pipeline.prepare_features(test_df)
+        for h in PREDICTION_HORIZONS:
+            h_mask = (test_df["horizon_min"] == h).values
+            if not np.any(h_mask):
+                continue
+            sub_test = test_df[h_mask]
+            X_test_h = X_test_all[h_mask]
+            probs_h = self.pipeline.classifiers[h].predict_proba(X_test_h)[:, 1]
+            reg_h = self.pipeline.regressors[h].predict(X_test_h)
+            thresh_h = optimal_thresholds.get(h, 0.50)
+
+            for i, (_, row) in enumerate(sub_test.iterrows()):
+                pred_records.append({
+                    "caseid": row.get("caseid"),
+                    "subjectid": row.get("subjectid", row.get("caseid")),
+                    "horizon_min": h,
+                    "label_hypotension": int(row["label_hypotension"]),
+                    "pred_probability": round(float(probs_h[i]), 4),
+                    "target_future_map": round(float(row["target_future_map"]), 2),
+                    "pred_future_map": round(float(reg_h[i]), 2),
+                    "threshold_used": thresh_h,
+                    "model_used": "HistGradientBoosting_MultiParametric_Tabular",
+                })
+        if pred_records:
+            save_individual_predictions(pd.DataFrame(pred_records), self.models_dir / "test_predictions.csv")
 
         # Generate Benchmark Report compared with Lee et al. BJA 2021
         benchmark_report = generate_benchmark_comparison(test_eval["metrics_by_horizon"])
@@ -304,14 +333,15 @@ class KalineSelfCorrectionEngine:
         maes = []
 
         for h in PREDICTION_HORIZONS:
-            mask = cohort_df["horizon_min"] == h
-            if not np.any(mask) or len(np.unique(cohort_df.loc[mask, "label_hypotension"])) < 2:
-                mask = np.ones(len(cohort_df), dtype=bool)
+            mask = (cohort_df["horizon_min"] == h).values
+            if not np.any(mask):
+                continue
 
             sub_df = cohort_df[mask]
             X_sub = X_all[mask]
             y_true_cls = sub_df["label_hypotension"].values
             y_true_reg = sub_df["target_future_map"].values
+            patient_ids = sub_df["subjectid"].values if "subjectid" in sub_df.columns else None
 
             clf = self.pipeline.classifiers[h]
             reg = self.pipeline.regressors[h]
@@ -320,10 +350,14 @@ class KalineSelfCorrectionEngine:
             pred_map = reg.predict(X_sub)
 
             thresh = thresholds.get(h, 0.50) if thresholds else 0.50
-            m = compute_comprehensive_metrics(y_true_cls, probs, y_true_reg, pred_map, threshold=thresh)
+            m = compute_comprehensive_metrics(
+                y_true_cls, probs, y_true_reg, pred_map, threshold=thresh, patient_ids=patient_ids
+            )
 
             horizons_summary[str(h)] = {
                 "auroc": m["auroc"],
+                "auroc_status": m.get("auroc_status", "Disponível"),
+                "ci_95_auroc": m.get("ci_95_auroc"),
                 "sensitivity": m["sensitivity"],
                 "specificity": m["specificity"],
                 "f1": m["f1"],
@@ -331,11 +365,12 @@ class KalineSelfCorrectionEngine:
                 "threshold": thresh,
             }
             metrics_by_h[h] = m
-            aurocs.append(m["auroc"])
+            if m["auroc"] is not None:
+                aurocs.append(m["auroc"])
             maes.append(m["mae_map_mmhg"])
 
-        mean_auc = round(float(np.mean(aurocs)), 3)
-        mean_mae = round(float(np.mean(maes)), 2)
+        mean_auc = round(float(np.mean(aurocs)), 3) if aurocs else None
+        mean_mae = round(float(np.mean(maes)), 2) if maes else 0.0
 
         return {
             "tag": tag,

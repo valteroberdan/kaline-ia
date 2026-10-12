@@ -13,7 +13,7 @@ export const HemoSpherePhysiologyTree: React.FC<HemoSpherePhysiologyTreeProps> =
   const dbp = hemodynamic_vitals.dbp;
   const map = hemodynamic_vitals.map;
   const hr = hemodynamic_vitals.hr;
-  const score = predictions.kaline_hpi_score;
+  const score = predictions?.kaline_hpi_score ?? 0;
 
   // Diagnostic conditions
   const isPreloadDeficit = ppv > 13.0;
@@ -40,9 +40,13 @@ export const HemoSpherePhysiologyTree: React.FC<HemoSpherePhysiologyTreeProps> =
 
         <div className="flex items-center gap-2 bg-[#0a1122] px-3.5 py-1.5 rounded-xl border border-slate-800 text-xs">
           <span className="text-slate-400 font-mono">HPI Atual:</span>
-          <span className={`font-mono font-black ${score >= 75 ? 'text-red-400' : score >= 50 ? 'text-amber-400' : 'text-emerald-400'}`}>
-            {score.toFixed(0)}%
-          </span>
+          {predictions ? (
+            <span className={`font-mono font-black ${score >= 75 ? 'text-red-400' : score >= 50 ? 'text-amber-400' : 'text-emerald-400'}`}>
+              {score.toFixed(0)}%
+            </span>
+          ) : (
+            <span className="font-mono font-bold text-slate-500">--</span>
+          )}
         </div>
       </div>
 

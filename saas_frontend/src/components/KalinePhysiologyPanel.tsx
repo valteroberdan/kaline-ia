@@ -1,15 +1,13 @@
 import React from 'react';
-import { Stethoscope, Wind, Zap, Activity, CheckCircle, Info, Lock } from 'lucide-react';
+import { Stethoscope, Wind, Zap, Activity, CheckCircle, Info } from 'lucide-react';
 import { KalinePrediction } from '../types';
 
 interface KalinePhysiologyPanelProps {
   telemetry: KalinePrediction;
-  isPredictiveUnlocked?: boolean;
 }
 
 export const KalinePhysiologyPanel: React.FC<KalinePhysiologyPanelProps> = ({
   telemetry,
-  isPredictiveUnlocked = true,
 }) => {
   const { hemodynamic_vitals, predictions, explainability } = telemetry;
   const { physiological_axes, clinical_recommendations } = explainability;
@@ -17,7 +15,7 @@ export const KalinePhysiologyPanel: React.FC<KalinePhysiologyPanelProps> = ({
   const ppv = hemodynamic_vitals.ppv;
   const dp_dt = hemodynamic_vitals.dp_dt_max;
   const dbp = hemodynamic_vitals.dbp;
-  const score = predictions.kaline_hpi_score;
+  const score = predictions?.kaline_hpi_score ?? 0;
 
   const isPreloadHigh = ppv > 13.0;
   const isInotropyLow = dp_dt < 750.0;
@@ -43,7 +41,7 @@ export const KalinePhysiologyPanel: React.FC<KalinePhysiologyPanelProps> = ({
 
         <div className="flex items-center gap-2 bg-slate-50 px-3 py-1 rounded-lg border border-slate-200 text-xs font-mono self-start sm:self-auto">
           <span className="text-slate-500">HPI:</span>
-          {isPredictiveUnlocked ? (
+          {predictions ? (
             <span
               className={`font-bold ${
                 score >= 75 ? 'text-red-600' : score >= 50 ? 'text-amber-600' : 'text-emerald-700'
@@ -52,9 +50,7 @@ export const KalinePhysiologyPanel: React.FC<KalinePhysiologyPanelProps> = ({
               {score.toFixed(0)}%
             </span>
           ) : (
-            <span className="text-amber-700 font-bold flex items-center gap-1">
-              <Lock className="h-3 w-3" /> PROTEGIDO
-            </span>
+            <span className="text-slate-500 font-bold">--</span>
           )}
         </div>
       </div>

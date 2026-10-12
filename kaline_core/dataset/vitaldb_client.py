@@ -166,8 +166,12 @@ class VitalDBClient:
             h_m = float(r["height"]) / 100.0
             bmi = float(r["weight"]) / (h_m * h_m)
 
+        subj = r.get("subjectid")
+        subjectid = int(subj) if pd.notna(subj) else caseid
+
         return {
             "caseid": caseid,
+            "subjectid": subjectid,
             "age": float(r.get("age", 60) or 60),
             "sex": str(r.get("sex", "M") or "M"),
             "height": float(r.get("height", 170) or 170),

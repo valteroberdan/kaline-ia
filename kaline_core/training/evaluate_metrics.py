@@ -6,7 +6,7 @@ Calculates AUROC, Sensitivity, Specificity, PPV, NPV, MAE, and compares with BJA
 import json
 import numpy as np
 import pandas as pd
-from typing import Dict, Any, Tuple
+from typing import Dict, Any, Tuple, Optional, List
 from pathlib import Path
 from sklearn.metrics import (
     roc_auc_score,
@@ -27,33 +27,90 @@ def compute_comprehensive_metrics(
     y_true_reg: np.ndarray,
     y_pred_reg: np.ndarray,
     threshold: float = 0.5,
+    patient_ids: Optional[np.ndarray] = None,
+    n_bootstrap: int = 200,
 ) -> Dict[str, Any]:
     """
     Computes all standard clinical validation metrics.
+    AUDIT COMPLIANT: Never uses fallback constants (e.g. 0.88). Returns None with explicit reason on failure.
+    Calculates 95% Confidence Intervals via patient-cluster or empirical bootstrap.
     """
-    try:
-        auroc = float(roc_auc_score(y_true_cls, y_pred_probs))
-        fpr, tpr, thresholds = roc_curve(y_true_cls, y_pred_probs)
-        roc_points = [
-            {"fpr": round(float(f), 4), "tpr": round(float(t), 4)}
-            for f, t in zip(fpr[:: max(1, len(fpr) // 25)], tpr[:: max(1, len(tpr) // 25)])
-        ]
-    except Exception:
-        auroc = 0.88
-        roc_points = []
+    unique_classes = np.unique(y_true_cls)
+    auroc: Optional[float] = None
+    auroc_status: str = "Disponível"
+    roc_points = []
+    ci_95_auroc: Optional[List[float]] = None
+
+    if len(unique_classes) < 2:
+        auroc = None
+        auroc_status = (
+            f"Indisponível: coorte de avaliação possui apenas uma classe ({int(unique_classes[0])}). "
+            "AUROC indefinida matematicamente sem exemplos positivos e negativos simultâneos."
+        )
+    else:
+        try:
+            auroc_val = float(roc_auc_score(y_true_cls, y_pred_probs))
+            auroc = round(auroc_val, 3)
+            fpr, tpr, thresholds = roc_curve(y_true_cls, y_pred_probs)
+            step = max(1, len(fpr) // 25)
+            roc_points = [
+                {"fpr": round(float(f), 4), "tpr": round(float(t), 4)}
+                for f, t in zip(fpr[::step], tpr[::step])
+            ]
+
+            # Bootstrap 95% Confidence Interval
+            rng = np.random.RandomState(42)
+            boot_aurocs = []
+            n_samples = len(y_true_cls)
+
+            if patient_ids is not None and len(np.unique(patient_ids)) > 2:
+                # Patient cluster bootstrap
+                unique_patients = np.unique(patient_ids)
+                for _ in range(n_bootstrap):
+                    sampled_patients = rng.choice(unique_patients, size=len(unique_patients), replace=True)
+                    sample_indices = np.concatenate([
+                        np.where(patient_ids == p)[0] for p in sampled_patients
+                    ])
+                    if len(np.unique(y_true_cls[sample_indices])) >= 2:
+                        try:
+                            b_auc = roc_auc_score(y_true_cls[sample_indices], y_pred_probs[sample_indices])
+                            boot_aurocs.append(b_auc)
+                        except Exception:
+                            pass
+            else:
+                # Standard empirical bootstrap
+                for _ in range(n_bootstrap):
+                    idx = rng.randint(0, n_samples, n_samples)
+                    if len(np.unique(y_true_cls[idx])) >= 2:
+                        try:
+                            b_auc = roc_auc_score(y_true_cls[idx], y_pred_probs[idx])
+                            boot_aurocs.append(b_auc)
+                        except Exception:
+                            pass
+
+            if len(boot_aurocs) >= 30:
+                ci_low = round(float(np.percentile(boot_aurocs, 2.5)), 3)
+                ci_high = round(float(np.percentile(boot_aurocs, 97.5)), 3)
+                ci_95_auroc = [ci_low, ci_high]
+        except Exception as e:
+            auroc = None
+            auroc_status = f"Indisponível: falha no cálculo do AUROC ({str(e)})"
 
     y_pred_binary = (y_pred_probs >= threshold).astype(int)
-    tn, fp, fn, tp = confusion_matrix(y_true_cls, y_pred_binary, labels=[0, 1]).ravel()
+    cm = confusion_matrix(y_true_cls, y_pred_binary, labels=[0, 1])
+    tn, fp, fn, tp = cm.ravel()
 
     sensitivity = float(tp / (tp + fn)) if (tp + fn) > 0 else 0.0
     specificity = float(tn / (tn + fp)) if (tn + fp) > 0 else 0.0
     ppv = float(tp / (tp + fp)) if (tp + fp) > 0 else 0.0
     npv = float(tn / (tn + fn)) if (tn + fn) > 0 else 0.0
     f1 = float(f1_score(y_true_cls, y_pred_binary, zero_division=0))
-    mae = float(mean_absolute_error(y_true_reg, y_pred_reg))
+    mae = float(mean_absolute_error(y_true_reg, y_pred_reg)) if len(y_true_reg) > 0 else 0.0
 
     return {
-        "auroc": round(auroc, 3),
+        "auroc": auroc,
+        "auroc_status": auroc_status,
+        "ci_95_auroc": ci_95_auroc,
         "sensitivity": round(sensitivity * 100.0, 1),
         "specificity": round(specificity * 100.0, 1),
         "ppv": round(ppv * 100.0, 1),
@@ -63,6 +120,19 @@ def compute_comprehensive_metrics(
         "confusion_matrix": {"tp": int(tp), "fp": int(fp), "tn": int(tn), "fn": int(fn)},
         "roc_curve": roc_points,
     }
+
+
+def save_individual_predictions(
+    predictions_df: pd.DataFrame,
+    filepath: Optional[Path] = None,
+) -> Path:
+    """
+    Saves granular sample-level predictions to CSV to allow external re-computation of all metrics.
+    """
+    target_path = filepath or (MODELS_DIR / "test_predictions.csv")
+    target_path.parent.mkdir(parents=True, exist_ok=True)
+    predictions_df.to_csv(target_path, index=False)
+    return target_path
 
 
 def generate_benchmark_comparison(metrics_by_horizon: Dict[int, Dict[str, Any]]) -> Dict[str, Any]:

@@ -8,9 +8,9 @@ interface HemoSphereCockpitProps {
 
 export const HemoSphereCockpit: React.FC<HemoSphereCockpitProps> = ({ telemetry }) => {
   const { predictions, hemodynamic_vitals, explainability } = telemetry;
-  const score = predictions.kaline_hpi_score;
+  const score = predictions?.kaline_hpi_score ?? 0;
   const clampedScore = Math.min(100, Math.max(0, score));
-  const alertLevel = predictions.alert_level;
+  const alertLevel = predictions?.alert_level ?? 'NORMAL';
 
   // HemoSphere Colors
   const isCritical = alertLevel === 'CRITICAL' || clampedScore >= 75;
@@ -183,18 +183,18 @@ export const HemoSphereCockpit: React.FC<HemoSphereCockpitProps> = ({ telemetry 
             {/* +5 min */}
             <div
               className={`p-3 rounded-2xl border transition-all flex items-center justify-between ${
-                predictions.p_5min >= 0.5
+                (predictions?.p_5min ?? 0) >= 0.5
                   ? 'bg-red-950/40 border-red-500 text-red-300'
                   : 'bg-[#0a1122] border-slate-800 text-slate-200'
               }`}
             >
               <div>
                 <div className="text-[10px] font-mono text-slate-400 uppercase font-bold">+5 Minutos</div>
-                <div className="text-xs font-semibold">PAM: <span className="font-mono font-bold text-white">{predictions.map_5min} mmHg</span></div>
+                <div className="text-xs font-semibold">PAM: <span className="font-mono font-bold text-white">{predictions?.map_5min ?? '--'} mmHg</span></div>
               </div>
               <div className="text-right">
                 <div className="text-lg font-mono font-black text-sky-400">
-                  {(predictions.p_5min * 100).toFixed(0)}%
+                  {predictions?.p_5min !== undefined && predictions?.p_5min !== null ? `${(predictions.p_5min * 100).toFixed(0)}%` : '--'}
                 </div>
                 <div className="text-[9px] text-slate-400">Prob. Hipotensão</div>
               </div>
@@ -203,18 +203,18 @@ export const HemoSphereCockpit: React.FC<HemoSphereCockpitProps> = ({ telemetry 
             {/* +10 min */}
             <div
               className={`p-3 rounded-2xl border transition-all flex items-center justify-between ${
-                predictions.p_10min >= 0.5
+                (predictions?.p_10min ?? 0) >= 0.5
                   ? 'bg-red-950/40 border-red-500 text-red-300'
                   : 'bg-[#0a1122] border-slate-800 text-slate-200'
               }`}
             >
               <div>
                 <div className="text-[10px] font-mono text-slate-400 uppercase font-bold">+10 Minutos</div>
-                <div className="text-xs font-semibold">PAM: <span className="font-mono font-bold text-white">{predictions.map_10min} mmHg</span></div>
+                <div className="text-xs font-semibold">PAM: <span className="font-mono font-bold text-white">{predictions?.map_10min ?? '--'} mmHg</span></div>
               </div>
               <div className="text-right">
                 <div className="text-lg font-mono font-black text-amber-400">
-                  {(predictions.p_10min * 100).toFixed(0)}%
+                  {predictions?.p_10min !== undefined && predictions?.p_10min !== null ? `${(predictions.p_10min * 100).toFixed(0)}%` : '--'}
                 </div>
                 <div className="text-[9px] text-slate-400">Prob. Hipotensão</div>
               </div>
@@ -223,18 +223,18 @@ export const HemoSphereCockpit: React.FC<HemoSphereCockpitProps> = ({ telemetry 
             {/* +15 min */}
             <div
               className={`p-3 rounded-2xl border transition-all flex items-center justify-between ${
-                predictions.p_15min >= 0.5
+                (predictions?.p_15min ?? 0) >= 0.5
                   ? 'bg-red-950/40 border-red-500 text-red-300'
                   : 'bg-[#0a1122] border-slate-800 text-slate-200'
               }`}
             >
               <div>
                 <div className="text-[10px] font-mono text-slate-400 uppercase font-bold">+15 Minutos</div>
-                <div className="text-xs font-semibold">PAM: <span className="font-mono font-bold text-white">{predictions.map_15min} mmHg</span></div>
+                <div className="text-xs font-semibold">PAM: <span className="font-mono font-bold text-white">{predictions?.map_15min ?? '--'} mmHg</span></div>
               </div>
               <div className="text-right">
                 <div className="text-lg font-mono font-black text-purple-400">
-                  {(predictions.p_15min * 100).toFixed(0)}%
+                  {predictions?.p_15min !== undefined && predictions?.p_15min !== null ? `${(predictions.p_15min * 100).toFixed(0)}%` : '--'}
                 </div>
                 <div className="text-[9px] text-slate-400">Prob. Hipotensão</div>
               </div>

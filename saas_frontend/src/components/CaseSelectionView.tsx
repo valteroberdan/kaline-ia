@@ -45,14 +45,14 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
                   Protótipo
                 </span>
                 <span className="text-xs px-2 py-0.5 rounded bg-teal-50 border border-teal-200 text-teal-800 font-mono font-semibold">
-                  Inteligência Preditiva
+                  Score Experimental Kaline
                 </span>
-                <span className="text-xs px-2 py-0.5 rounded bg-red-50 border border-red-200 text-red-700 font-mono font-semibold">
-                  VitalDB 100 Hz
+                <span className="text-xs px-2 py-0.5 rounded bg-amber-50 border border-amber-300 text-amber-800 font-mono font-semibold">
+                  Simulação Didática (VitalDB)
                 </span>
               </div>
               <p className="text-xs text-slate-500 font-mono">
-                Sistema Preditivo Precoce de Hipotensão Arterial Intraoperatória (+5m, +10m, +15m)
+                Sistema Preditivo Experimental de Hipotensão Arterial Intraoperatória (+5m, +10m, +15m)
               </p>
             </div>
           </div>
@@ -74,13 +74,13 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
             <span className="h-5 w-5 rounded-full bg-slate-900 text-white flex items-center justify-center text-[10px]">
               1
             </span>
-            <span>Etapa Inicial Obrigatória</span>
+            <span>Etapa Inicial</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
             Selecione o Caso Clínico para Iniciar a Simulação
           </h2>
           <p className="text-sm text-slate-600 max-w-3xl">
-            Escolha um dos casos cirúrgicos reais arquivados do consórcio <strong>VitalDB</strong>. Ao carregar o caso, o osciloscópio médico reproduzirá os sinais contínuos da linha arterial a 100 Hz (Canal <code className="bg-slate-100 px-1 py-0.5 rounded text-xs text-slate-800">SNUADC/ART</code>) com a predição da Kaline IA.
+            Escolha um dos casos clínicos parametrizados a partir dos perfis cirúrgicos da base <strong>VitalDB</strong>. O osciloscópio reproduzirá a curva arterial a 100 Hz gerada computacionalmente com morfologia fisiológica paramétrica, acompanhada da inferência em tempo real pelo Score Preditivo Experimental Kaline.
           </p>
         </div>
 
@@ -112,6 +112,9 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-900 text-white shrink-0">
                             CASO #{c.caseid}
+                          </span>
+                          <span className="text-[10px] uppercase font-bold text-amber-800 bg-amber-50 border border-amber-300 px-1.5 py-0.5 rounded shrink-0">
+                            Simulação Sintética
                           </span>
                           {isCase7 && (
                             <span className="text-[10px] uppercase font-bold text-teal-800 bg-teal-50 border border-teal-200 px-1.5 py-0.5 rounded shrink-0">
@@ -179,7 +182,7 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
                       {/* VitalDB Surgical & Hemodynamic Markers */}
                       <div className="pt-2 border-t border-slate-200 space-y-1.5 text-[11px]">
                         <span className="text-slate-400 block text-[10px] uppercase font-bold">
-                          Marcadores Cirúrgicos do VitalDB:
+                          Perfil Cirúrgico e Parâmetros (VitalDB):
                         </span>
                         <div className="grid grid-cols-2 gap-1.5">
                           <div className="bg-white p-1.5 rounded border border-slate-200">
@@ -207,12 +210,12 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
                       </div>
                     </div>
 
-                    {/* Timeline of Real Clinical Events */}
+                    {/* Timeline of Simulated Clinical Events */}
                     {c.events && c.events.length > 0 && (
                       <div className="space-y-1.5 bg-slate-50 border border-slate-200 rounded-lg p-2.5 min-w-0 overflow-hidden">
                         <span className="text-[10px] font-mono text-slate-500 uppercase font-bold flex items-center gap-1 truncate">
                           <Clock className="h-3 w-3 text-slate-600 shrink-0" />
-                          <span>Marcos Registrados:</span>
+                          <span>Marcos Clínicos Simulados:</span>
                         </span>
                         <div className="space-y-1 min-w-0">
                           {c.events.slice(0, 3).map((ev, idx) => (
@@ -227,7 +230,7 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
                           ))}
                           {c.events.length > 3 && (
                             <div className="text-[10px] text-slate-500 font-mono italic truncate">
-                              + {c.events.length - 3} outros marcos no replay
+                              + {c.events.length - 3} outros marcos na simulação
                             </div>
                           )}
                         </div>
@@ -252,7 +255,7 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
                       onClick={() => onSelectCase(c.caseid)}
                       className="w-full py-2.5 px-4 rounded-lg font-bold text-xs font-mono flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs bg-slate-900 hover:bg-slate-800 text-white"
                     >
-                      <span>Iniciar Monitoramento</span>
+                      <span>Iniciar Simulação</span>
                       <ArrowRight className="h-4 w-4" />
                     </button>
                   </div>
@@ -266,17 +269,17 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
         <div className="bg-slate-100 border border-slate-200 rounded-xl p-4 text-xs text-slate-600 space-y-1.5 font-mono">
           <div className="flex items-center gap-2 font-bold text-slate-800">
             <Info className="h-4 w-4 text-slate-600" />
-            <span>Nota de Validação Técnica do Protótipo:</span>
+            <span>Nota de Transparência e Procedência Técnica:</span>
           </div>
           <p>
-            O canal <code className="bg-white px-1 py-0.5 rounded border border-slate-300 text-slate-800">SNUADC/ART</code> armazena a pressão arterial invasiva aferida via cateter arterial periférico com resolução de 100 amostras por segundo. A Kaline IA extrai 61 parâmetros da morfologia da onda (área sistólica, dP/dt, entropia amostral, VPP, reflexão dícrota) para predizer eventos de hipotensão (PAM &lt; 65 mmHg) em 5, 10 e 15 minutos.
+            Os cenários demonstrativos acima constituem <strong>simulações sintéticas fisiológicas</strong> geradas a 100 Hz parametrizadas com base nos perfis clínicos cirúrgicos do consórcio VitalDB (Coreia do Sul). O <strong>Score Preditivo Experimental Kaline</strong> é formulado como combinação ponderada dos horizontes (+5m, +10m, +15m). Não possui equivalência clínica ou comercial demonstrada ao índice comercial Acumen HPI.
           </p>
         </div>
       </main>
 
       {/* Footer */}
       <footer className="bg-white border-t border-slate-200 py-3 px-4 text-center text-xs font-mono text-slate-500">
-        Kaline IA Protótipo • Validação Clínica & Medicina Baseada em Evidências • Base VitalDB
+        Kaline IA Protótipo de Pesquisa • Score Preditivo Experimental de Hipotensão • Sinais sintetizados a partir de parâmetros do VitalDB
       </footer>
     </div>
   );

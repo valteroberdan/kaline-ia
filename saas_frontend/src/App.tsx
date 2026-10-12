@@ -7,7 +7,6 @@ import { KalinePhysiologyPanel } from './components/KalinePhysiologyPanel';
 import { KalineAutoCorrectionPanel } from './components/KalineAutoCorrectionPanel';
 import { ForecastTrend } from './components/ForecastTrend';
 import { PatientForm } from './components/PatientForm';
-import { PredictiveLockGate } from './components/PredictiveLockGate';
 import { CaseSelectionView } from './components/CaseSelectionView';
 import { ClinicalTimeline } from './components/ClinicalTimeline';
 import { wsClient } from './services/websocket';
@@ -22,21 +21,6 @@ export const App: React.FC = () => {
   // Initial State: First screen is Case Selection (selectedCaseId = null)
   const [selectedCaseId, setSelectedCaseId] = useState<number | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
-
-  // Predictive Module Security PIN Lock State (Default: Locked, unlocked with '7777')
-  const [isPredictiveUnlocked, setIsPredictiveUnlocked] = useState<boolean>(() => {
-    return sessionStorage.getItem('kaline_predictive_unlocked') === 'true';
-  });
-
-  const handleUnlockPredictive = () => {
-    setIsPredictiveUnlocked(true);
-    sessionStorage.setItem('kaline_predictive_unlocked', 'true');
-  };
-
-  const handleLockPredictive = () => {
-    setIsPredictiveUnlocked(false);
-    sessionStorage.removeItem('kaline_predictive_unlocked');
-  };
 
   // Waveform Buffer for 60fps Canvas Oscilloscope
   const [waveformBuffer, setWaveformBuffer] = useState<number[]>([]);
@@ -211,9 +195,8 @@ export const App: React.FC = () => {
         totalSec={totalSec}
         onSeek={handleSeek}
         isConnected={isConnected}
-        alertLevel={telemetry.predictions.alert_level}
-        hpiScore={telemetry.predictions.kaline_hpi_score}
-        isPredictiveUnlocked={isPredictiveUnlocked}
+        alertLevel={telemetry?.predictions?.alert_level || (telemetry?.status === 'SIGNAL_INVALID' ? 'SIGNAL_INVALID' : telemetry?.status === 'DISCONNECTED' ? 'DISCONNECTED' : 'NORMAL')}
+        hpiScore={telemetry?.predictions?.kaline_hpi_score ?? 0}
       />
 
       {/* Main Clinical Stage */}
@@ -224,9 +207,9 @@ export const App: React.FC = () => {
             {/* Real-time Arterial Waveform Oscilloscope */}
             <WaveformCanvas
               waveformBuffer={waveformBuffer}
-              alertLevel={telemetry.predictions.alert_level}
+              alertLevel={telemetry?.predictions?.alert_level || telemetry?.status || 'NORMAL'}
               height={220}
-              vitals={telemetry.hemodynamic_vitals}
+              vitals={telemetry?.hemodynamic_vitals}
             />
 
             {/* Linha do Tempo Cirúrgica Interativa VitalDB */}
@@ -242,33 +225,27 @@ export const App: React.FC = () => {
             {/* Sinais Vitais Numéricos (6 Tiles) */}
             <KalineVitalsPanel vitals={telemetry.hemodynamic_vitals} />
 
-            {/* Módulo Preditivo HPI & Projeção Contínua (PROTEGIDO POR PIN 7777) */}
-            <PredictiveLockGate
-              isUnlocked={isPredictiveUnlocked}
-              onUnlock={handleUnlockPredictive}
-              onLock={handleLockPredictive}
-            >
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <KalineHPIGauge
-                  score={telemetry.predictions.kaline_hpi_score}
-                  alertLevel={telemetry.predictions.alert_level}
-                  p5={telemetry.predictions.p_5min}
-                  p10={telemetry.predictions.p_10min}
-                  p15={telemetry.predictions.p_15min}
-                  map5={telemetry.predictions.map_5min}
-                  map10={telemetry.predictions.map_10min}
-                  map15={telemetry.predictions.map_15min}
-                />
+            {/* Módulo Preditivo HPI & Projeção Contínua */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <KalineHPIGauge
+                score={telemetry?.predictions?.kaline_hpi_score ?? null}
+                alertLevel={telemetry?.predictions?.alert_level || telemetry?.status || 'NORMAL'}
+                p5={telemetry?.predictions?.p_5min ?? null}
+                p10={telemetry?.predictions?.p_10min ?? null}
+                p15={telemetry?.predictions?.p_15min ?? null}
+                map5={telemetry?.predictions?.map_5min ?? null}
+                map10={telemetry?.predictions?.map_10min ?? null}
+                map15={telemetry?.predictions?.map_15min ?? null}
+              />
 
-                <ForecastTrend
-                  currentMap={telemetry.hemodynamic_vitals.map}
-                  trajectory={telemetry.forecast_trajectory}
-                  map5={telemetry.predictions.map_5min}
-                  map10={telemetry.predictions.map_10min}
-                  map15={telemetry.predictions.map_15min}
-                />
-              </div>
-            </PredictiveLockGate>
+              <ForecastTrend
+                currentMap={telemetry?.hemodynamic_vitals?.map ?? 80}
+                trajectory={telemetry?.forecast_trajectory || []}
+                map5={telemetry?.predictions?.map_5min ?? (telemetry?.hemodynamic_vitals?.map ?? 80)}
+                map10={telemetry?.predictions?.map_10min ?? (telemetry?.hemodynamic_vitals?.map ?? 80)}
+                map15={telemetry?.predictions?.map_15min ?? (telemetry?.hemodynamic_vitals?.map ?? 80)}
+              />
+            </div>
           </div>
         )}
 
@@ -277,15 +254,14 @@ export const App: React.FC = () => {
           <div className="space-y-4 animate-fadeIn">
             <KalinePhysiologyPanel
               telemetry={telemetry}
-              isPredictiveUnlocked={isPredictiveUnlocked}
             />
 
             {/* Arterial Waveform Context */}
             <WaveformCanvas
               waveformBuffer={waveformBuffer}
-              alertLevel={telemetry.predictions.alert_level}
+              alertLevel={telemetry?.predictions?.alert_level || telemetry?.status || 'NORMAL'}
               height={180}
-              vitals={telemetry.hemodynamic_vitals}
+              vitals={telemetry?.hemodynamic_vitals}
             />
           </div>
         )}

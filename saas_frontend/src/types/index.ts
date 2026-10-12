@@ -58,6 +58,7 @@ export interface ExplainabilityData {
 export interface KalinePrediction {
   ai_name: string;
   version: string;
+  status?: string;
   signal_status: {
     valid: boolean;
     message: string;
@@ -65,14 +66,14 @@ export interface KalinePrediction {
   hemodynamic_vitals: HemodynamicVitals;
   predictions: {
     kaline_hpi_score: number;
-    alert_level: 'NORMAL' | 'WARNING' | 'CRITICAL';
+    alert_level: 'NORMAL' | 'WARNING' | 'CRITICAL' | 'SIGNAL_INVALID' | 'MODEL_UNAVAILABLE' | 'DISCONNECTED' | string;
     p_5min: number;
     p_10min: number;
     p_15min: number;
     map_5min: number;
     map_10min: number;
     map_15min: number;
-  };
+  } | null;
   forecast_trajectory: ForecastPoint[];
   explainability: ExplainabilityData;
 }

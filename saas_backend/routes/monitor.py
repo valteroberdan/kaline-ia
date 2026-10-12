@@ -53,11 +53,66 @@ async def websocket_monitor_endpoint(websocket: WebSocket, caseid: int):
     raw_art = np.array(case_data.get("signals", {}).get("art", []), dtype=np.float32)
     fs = int(case_data.get("signals", {}).get("sampling_rate", 100))
     patient_profile = case_data.get("patient", {})
+    is_simulation = bool(case_data.get("is_synthetic_simulation", True))
+    source_desc = case_data.get("source", "Simulação Sintética Didática (Perfil Clínico VitalDB)")
+    provenance_desc = case_data.get("provenance", "")
 
-    # If empty, generate fallback signal
+    # AUDIT COMPLIANT (Item 9): If signal is missing, never generate a silent sine wave pretending to be real.
+    # Expose explicit DISCONNECTED state.
     if len(raw_art) < 3000:
-        t = np.linspace(0, 600, 60000)
-        raw_art = 80.0 + 35.0 * np.sin(2 * np.pi * 1.2 * t) + np.random.normal(0, 0.5, len(t))
+        logger.warning(f"Caso {caseid}: Sinal arterial ausente ou insuficiente (< 30s). Estado DISCONNECTED emitido.")
+        try:
+            payload = {
+                "caseid": caseid,
+                "elapsed_sec": 0.0,
+                "total_sec": 0.0,
+                "waveform_chunk": [],
+                "sampling_rate": fs,
+                "is_paused": True,
+                "speed": 1.0,
+                "is_synthetic_simulation": is_simulation,
+                "source": source_desc,
+                "provenance": provenance_desc,
+                "telemetry": {
+                    "ai_name": "Kaline",
+                    "status": "DISCONNECTED",
+                    "signal_status": {
+                        "valid": False,
+                        "message": "Linha arterial desconectada ou traçado ausente (< 3000 amostras).",
+                    },
+                    "hemodynamic_vitals": {
+                        "sbp": None,
+                        "dbp": None,
+                        "map": None,
+                        "pp": None,
+                        "hr": None,
+                        "ppv": None,
+                        "dp_dt_max": None,
+                        "tau": None,
+                    },
+                    "predictions": None,
+                    "kaline_hpi_score": None,
+                    "alert_level": "DISCONNECTED",
+                    "forecast_trajectory": [],
+                    "explainability": {
+                        "status": "BLOCKED",
+                        "reason": "Sem conexão de sinal arterial.",
+                        "clinical_recommendations": {
+                            "monitoring_action": [
+                                "⚠️ Linha arterial desconectada ou dados ausentes.",
+                                "Ações: Conectar transdutor de pressão arterial invasiva para iniciar telemetria preditiva.",
+                            ],
+                            "vasoactive_drug_support": [],
+                            "fluid_management": [],
+                        },
+                    },
+                },
+            }
+            await websocket.send_json(payload)
+            while True:
+                await asyncio.sleep(2.0)
+        except WebSocketDisconnect:
+            return
 
     total_samples = len(raw_art)
     current_sample_idx = 3000  # Start with 30s buffer
@@ -90,8 +145,10 @@ async def websocket_monitor_endpoint(websocket: WebSocket, caseid: int):
                 window_start = max(0, current_sample_idx - WINDOW_SAMPLES)
                 current_window = raw_art[window_start:current_sample_idx]
 
-                # Run inference
-                prediction = kaline_engine.predict_from_waveform(current_window, patient_profile, fs)
+                # Run inference with simulation transparency flag
+                prediction = kaline_engine.predict_from_waveform(
+                    current_window, patient_profile, fs, is_simulation=is_simulation
+                )
 
                 # Next chunk for canvas oscilloscope (first tick sends 300 pts so wave appears immediately)
                 next_chunk_end = min(current_sample_idx + chunk_size, total_samples)
@@ -112,6 +169,9 @@ async def websocket_monitor_endpoint(websocket: WebSocket, caseid: int):
                     "sampling_rate": fs,
                     "is_paused": is_paused,
                     "speed": playback_speed,
+                    "is_synthetic_simulation": is_simulation,
+                    "source": source_desc,
+                    "provenance": provenance_desc,
                     "telemetry": prediction,
                 }
 

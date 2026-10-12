@@ -158,7 +158,14 @@ export const ExplainabilityCard: React.FC<ExplainabilityCardProps> = ({
           Sugestões de Conduta Médica Guiada por IA
         </h4>
         <ul className="space-y-1.5 text-xs text-slate-700">
-          {clinical_recommendations.map((rec, i) => (
+          {(Array.isArray(clinical_recommendations)
+            ? clinical_recommendations
+            : [
+                ...((clinical_recommendations as any)?.monitoring_action || []),
+                ...((clinical_recommendations as any)?.fluid_management || []),
+                ...((clinical_recommendations as any)?.vasoactive_drug_support || []),
+              ]
+          ).map((rec, i) => (
             <li key={i} className="flex items-start gap-2 bg-white p-2 rounded border border-slate-200">
               <span className="text-slate-400 font-bold">•</span>
               <div dangerouslySetInnerHTML={{ __html: rec }} />

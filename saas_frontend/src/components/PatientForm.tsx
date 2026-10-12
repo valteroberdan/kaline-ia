@@ -321,28 +321,28 @@ export const PatientForm: React.FC = () => {
         <div className="space-y-5 animate-fadeIn">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <KalineHPIGauge
-              score={predictionResult.predictions.kaline_hpi_score}
-              alertLevel={predictionResult.predictions.alert_level}
-              p5={predictionResult.predictions.p_5min}
-              p10={predictionResult.predictions.p_10min}
-              p15={predictionResult.predictions.p_15min}
-              map5={predictionResult.predictions.map_5min}
-              map10={predictionResult.predictions.map_10min}
-              map15={predictionResult.predictions.map_15min}
+              score={predictionResult.predictions?.kaline_hpi_score}
+              alertLevel={predictionResult.predictions?.alert_level ?? predictionResult.status ?? 'NORMAL'}
+              p5={predictionResult.predictions?.p_5min}
+              p10={predictionResult.predictions?.p_10min}
+              p15={predictionResult.predictions?.p_15min}
+              map5={predictionResult.predictions?.map_5min}
+              map10={predictionResult.predictions?.map_10min}
+              map15={predictionResult.predictions?.map_15min}
             />
 
             <ForecastTrend
               currentMap={predictionResult.hemodynamic_vitals.map}
               trajectory={predictionResult.forecast_trajectory}
-              map5={predictionResult.predictions.map_5min}
-              map10={predictionResult.predictions.map_10min}
-              map15={predictionResult.predictions.map_15min}
+              map5={predictionResult.predictions?.map_5min ?? 0}
+              map10={predictionResult.predictions?.map_10min ?? 0}
+              map15={predictionResult.predictions?.map_15min ?? 0}
             />
           </div>
 
           <ExplainabilityCard
             data={predictionResult.explainability}
-            hpiScore={predictionResult.predictions.kaline_hpi_score}
+            hpiScore={predictionResult.predictions?.kaline_hpi_score ?? 0}
           />
         </div>
       )}

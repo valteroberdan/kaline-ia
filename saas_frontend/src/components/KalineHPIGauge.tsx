@@ -2,14 +2,14 @@ import React from 'react';
 import { ShieldAlert, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
 
 interface KalineHPIGaugeProps {
-  score: number;
-  alertLevel: 'NORMAL' | 'WARNING' | 'CRITICAL';
-  p5: number;
-  p10: number;
-  p15: number;
-  map5: number;
-  map10: number;
-  map15: number;
+  score: number | null | undefined;
+  alertLevel: 'NORMAL' | 'WARNING' | 'CRITICAL' | 'SIGNAL_INVALID' | 'MODEL_UNAVAILABLE' | 'DISCONNECTED' | string;
+  p5: number | null | undefined;
+  p10: number | null | undefined;
+  p15: number | null | undefined;
+  map5: number | null | undefined;
+  map10: number | null | undefined;
+  map15: number | null | undefined;
 }
 
 export const KalineHPIGauge: React.FC<KalineHPIGaugeProps> = ({
@@ -22,19 +22,42 @@ export const KalineHPIGauge: React.FC<KalineHPIGaugeProps> = ({
   map10,
   map15,
 }) => {
-  const clampedScore = Math.min(100, Math.max(0, score));
-  const isCritical = alertLevel === 'CRITICAL' || clampedScore >= 75;
-  const isWarning = alertLevel === 'WARNING' || (clampedScore >= 50 && clampedScore < 75);
+  const isBlocked = alertLevel === 'SIGNAL_INVALID' || alertLevel === 'DISCONNECTED' || alertLevel === 'MODEL_UNAVAILABLE' || score === null || score === undefined;
+  const clampedScore = isBlocked ? 0 : Math.min(100, Math.max(0, score || 0));
+  const isCritical = alertLevel === 'CRITICAL' || (!isBlocked && clampedScore >= 75);
+  const isWarning = alertLevel === 'WARNING' || (!isBlocked && clampedScore >= 50 && clampedScore < 75);
 
   const getColor = () => {
+    if (isBlocked) return '#64748b'; // Slate gray
     if (isCritical) return '#dc2626'; // Red
     if (isWarning) return '#d97706'; // Amber
     return '#16a34a'; // Green
   };
 
-  const needleAngle = (clampedScore / 100) * 180 - 90;
+  const needleAngle = isBlocked ? -90 : (clampedScore / 100) * 180 - 90;
   const arcLength = 251.2;
-  const arcOffset = arcLength - (clampedScore / 100) * arcLength;
+  const arcOffset = isBlocked ? arcLength : arcLength - (clampedScore / 100) * arcLength;
+
+  const getAlertBadge = () => {
+    if (alertLevel === 'SIGNAL_INVALID') {
+      return { text: 'SINAL INVÁLIDO', style: 'bg-amber-100 text-amber-900 border-amber-300' };
+    }
+    if (alertLevel === 'DISCONNECTED') {
+      return { text: 'DESCONECTADO', style: 'bg-slate-200 text-slate-800 border-slate-300' };
+    }
+    if (alertLevel === 'MODEL_UNAVAILABLE') {
+      return { text: 'INDISPONÍVEL', style: 'bg-amber-100 text-amber-900 border-amber-300' };
+    }
+    if (isCritical) {
+      return { text: 'CRÍTICO', style: 'bg-red-50 text-red-700 border-red-300' };
+    }
+    if (isWarning) {
+      return { text: 'ALERTA', style: 'bg-amber-50 text-amber-800 border-amber-300' };
+    }
+    return { text: 'COMPENSADO', style: 'bg-emerald-50 text-emerald-800 border-emerald-300' };
+  };
+
+  const badge = getAlertBadge();
 
   return (
     <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs flex flex-col justify-between">
@@ -46,25 +69,31 @@ export const KalineHPIGauge: React.FC<KalineHPIGaugeProps> = ({
           </div>
           <div>
             <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider font-mono">
-              Índice Preditivo HPI (Kaline IA Protótipo)
+              Score Preditivo Experimental Kaline
             </h3>
-            <p className="text-[11px] text-slate-500">Probabilidade Combinada de Evento Hipotensivo</p>
+            <p className="text-[11px] text-slate-500">
+              Combinação Ponderada [0.70 × max + 0.30 × média] • Não equivalente ao Acumen HPI
+            </p>
           </div>
         </div>
 
         <div
-          className={`px-2.5 py-1 rounded text-xs font-mono font-bold border flex items-center gap-1.5 ${
-            isCritical
-              ? 'bg-red-50 text-red-700 border-red-300'
-              : isWarning
-              ? 'bg-amber-50 text-amber-800 border-amber-300'
-              : 'bg-emerald-50 text-emerald-800 border-emerald-300'
-          }`}
+          className={`px-2.5 py-1 rounded text-xs font-mono font-bold border flex items-center gap-1.5 ${badge.style}`}
         >
-          {isCritical ? <AlertTriangle className="h-3.5 w-3.5" /> : <CheckCircle className="h-3.5 w-3.5" />}
-          <span>{alertLevel}</span>
+          {isCritical || isBlocked ? <AlertTriangle className="h-3.5 w-3.5" /> : <CheckCircle className="h-3.5 w-3.5" />}
+          <span>{badge.text}</span>
         </div>
       </div>
+
+      {/* Blocked Signal Warning Banner */}
+      {isBlocked && (
+        <div className="mt-3 bg-amber-50 border border-amber-300 rounded-lg p-2.5 flex items-start gap-2 text-xs text-amber-900 font-mono">
+          <AlertTriangle className="h-4 w-4 text-amber-700 shrink-0 mt-0.5" />
+          <div>
+            <strong>Predição Bloqueada por Controle de Qualidade:</strong> Linha arterial sem sinal pulsátil fisiológico válido (linha plana, amortecimento ou desconexão). <em>Nenhuma conduta vasoativa deve ser adotada.</em>
+          </div>
+        </div>
+      )}
 
       {/* Main Gauge & Reading */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4 items-center my-3">
@@ -92,7 +121,7 @@ export const KalineHPIGauge: React.FC<KalineHPIGaugeProps> = ({
             <path
               d="M 20 100 A 80 80 0 0 1 180 100"
               fill="none"
-              stroke="url(#soberGradientLight)"
+              stroke={isBlocked ? '#cbd5e1' : 'url(#soberGradientLight)'}
               strokeWidth="16"
               strokeDasharray={arcLength}
               strokeDashoffset={arcOffset}
@@ -116,10 +145,10 @@ export const KalineHPIGauge: React.FC<KalineHPIGaugeProps> = ({
 
           <div className="text-center mt-[-14px] sm:mt-[-18px]">
             <div className="text-3xl sm:text-4xl font-black font-mono tracking-tight" style={{ color: getColor() }}>
-              {clampedScore.toFixed(0)}
-              <span className="text-base sm:text-lg text-slate-400 font-normal ml-0.5">%</span>
+              {isBlocked ? '--' : clampedScore.toFixed(0)}
+              {!isBlocked && <span className="text-base sm:text-lg text-slate-400 font-normal ml-0.5">%</span>}
             </div>
-            <span className="text-[10px] text-slate-500 font-mono uppercase">Score HPI Instantâneo</span>
+            <span className="text-[10px] text-slate-500 font-mono uppercase">Score Preditivo Kaline</span>
           </div>
         </div>
 
@@ -128,7 +157,7 @@ export const KalineHPIGauge: React.FC<KalineHPIGaugeProps> = ({
           {/* +5 min */}
           <div
             className={`p-2.5 rounded-lg border text-center transition-all min-w-0 overflow-hidden ${
-              p5 >= 0.5
+              !isBlocked && (p5 || 0) >= 0.5
                 ? 'bg-red-50 border-red-300 text-red-900'
                 : 'bg-slate-50 border-slate-200 text-slate-800'
             }`}
@@ -137,17 +166,17 @@ export const KalineHPIGauge: React.FC<KalineHPIGaugeProps> = ({
               <Clock className="h-3 w-3 shrink-0" /> +5 min
             </div>
             <div className="text-base sm:text-lg font-mono font-bold text-slate-900 mt-0.5 truncate">
-              {(p5 * 100).toFixed(0)}%
+              {isBlocked || p5 === null || p5 === undefined ? '--' : `${((p5 || 0) * 100).toFixed(0)}%`}
             </div>
             <div className="text-[11px] font-mono font-bold text-slate-700 mt-0.5 truncate">
-              PAM: {map5}
+              {isBlocked || map5 === null || map5 === undefined ? 'PAM: --' : `PAM: ${map5}`}
             </div>
           </div>
 
           {/* +10 min */}
           <div
             className={`p-2.5 rounded-lg border text-center transition-all min-w-0 overflow-hidden ${
-              p10 >= 0.5
+              !isBlocked && (p10 || 0) >= 0.5
                 ? 'bg-red-50 border-red-300 text-red-900'
                 : 'bg-slate-50 border-slate-200 text-slate-800'
             }`}
@@ -156,17 +185,17 @@ export const KalineHPIGauge: React.FC<KalineHPIGaugeProps> = ({
               <Clock className="h-3 w-3 shrink-0" /> +10 min
             </div>
             <div className="text-base sm:text-lg font-mono font-bold text-slate-900 mt-0.5 truncate">
-              {(p10 * 100).toFixed(0)}%
+              {isBlocked || p10 === null || p10 === undefined ? '--' : `${((p10 || 0) * 100).toFixed(0)}%`}
             </div>
             <div className="text-[11px] font-mono font-bold text-slate-700 mt-0.5 truncate">
-              PAM: {map10}
+              {isBlocked || map10 === null || map10 === undefined ? 'PAM: --' : `PAM: ${map10}`}
             </div>
           </div>
 
           {/* +15 min */}
           <div
             className={`p-2.5 rounded-lg border text-center transition-all min-w-0 overflow-hidden ${
-              p15 >= 0.5
+              !isBlocked && (p15 || 0) >= 0.5
                 ? 'bg-red-50 border-red-300 text-red-900'
                 : 'bg-slate-50 border-slate-200 text-slate-800'
             }`}
@@ -175,10 +204,10 @@ export const KalineHPIGauge: React.FC<KalineHPIGaugeProps> = ({
               <Clock className="h-3 w-3 shrink-0" /> +15 min
             </div>
             <div className="text-base sm:text-lg font-mono font-bold text-slate-900 mt-0.5 truncate">
-              {(p15 * 100).toFixed(0)}%
+              {isBlocked || p15 === null || p15 === undefined ? '--' : `${((p15 || 0) * 100).toFixed(0)}%`}
             </div>
             <div className="text-[11px] font-mono font-bold text-slate-700 mt-0.5 truncate">
-              PAM: {map15}
+              {isBlocked || map15 === null || map15 === undefined ? 'PAM: --' : `PAM: ${map15}`}
             </div>
           </div>
         </div>

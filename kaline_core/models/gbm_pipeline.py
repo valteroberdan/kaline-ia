@@ -77,7 +77,10 @@ class KalineGBMPipeline:
         for horizon in PREDICTION_HORIZONS:
             mask = train_df["horizon_min"] == horizon
             if not np.any(mask):
-                mask = np.ones(len(train_df), dtype=bool)
+                raise ValueError(
+                    f"Amostras ausentes para o horizonte de {horizon} minutos. "
+                    "A mistura silenciosa de dados entre horizontes está proibida."
+                )
 
             X_h = X_train_full[mask]
             y_cls = train_df.loc[mask, "label_hypotension"].values
@@ -135,15 +138,15 @@ class KalineGBMPipeline:
             results[f"prob_{horizon}min"] = round(prob, 4)
             results[f"map_{horizon}min"] = round(pred_map, 1)
 
-        # Composite Kaline HPI Score (0 to 100)
-        # Represents cumulative probability of developing hypotension within the 15-minute predictive window.
-        # Dominated by peak imminent horizon risk (75%) modulated by multi-horizon progression (25%).
+        # Score Preditivo Experimental Kaline (0 a 100)
+        # Fórmula transparente: 70% peso no risco iminente máximo + 30% na média dos horizontes.
+        # Não constitui probabilidade cumulativa em 15 minutos nem possui equivalência ao Edwards Acumen HPI.
         p5 = results.get("prob_5min", 0.0)
         p10 = results.get("prob_10min", 0.0)
         p15 = results.get("prob_15min", 0.0)
         max_risk = max(p5, p10, p15)
         mean_risk = (p5 + p10 + p15) / 3.0
-        composite_score = ((max_risk * 0.75) + (mean_risk * 0.25)) * 100.0
+        composite_score = ((max_risk * 0.70) + (mean_risk * 0.30)) * 100.0
 
         results["kaline_hpi_score"] = round(composite_score, 1)
         results["alert_level"] = (

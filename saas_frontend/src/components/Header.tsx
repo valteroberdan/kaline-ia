@@ -9,8 +9,6 @@ import {
   RotateCcw,
   Clock,
   ArrowLeft,
-  Lock,
-  Unlock,
 } from 'lucide-react';
 import { SimulationCase } from '../types';
 
@@ -29,9 +27,8 @@ interface HeaderProps {
   totalSec: number;
   onSeek: (timeSec: number) => void;
   isConnected: boolean;
-  alertLevel: 'NORMAL' | 'WARNING' | 'CRITICAL';
+  alertLevel: 'NORMAL' | 'WARNING' | 'CRITICAL' | 'SIGNAL_INVALID' | 'MODEL_UNAVAILABLE' | 'DISCONNECTED' | string;
   hpiScore: number;
-  isPredictiveUnlocked: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -51,7 +48,6 @@ export const Header: React.FC<HeaderProps> = ({
   isConnected,
   alertLevel,
   hpiScore,
-  isPredictiveUnlocked,
 }) => {
   const currentCase = cases.find((c) => c.caseid === selectedCaseId);
   const currentEvent = currentCase?.events
@@ -65,8 +61,8 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   const getAlertBadge = () => {
-    if (!isPredictiveUnlocked) {
-      return 'bg-amber-50 text-amber-800 border-amber-300';
+    if (alertLevel === 'SIGNAL_INVALID' || alertLevel === 'DISCONNECTED') {
+      return 'bg-amber-100 text-amber-900 border-amber-300 font-bold';
     }
     if (alertLevel === 'CRITICAL' || hpiScore >= 75) {
       return 'bg-red-50 text-red-700 border-red-300 font-bold';
@@ -98,11 +94,11 @@ export const Header: React.FC<HeaderProps> = ({
                   Protótipo
                 </span>
                 <span className="text-[10px] px-1.5 py-0.5 rounded bg-teal-50 border border-teal-200 text-teal-800 font-mono font-semibold shrink-0">
-                  Inteligência Preditiva
+                  Score Experimental Kaline
                 </span>
               </div>
               <p className="text-[10px] text-slate-500 font-mono hidden sm:block truncate">
-                Linha Arterial Invasiva • VitalDB SNUADC/ART 100 Hz
+                Linha Arterial Invasiva • Simulação Didática (Perfil VitalDB)
               </p>
             </div>
           </div>
@@ -115,16 +111,13 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
 
             <div className={`px-2 py-1 rounded-md border text-[11px] font-mono flex items-center gap-1 shrink-0 ${getAlertBadge()}`}>
-              {isPredictiveUnlocked ? (
-                <>
-                  <Unlock className="h-3 w-3 text-emerald-600 shrink-0" />
-                  <span>HPI: {hpiScore.toFixed(0)}%</span>
-                  <span className="hidden sm:inline uppercase">[{alertLevel}]</span>
-                </>
+              {alertLevel === 'SIGNAL_INVALID' || alertLevel === 'DISCONNECTED' ? (
+                <span>SINAL BLOQUEADO</span>
               ) : (
                 <>
-                  <Lock className="h-3 w-3 text-amber-600 shrink-0" />
-                  <span>HPI: PROTEGIDO</span>
+                  <Activity className="h-3 w-3 text-slate-600 shrink-0" />
+                  <span>Score: {hpiScore !== null && hpiScore !== undefined ? hpiScore.toFixed(0) : '--'}%</span>
+                  <span className="hidden sm:inline uppercase">[{alertLevel}]</span>
                 </>
               )}
             </div>
