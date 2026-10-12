@@ -83,30 +83,30 @@ export const ClinicalTimeline: React.FC<ClinicalTimelineProps> = ({
   return (
     <div className="bg-white border-2 border-slate-300 rounded-xl p-4 shadow-sm space-y-3">
       {/* Top Banner Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-2.5">
-        <div className="flex items-center gap-2">
-          <div className="h-7 w-7 rounded-lg bg-slate-900 text-white flex items-center justify-center font-bold">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-2.5 min-w-0">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="h-7 w-7 rounded-lg bg-slate-900 text-white flex items-center justify-center font-bold shrink-0">
             <Clock className="h-4 w-4 text-red-400" />
           </div>
-          <div>
-            <h4 className="text-xs sm:text-sm font-bold font-mono text-slate-900 uppercase tracking-tight flex items-center gap-2">
+          <div className="min-w-0">
+            <h4 className="text-xs sm:text-sm font-bold font-mono text-slate-900 uppercase tracking-tight flex items-center gap-2 flex-wrap">
               <span>Linha do Tempo de Eventos Cirúrgicos (VitalDB)</span>
-              <span className="text-[10px] bg-red-100 text-red-700 px-1.5 py-0.2 rounded border border-red-200 font-sans font-semibold">
+              <span className="text-[10px] bg-red-100 text-red-700 px-1.5 py-0.2 rounded border border-red-200 font-sans font-semibold shrink-0">
                 Replay Interativo
               </span>
             </h4>
-            <p className="text-[11px] text-slate-500 font-mono">
+            <p className="text-[11px] text-slate-500 font-mono truncate">
               Clique em qualquer marco abaixo para navegar diretamente ao instante do evento
             </p>
           </div>
         </div>
 
         {currentEvent && (
-          <div className="flex items-center gap-1.5 text-xs font-mono bg-slate-900 text-white px-3 py-1 rounded-lg shadow-xs">
-            <span className="text-red-400 font-bold">FASE ATUAL:</span>
-            <span className="font-bold">{currentEvent.label}</span>
+          <div className="flex items-center gap-1.5 text-xs font-mono bg-slate-900 text-white px-3 py-1 rounded-lg shadow-xs shrink-0 max-w-full sm:max-w-md min-w-0 overflow-hidden">
+            <span className="text-red-400 font-bold shrink-0">FASE ATUAL:</span>
+            <span className="font-bold truncate">{currentEvent.label}</span>
             {currentEvent.drug_dose && (
-              <span className="text-slate-300 hidden md:inline">({currentEvent.drug_dose})</span>
+              <span className="text-slate-300 hidden md:inline truncate">({currentEvent.drug_dose})</span>
             )}
           </div>
         )}
@@ -115,29 +115,33 @@ export const ClinicalTimeline: React.FC<ClinicalTimelineProps> = ({
       {/* Graphical Progress Track with Event Pins */}
       <div className="relative pt-4 pb-2 px-1">
         {/* Track Line */}
-        <div className="relative h-2.5 bg-slate-200 rounded-full overflow-visible">
+        <div className="relative h-2.5 bg-slate-200 rounded-full overflow-hidden">
           {/* Progress Fill */}
           <div
             className="absolute top-0 left-0 h-full bg-slate-800 rounded-full transition-all duration-300"
             style={{ width: `${progressPercent}%` }}
           />
+        </div>
 
+        {/* Pins container overlaid with pointer events */}
+        <div className="relative -mt-2.5 h-2.5 pointer-events-none">
           {/* Current Playhead Thumb */}
           <div
             className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-5 w-5 bg-red-600 rounded-full border-2 border-white shadow-md z-10 pointer-events-none"
-            style={{ left: `${progressPercent}%` }}
+            style={{ left: `${Math.min(98.5, Math.max(1.5, progressPercent))}%` }}
           />
 
           {/* Event Pins on the Track */}
           {events.map((ev, idx) => {
-            const evPercent = totalSec > 0 ? (ev.time_sec / totalSec) * 100 : 0;
+            const rawPercent = totalSec > 0 ? (ev.time_sec / totalSec) * 100 : 0;
+            const evPercent = Math.min(98.5, Math.max(1.5, rawPercent));
             const isPassed = elapsedSec >= ev.time_sec;
 
             return (
               <button
                 key={idx}
                 onClick={() => onSeek(ev.time_sec)}
-                className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-4 w-4 rounded-full border-2 transition-transform hover:scale-125 cursor-pointer z-10 ${
+                className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-4 w-4 rounded-full border-2 transition-transform hover:scale-125 cursor-pointer z-10 pointer-events-auto ${
                   isPassed
                     ? 'bg-slate-900 border-white'
                     : 'bg-white border-slate-400 hover:border-slate-800'
@@ -151,7 +155,7 @@ export const ClinicalTimeline: React.FC<ClinicalTimelineProps> = ({
 
         {/* Start / End Labels */}
         <div className="flex justify-between text-[10px] font-mono text-slate-500 mt-2">
-          <span>00:00 (Início da Gravação)</span>
+          <span>00:00 (Início)</span>
           <span className="font-bold text-slate-800">
             Tempo Decorrido: {formatTime(elapsedSec)} / {formatTime(totalSec)}
           </span>
@@ -160,7 +164,7 @@ export const ClinicalTimeline: React.FC<ClinicalTimelineProps> = ({
       </div>
 
       {/* Interactive Event Buttons Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 pt-1">
+      <div className="flex flex-wrap lg:flex-nowrap items-stretch gap-2 pt-1 w-full overflow-x-auto pb-1 scrollbar-thin">
         {events.map((ev, idx) => {
           const isPassed = elapsedSec >= ev.time_sec;
           const isCurrent = currentEvent?.time_sec === ev.time_sec;
@@ -169,30 +173,30 @@ export const ClinicalTimeline: React.FC<ClinicalTimelineProps> = ({
             <button
               key={idx}
               onClick={() => onSeek(ev.time_sec)}
-              className={`text-left p-2.5 rounded-lg border transition-all cursor-pointer flex flex-col justify-between ${
+              className={`text-left p-2.5 rounded-lg border transition-all cursor-pointer flex flex-col justify-between flex-1 min-w-[150px] max-w-full overflow-hidden ${
                 isCurrent
                   ? 'ring-2 ring-slate-900 border-slate-900 shadow-md bg-white'
                   : getEventBorderColor(ev.type)
               } ${isPassed && !isCurrent ? 'opacity-90' : ''}`}
             >
-              <div className="flex items-center justify-between gap-1 mb-1">
-                <span className="text-[11px] font-mono font-bold px-1.5 py-0.2 rounded bg-white/90 border border-slate-300 text-slate-800">
+              <div className="flex items-center justify-between gap-1 mb-1.5 w-full min-w-0">
+                <span className="text-[11px] font-mono font-bold px-1.5 py-0.2 rounded bg-white/90 border border-slate-300 text-slate-800 shrink-0">
                   {formatTime(ev.time_sec)}
                 </span>
                 <span className="shrink-0">{getEventIcon(ev.type)}</span>
               </div>
 
-              <div>
-                <div className="text-xs font-bold leading-tight truncate" title={ev.label}>
+              <div className="w-full min-w-0 overflow-hidden">
+                <div className="text-xs font-bold leading-tight truncate w-full" title={ev.label}>
                   {ev.label}
                 </div>
                 {ev.drug_dose && (
-                  <div className="text-[10px] text-slate-600 font-mono truncate mt-0.5" title={ev.drug_dose}>
+                  <div className="text-[10px] text-slate-600 font-mono truncate mt-0.5 w-full" title={ev.drug_dose}>
                     {ev.drug_dose}
                   </div>
                 )}
                 {ev.details && (
-                  <div className="text-[9px] text-slate-500 line-clamp-2 mt-0.5 leading-tight" title={ev.details}>
+                  <div className="text-[9px] text-slate-500 line-clamp-2 mt-0.5 leading-tight w-full" title={ev.details}>
                     {ev.details}
                   </div>
                 )}

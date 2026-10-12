@@ -132,18 +132,18 @@ export const ExplainabilityCard: React.FC<ExplainabilityCardProps> = ({
           {feature_attributions.map((attr, idx) => (
             <div
               key={idx}
-              className="flex flex-col sm:flex-row sm:items-center justify-between text-xs bg-white p-2.5 rounded border border-slate-200 gap-2"
+              className="flex flex-col sm:flex-row sm:items-center justify-between text-xs bg-white p-2.5 rounded border border-slate-200 gap-2 min-w-0 overflow-hidden"
             >
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-slate-900">{attr.feature}</span>
-                <span className="text-slate-600 font-mono bg-slate-100 px-1.5 py-0.5 rounded text-[11px]">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="font-semibold text-slate-900 truncate">{attr.feature}</span>
+                <span className="text-slate-600 font-mono bg-slate-100 px-1.5 py-0.5 rounded text-[11px] shrink-0">
                   {attr.value}
                 </span>
               </div>
-              <div className="text-slate-600 text-[11px] max-w-lg">
+              <div className="text-slate-600 text-[11px] max-w-lg min-w-0">
                 {attr.interpretation}
               </div>
-              <div className="text-right font-mono font-bold text-slate-900 whitespace-nowrap">
+              <div className="text-right font-mono font-bold text-slate-900 whitespace-nowrap shrink-0">
                 Contribuição: {attr.contribution_pct}%
               </div>
             </div>

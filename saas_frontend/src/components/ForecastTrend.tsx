@@ -54,67 +54,67 @@ export const ForecastTrend: React.FC<ForecastTrendProps> = ({
       </div>
 
       {/* Visual Forecast Horizon Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 my-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 my-3 min-w-0">
         {/* T = 0 */}
-        <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-center">
-          <span className="text-[10px] font-mono text-slate-500 uppercase">Atual (t=0)</span>
-          <div className="text-lg font-black font-mono text-slate-900 mt-0.5">
+        <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-center min-w-0 overflow-hidden">
+          <span className="text-[10px] font-mono text-slate-500 uppercase truncate block">Atual (t=0)</span>
+          <div className="text-lg font-black font-mono text-slate-900 mt-0.5 truncate">
             {currentMap.toFixed(0)}
             <span className="text-[10px] font-normal text-slate-400 ml-0.5">mmHg</span>
           </div>
-          <span className="text-[10px] text-slate-500 font-mono">PAM Medida</span>
+          <span className="text-[10px] text-slate-500 font-mono truncate block">PAM Medida</span>
         </div>
 
         {/* T = 5 */}
         <div
-          className={`p-2.5 rounded-lg border text-center transition-all ${
+          className={`p-2.5 rounded-lg border text-center transition-all min-w-0 overflow-hidden ${
             map5 < 65
               ? 'bg-red-50 border-red-300 text-red-900'
               : 'bg-slate-50 border-slate-200 text-slate-800'
           }`}
         >
-          <span className="text-[10px] font-mono text-slate-500 uppercase">+5 min</span>
-          <div className={`text-lg font-black font-mono mt-0.5 ${map5 < 65 ? 'text-red-600' : 'text-slate-900'}`}>
+          <span className="text-[10px] font-mono text-slate-500 uppercase truncate block">+5 min</span>
+          <div className={`text-lg font-black font-mono mt-0.5 truncate ${map5 < 65 ? 'text-red-600' : 'text-slate-900'}`}>
             {map5.toFixed(0)}
             <span className="text-[10px] font-normal text-slate-400 ml-0.5">mmHg</span>
           </div>
-          <span className="text-[10px] text-slate-500 font-mono">
+          <span className="text-[10px] text-slate-500 font-mono truncate block">
             {map5 < 65 ? '⚠️ < 65 mmHg' : 'Estimada'}
           </span>
         </div>
 
         {/* T = 10 */}
         <div
-          className={`p-2.5 rounded-lg border text-center transition-all ${
+          className={`p-2.5 rounded-lg border text-center transition-all min-w-0 overflow-hidden ${
             map10 < 65
               ? 'bg-red-50 border-red-300 text-red-900'
               : 'bg-slate-50 border-slate-200 text-slate-800'
           }`}
         >
-          <span className="text-[10px] font-mono text-slate-500 uppercase">+10 min</span>
-          <div className={`text-lg font-black font-mono mt-0.5 ${map10 < 65 ? 'text-red-600' : 'text-slate-900'}`}>
+          <span className="text-[10px] font-mono text-slate-500 uppercase truncate block">+10 min</span>
+          <div className={`text-lg font-black font-mono mt-0.5 truncate ${map10 < 65 ? 'text-red-600' : 'text-slate-900'}`}>
             {map10.toFixed(0)}
             <span className="text-[10px] font-normal text-slate-400 ml-0.5">mmHg</span>
           </div>
-          <span className="text-[10px] text-slate-500 font-mono">
+          <span className="text-[10px] text-slate-500 font-mono truncate block">
             {map10 < 65 ? '⚠️ < 65 mmHg' : 'Estimada'}
           </span>
         </div>
 
         {/* T = 15 */}
         <div
-          className={`p-2.5 rounded-lg border text-center transition-all ${
+          className={`p-2.5 rounded-lg border text-center transition-all min-w-0 overflow-hidden ${
             map15 < 65
               ? 'bg-red-50 border-red-300 text-red-900'
               : 'bg-slate-50 border-slate-200 text-slate-800'
           }`}
         >
-          <span className="text-[10px] font-mono text-slate-500 uppercase">+15 min</span>
-          <div className={`text-lg font-black font-mono mt-0.5 ${map15 < 65 ? 'text-red-600' : 'text-slate-900'}`}>
+          <span className="text-[10px] font-mono text-slate-500 uppercase truncate block">+15 min</span>
+          <div className={`text-lg font-black font-mono mt-0.5 truncate ${map15 < 65 ? 'text-red-600' : 'text-slate-900'}`}>
             {map15.toFixed(0)}
             <span className="text-[10px] font-normal text-slate-400 ml-0.5">mmHg</span>
           </div>
-          <span className="text-[10px] text-slate-500 font-mono">
+          <span className="text-[10px] text-slate-500 font-mono truncate block">
             {map15 < 65 ? '🚨 < 65 mmHg' : 'Estimada'}
           </span>
         </div>

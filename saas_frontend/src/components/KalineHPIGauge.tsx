@@ -124,60 +124,60 @@ export const KalineHPIGauge: React.FC<KalineHPIGaugeProps> = ({
         </div>
 
         {/* 3 Horizon Forecast Badges (7 cols) */}
-        <div className="md:col-span-7 grid grid-cols-3 gap-2">
+        <div className="md:col-span-7 grid grid-cols-3 gap-2 min-w-0">
           {/* +5 min */}
           <div
-            className={`p-2.5 rounded-lg border text-center transition-all ${
+            className={`p-2.5 rounded-lg border text-center transition-all min-w-0 overflow-hidden ${
               p5 >= 0.5
                 ? 'bg-red-50 border-red-300 text-red-900'
                 : 'bg-slate-50 border-slate-200 text-slate-800'
             }`}
           >
-            <div className="flex items-center justify-center gap-1 text-[10px] text-slate-500 font-mono">
-              <Clock className="h-3 w-3" /> +5 min
+            <div className="flex items-center justify-center gap-1 text-[10px] text-slate-500 font-mono truncate">
+              <Clock className="h-3 w-3 shrink-0" /> +5 min
             </div>
-            <div className="text-base sm:text-lg font-mono font-bold text-slate-900 mt-0.5">
+            <div className="text-base sm:text-lg font-mono font-bold text-slate-900 mt-0.5 truncate">
               {(p5 * 100).toFixed(0)}%
             </div>
-            <div className="text-[11px] font-mono font-bold text-slate-700 mt-0.5">
+            <div className="text-[11px] font-mono font-bold text-slate-700 mt-0.5 truncate">
               PAM: {map5}
             </div>
           </div>
 
           {/* +10 min */}
           <div
-            className={`p-2.5 rounded-lg border text-center transition-all ${
+            className={`p-2.5 rounded-lg border text-center transition-all min-w-0 overflow-hidden ${
               p10 >= 0.5
                 ? 'bg-red-50 border-red-300 text-red-900'
                 : 'bg-slate-50 border-slate-200 text-slate-800'
             }`}
           >
-            <div className="flex items-center justify-center gap-1 text-[10px] text-slate-500 font-mono">
-              <Clock className="h-3 w-3" /> +10 min
+            <div className="flex items-center justify-center gap-1 text-[10px] text-slate-500 font-mono truncate">
+              <Clock className="h-3 w-3 shrink-0" /> +10 min
             </div>
-            <div className="text-base sm:text-lg font-mono font-bold text-slate-900 mt-0.5">
+            <div className="text-base sm:text-lg font-mono font-bold text-slate-900 mt-0.5 truncate">
               {(p10 * 100).toFixed(0)}%
             </div>
-            <div className="text-[11px] font-mono font-bold text-slate-700 mt-0.5">
+            <div className="text-[11px] font-mono font-bold text-slate-700 mt-0.5 truncate">
               PAM: {map10}
             </div>
           </div>
 
           {/* +15 min */}
           <div
-            className={`p-2.5 rounded-lg border text-center transition-all ${
+            className={`p-2.5 rounded-lg border text-center transition-all min-w-0 overflow-hidden ${
               p15 >= 0.5
                 ? 'bg-red-50 border-red-300 text-red-900'
                 : 'bg-slate-50 border-slate-200 text-slate-800'
             }`}
           >
-            <div className="flex items-center justify-center gap-1 text-[10px] text-slate-500 font-mono">
-              <Clock className="h-3 w-3" /> +15 min
+            <div className="flex items-center justify-center gap-1 text-[10px] text-slate-500 font-mono truncate">
+              <Clock className="h-3 w-3 shrink-0" /> +15 min
             </div>
-            <div className="text-base sm:text-lg font-mono font-bold text-slate-900 mt-0.5">
+            <div className="text-base sm:text-lg font-mono font-bold text-slate-900 mt-0.5 truncate">
               {(p15 * 100).toFixed(0)}%
             </div>
-            <div className="text-[11px] font-mono font-bold text-slate-700 mt-0.5">
+            <div className="text-[11px] font-mono font-bold text-slate-700 mt-0.5 truncate">
               PAM: {map15}
             </div>
           </div>

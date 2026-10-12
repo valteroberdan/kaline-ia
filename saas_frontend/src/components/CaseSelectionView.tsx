@@ -93,54 +93,40 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {cases.map((c) => {
               const isCase7 = c.caseid === 7;
-              const isCase20 = c.caseid === 20;
-              const isCase12 = c.caseid === 12;
 
               let badgeStyle = 'bg-slate-100 text-slate-700 border-slate-300';
-              let badgeText = c.risk_profile || 'Monitorização Cirúrgica';
-              if (isCase7) {
-                badgeStyle = 'bg-red-50 text-red-700 border-red-300 font-bold';
-                badgeText = 'Normotenso • Alerta HPI ~80% (+10m)';
-              } else if (isCase20) {
+              if (c.asa >= 3) {
                 badgeStyle = 'bg-amber-50 text-amber-800 border-amber-300 font-semibold';
-                badgeText = 'Queda aos 6 min';
-              } else if (isCase12) {
-                badgeStyle = 'bg-purple-50 text-purple-800 border-purple-300 font-semibold';
-                badgeText = 'Urgência / Choque (+5m)';
               }
+              const badgeText = c.risk_profile || `Cirurgia Porte ASA ${c.asa}`;
 
               return (
                 <div
                   key={c.caseid}
-                  className={`bg-white border rounded-xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between ${
-                    isCase7
-                      ? 'border-red-500 ring-2 ring-red-100'
-                      : isCase20
-                      ? 'border-amber-300'
-                      : 'border-slate-200 hover:border-slate-400'
-                  }`}
+                  className="bg-white border border-slate-200 hover:border-slate-400 rounded-xl p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between overflow-hidden min-w-0"
                 >
-                  <div className="space-y-3.5">
+                  <div className="space-y-3.5 min-w-0">
                     {/* Header */}
-                    <div className="flex items-start justify-between gap-2 border-b border-slate-100 pb-3">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-900 text-white">
+                    <div className="flex items-start justify-between gap-2 border-b border-slate-100 pb-3 min-w-0">
+                      <div className="min-w-0 flex-1 pr-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-900 text-white shrink-0">
                             CASO #{c.caseid}
                           </span>
                           {isCase7 && (
-                            <span className="text-[10px] uppercase font-bold text-red-600 bg-red-100 px-1.5 py-0.5 rounded">
-                              Recomendado (Predição a 10m)
+                            <span className="text-[10px] uppercase font-bold text-teal-800 bg-teal-50 border border-teal-200 px-1.5 py-0.5 rounded shrink-0">
+                              Caso de Aula
                             </span>
                           )}
                         </div>
-                        <h3 className="text-base font-bold text-slate-900 mt-1 leading-snug">
+                        <h3 className="text-base font-bold text-slate-900 mt-1 leading-snug truncate" title={c.op}>
                           {c.op}
                         </h3>
                       </div>
 
                       <span
-                        className={`text-[10px] font-mono px-2 py-0.5 rounded border shrink-0 text-right ${badgeStyle}`}
+                        className={`text-[10px] font-mono px-2 py-0.5 rounded border shrink-0 text-right max-w-[140px] sm:max-w-[170px] truncate ${badgeStyle}`}
+                        title={badgeText}
                       >
                         {badgeText}
                       </span>
@@ -211,9 +197,11 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
                         </div>
 
                         {c.vasopressors && (
-                          <div className="bg-white p-1.5 rounded border border-slate-200 flex items-center justify-between">
-                            <span className="text-slate-500 text-[9px] uppercase font-bold">Vasopressor</span>
-                            <span className="font-bold text-slate-800 truncate">{c.vasopressors}</span>
+                          <div className="bg-white p-1.5 rounded border border-slate-200 flex items-center justify-between gap-1.5 min-w-0 overflow-hidden">
+                            <span className="text-slate-500 text-[9px] uppercase font-bold shrink-0">Vasopressor</span>
+                            <span className="font-bold text-slate-800 truncate text-[10px] min-w-0 text-right flex-1" title={c.vasopressors}>
+                              {c.vasopressors}
+                            </span>
                           </div>
                         )}
                       </div>
@@ -221,23 +209,25 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
 
                     {/* Timeline of Real Clinical Events */}
                     {c.events && c.events.length > 0 && (
-                      <div className="space-y-1.5 bg-slate-50 border border-slate-200 rounded-lg p-2.5">
-                        <span className="text-[10px] font-mono text-slate-500 uppercase font-bold block flex items-center gap-1">
-                          <Clock className="h-3 w-3 text-slate-600" />
-                          Marcos de Eventos do Caso:
+                      <div className="space-y-1.5 bg-slate-50 border border-slate-200 rounded-lg p-2.5 min-w-0 overflow-hidden">
+                        <span className="text-[10px] font-mono text-slate-500 uppercase font-bold flex items-center gap-1 truncate">
+                          <Clock className="h-3 w-3 text-slate-600 shrink-0" />
+                          <span>Marcos Registrados:</span>
                         </span>
-                        <div className="space-y-1">
+                        <div className="space-y-1 min-w-0">
                           {c.events.slice(0, 3).map((ev, idx) => (
-                            <div key={idx} className="flex items-center gap-1.5 text-[11px] font-mono">
-                              <span className="bg-slate-200 text-slate-700 px-1 py-0.2 rounded text-[10px] font-bold">
+                            <div key={idx} className="flex items-center gap-1.5 text-[11px] font-mono min-w-0">
+                              <span className="bg-slate-200 text-slate-700 px-1 py-0.2 rounded text-[10px] font-bold shrink-0">
                                 {Math.floor(ev.time_sec / 60)}:{(ev.time_sec % 60).toString().padStart(2, '0')}
                               </span>
-                              <span className="text-slate-800 truncate">{ev.label}</span>
+                              <span className="text-slate-800 truncate min-w-0 flex-1" title={ev.label}>
+                                {ev.label}
+                              </span>
                             </div>
                           ))}
                           {c.events.length > 3 && (
-                            <div className="text-[10px] text-slate-500 font-mono italic">
-                              + {c.events.length - 3} outros marcos clínicos no replay
+                            <div className="text-[10px] text-slate-500 font-mono italic truncate">
+                              + {c.events.length - 3} outros marcos no replay
                             </div>
                           )}
                         </div>
@@ -245,11 +235,11 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
                     )}
 
                     {/* Clinical Scenario Description */}
-                    <div className="space-y-1">
+                    <div className="space-y-1 min-w-0">
                       <span className="text-[10px] font-mono text-slate-400 uppercase font-bold block">
                         Cenário da Linha Arterial:
                       </span>
-                      <p className="text-xs text-slate-600 leading-relaxed">
+                      <p className="text-xs text-slate-600 leading-relaxed line-clamp-3" title={c.scenario}>
                         {c.scenario ||
                           'Registro contínuo intraoperatório com dados de morfometria arterial a 100 Hz.'}
                       </p>
@@ -260,11 +250,7 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
                   <div className="pt-4 mt-2">
                     <button
                       onClick={() => onSelectCase(c.caseid)}
-                      className={`w-full py-2.5 px-4 rounded-lg font-bold text-xs font-mono flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm ${
-                        isCase20
-                          ? 'bg-slate-900 hover:bg-slate-800 text-white'
-                          : 'bg-white hover:bg-slate-100 text-slate-900 border border-slate-300'
-                      }`}
+                      className="w-full py-2.5 px-4 rounded-lg font-bold text-xs font-mono flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs bg-slate-900 hover:bg-slate-800 text-white"
                     >
                       <span>Iniciar Monitoramento</span>
                       <ArrowRight className="h-4 w-4" />

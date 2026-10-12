@@ -82,26 +82,26 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Top Application Bar */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 flex flex-col md:flex-row md:items-center justify-between gap-2.5 border-b border-slate-100">
         {/* Row 1: Logo & Case Title */}
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5 sm:gap-3">
+        <div className="flex items-center justify-between gap-3 min-w-0 flex-1">
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
             <img
               src="./logo_icon.png"
               alt="Kaline IA"
               className="h-10 w-10 object-contain shrink-0 rounded-lg shadow-2xs"
             />
-            <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-base sm:text-lg font-black text-[#0b2827] tracking-tight">
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                <span className="text-base sm:text-lg font-black text-[#0b2827] tracking-tight shrink-0">
                   Kaline<sup className="text-xs font-bold text-[#c78a3b] ml-0.5">IA</sup>
                 </span>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-slate-100 border border-slate-300 text-slate-800 font-mono font-bold uppercase tracking-wider">
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 border border-slate-300 text-slate-800 font-mono font-bold uppercase tracking-wider shrink-0">
                   Protótipo
                 </span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-teal-50 border border-teal-200 text-teal-800 font-mono font-semibold">
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-teal-50 border border-teal-200 text-teal-800 font-mono font-semibold shrink-0">
                   Inteligência Preditiva
                 </span>
               </div>
-              <p className="text-[10px] text-slate-500 font-mono hidden xs:block">
+              <p className="text-[10px] text-slate-500 font-mono hidden sm:block truncate">
                 Linha Arterial Invasiva • VitalDB SNUADC/ART 100 Hz
               </p>
             </div>
@@ -109,21 +109,21 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Badges */}
           <div className="flex items-center gap-2 text-xs shrink-0">
-            <div className="flex items-center gap-1.5 font-mono text-[11px] text-slate-700 bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200">
+            <div className="flex items-center gap-1.5 font-mono text-[11px] text-slate-700 bg-slate-100 px-2 py-1 rounded-md border border-slate-200 shrink-0">
               <span className={`h-2 w-2 rounded-full ${isConnected ? 'bg-emerald-500' : 'bg-slate-400'}`} />
               <span>{isConnected ? 'Sinal 100 Hz' : 'Offline'}</span>
             </div>
 
-            <div className={`px-2.5 py-1 rounded-md border text-[11px] font-mono flex items-center gap-1 ${getAlertBadge()}`}>
+            <div className={`px-2 py-1 rounded-md border text-[11px] font-mono flex items-center gap-1 shrink-0 ${getAlertBadge()}`}>
               {isPredictiveUnlocked ? (
                 <>
-                  <Unlock className="h-3 w-3 text-emerald-600" />
+                  <Unlock className="h-3 w-3 text-emerald-600 shrink-0" />
                   <span>HPI: {hpiScore.toFixed(0)}%</span>
                   <span className="hidden sm:inline uppercase">[{alertLevel}]</span>
                 </>
               ) : (
                 <>
-                  <Lock className="h-3 w-3 text-amber-600" />
+                  <Lock className="h-3 w-3 text-amber-600 shrink-0" />
                   <span>HPI: PROTEGIDO</span>
                 </>
               )}
@@ -132,12 +132,12 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* CURRENT CASE INFO & SWITCH BUTTON */}
-        <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 w-full md:w-auto justify-between md:justify-start">
-          <div className="flex flex-col min-w-0 pr-2">
+        <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 w-full md:w-auto md:max-w-md lg:max-w-lg justify-between md:justify-start shrink-0 min-w-0">
+          <div className="flex flex-col min-w-0 pr-2 flex-1">
             <span className="text-[10px] uppercase text-slate-500 font-bold tracking-wider truncate">
               Caso em Execução:
             </span>
-            <span className="text-xs font-semibold text-slate-900 truncate">
+            <span className="text-xs font-semibold text-slate-900 truncate" title={currentCase ? `Caso #${currentCase.caseid} • ${currentCase.op} (${currentCase.age}a, ${currentCase.gender}, ASA ${currentCase.asa})` : ''}>
               {currentCase
                 ? `Caso #${currentCase.caseid} • ${currentCase.op} (${currentCase.age}a, ${currentCase.gender}, ASA ${currentCase.asa})`
                 : `Caso #${selectedCaseId}`}
@@ -160,7 +160,7 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Secondary Bar: Navigation Tabs & Simulation Controls */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 text-xs">
         {/* Navigation Tabs */}
-        <nav className="grid grid-cols-4 sm:flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
+        <nav className="grid grid-cols-4 sm:flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200 shrink-0">
           <button
             onClick={() => setActiveTab('monitor')}
             className={`flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md font-semibold text-xs transition-all ${
@@ -211,7 +211,7 @@ export const Header: React.FC<HeaderProps> = ({
         </nav>
 
         {/* Global Simulation Playback Controls Bar */}
-        <div className="flex items-center justify-between md:justify-end gap-2 sm:gap-3 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 overflow-x-auto">
+        <div className="flex items-center justify-between md:justify-end gap-2 sm:gap-3 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 overflow-x-auto min-w-0 flex-1 md:flex-initial">
           <div className="flex items-center gap-1.5 shrink-0">
             <button
               onClick={onTogglePlayPause}
@@ -248,7 +248,7 @@ export const Header: React.FC<HeaderProps> = ({
             step={1}
             value={elapsedSec}
             onChange={(e) => onSeek(Number(e.target.value))}
-            className="flex-1 min-w-[60px] max-w-[120px] sm:max-w-[150px] h-1.5 bg-slate-300 rounded appearance-none cursor-pointer accent-slate-900"
+            className="flex-1 min-w-[50px] max-w-[120px] sm:max-w-[150px] h-1.5 bg-slate-300 rounded appearance-none cursor-pointer accent-slate-900 shrink-0"
           />
 
           {currentEvent && (

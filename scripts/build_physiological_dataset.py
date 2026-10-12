@@ -72,11 +72,11 @@ def generate_wave(total_sec, map_fn, hr_fn, vpp_fn, fs=100):
         cur += n
     return wave
 
-# DEFINIÇÃO DOS 6 CASOS
+# DEFINIÇÃO DOS 6 CASOS (Apresentação clínica cega sem indução de desfecho)
 CASES_METADATA = [
     {
         "caseid": 7,
-        "title": "Caso #07 - Normotenso com Instabilidade Oculta (HPI ~80% • Queda aos 10 min)",
+        "title": "Caso #07 - Paciente Idoso Hipertenso em Hemicolectomia",
         "op": "Hemicolectomia Direta / Lobectomia",
         "age": 72,
         "gender": "M",
@@ -90,8 +90,8 @@ CASES_METADATA = [
         "transfusion_units": 0,
         "vasopressors": "Efedrina 10 mg (resgate)",
         "fluids": "Cristaloides 700 mL",
-        "scenario": "Paciente NORMOTENSO (PAM 83 mmHg) no início. A Kaline IA detecta instabilidade oculta na morfometria arterial (VPP elevada de 18.5%, contratilidade reduzida e complacência baixa em idoso hipertenso) emitindo HPI de ~80-84%. Aos 10 minutos a PAM cruza o limiar crítico de 65 mmHg.",
-        "risk_profile": "Alerta Precoce (+10 min • HPI 80-85%)",
+        "scenario": "Paciente masculino de 72 anos, hipertenso e diabético sob anestesia geral balanceada e ventilação mecânica para hemicolectomia direita. Registro contínuo invasivo da pressão arterial radial (VitalDB SNUADC/ART 100 Hz).",
+        "risk_profile": "Cirurgia Abdominal / Alto Risco (ASA III)",
         "source": "VitalDB SNUADC/ART 100 Hz",
         "total_sec": 720,
         "map_fn": lambda t: (83.0 - (t / 420.0) * 2.0) if t < 420 else ((81.0 - ((t - 420.0) / 180.0) * 19.5) if t < 600 else (61.5 + 1.2 * np.sin(t * 0.05))),
@@ -109,19 +109,19 @@ CASES_METADATA = [
                 "time_sec": 240,
                 "label": "Ventilação Mecânica / VPP",
                 "type": "fluid",
-                "details": "Intubação orotraqueal e início da ventilação com pressão positiva (VPP = 18.5%)."
+                "details": "Intubação orotraqueal e início da ventilação com pressão positiva."
             },
             {
                 "time_sec": 420,
-                "label": "Alerta Precoce Kaline IA",
+                "label": "Ponto 1 Aula",
                 "type": "hpi_alert",
-                "details": "HPI atinge 82% prevendo hipotensão iminente em 10 minutos (PAM ainda em 81 mmHg)."
+                "details": "Marco avaliativo 1: análise da dinâmica arterial e morfometria sob ventilação."
             },
             {
                 "time_sec": 600,
-                "label": "Queda Crítica PAM < 65 mmHg",
+                "label": "Ponto 2 Aula",
                 "type": "hypotension",
-                "details": "PAM atinge 61.5 mmHg (Hipotensão confirmada exatamente aos 10 minutos)."
+                "details": "Marco avaliativo 2: avaliação hemodinâmica e estabilidade pressórica."
             },
             {
                 "time_sec": 660,
@@ -134,7 +134,7 @@ CASES_METADATA = [
     },
     {
         "caseid": 20,
-        "title": "Caso #20 - Instabilidade Precoce & Queda aos 6 min (Lobectomia)",
+        "title": "Caso #20 - Ressecção Pulmonar sob Toracotomia (Lobectomia)",
         "op": "Lobectomia Pulmonar",
         "age": 75,
         "gender": "M",
@@ -148,8 +148,8 @@ CASES_METADATA = [
         "transfusion_units": 2,
         "vasopressors": "Fenilefrina 250 mcg + Efedrina 5 mg",
         "fluids": "Cristaloides 2.300 mL + Coloides 500 mL",
-        "scenario": "Início normotenso (PAM 80 mmHg) com rápida transição para hipotensão severa (PAM 55 mmHg) a partir dos 6 minutos devido a sangramento torácico agudo de 800 mL e resposta vasodilatadora.",
-        "risk_profile": "Queda Intermediária (+6 min • EBL 800 mL)",
+        "scenario": "Paciente masculino de 75 anos submetido a toracotomia e lobectomia pulmonar com monitorização invasiva contínua da pressão arterial. Procedimento com sangramento cirúrgico e necessidade de reposição volêmica.",
+        "risk_profile": "Cirurgia Torácica Aberta (ASA II)",
         "source": "VitalDB SNUADC/ART 100 Hz",
         "total_sec": 600,
         "map_fn": lambda t: (80.0 - (t / 180.0) * 2.0) if t < 180 else ((78.0 - ((t - 180.0) / 180.0) * 23.0) if t < 360 else ((55.0 + ((t - 360.0) / 120.0) * 3.0) if t < 480 else (58.0 + ((t - 480.0) / 120.0) * 12.0))),
@@ -165,21 +165,21 @@ CASES_METADATA = [
             },
             {
                 "time_sec": 210,
-                "label": "Sangramento Torácico Agudo",
+                "label": "Sangramento Torácico",
                 "type": "bleeding",
                 "details": "Início de sangramento intraoperatório torácico expressivo (EBL 800 mL)."
             },
             {
                 "time_sec": 270,
-                "label": "Alerta Crítico Kaline IA",
+                "label": "Avaliação Dinâmica de Volume",
                 "type": "hpi_alert",
-                "details": "HPI sobe para 88% prevendo descompensação aguda."
+                "details": "Análise da contratilidade e reflexão aórtica sob perdas volêmicas."
             },
             {
                 "time_sec": 360,
-                "label": "Hipotensão Severa (PAM 55)",
+                "label": "Alteração Hemodinâmica Aguda",
                 "type": "hypotension",
-                "details": "Queda abrupta da PAM para 55 mmHg aos 6 minutos."
+                "details": "Registro de alteração tensional durante o tempo cirúrgico."
             },
             {
                 "time_sec": 420,
@@ -198,8 +198,8 @@ CASES_METADATA = [
     },
     {
         "caseid": 12,
-        "title": "Caso #12 - Hipotensão Crítica Aguda (+5 min • Choque EBL 1300 mL)",
-        "op": "Transplante Hepático / Cirurgia de Choque",
+        "title": "Caso #12 - Procedimento Abdominal com Risco Volêmico",
+        "op": "Cirurgia Hepato-biliar / Transplante",
         "age": 69,
         "gender": "F",
         "asa": 3,
@@ -212,8 +212,8 @@ CASES_METADATA = [
         "transfusion_units": 0,
         "vasopressors": "Efedrina 20 mg",
         "fluids": "Cristaloides 4.800 mL + Coloides 200 mL",
-        "scenario": "Início em PAM 77 mmHg com colapso abrupto para PAM 51 mmHg em 4-5 minutos devido a sangramento intraoperatório maciço de 1.300 mL registrado no VitalDB.",
-        "risk_profile": "Risco Iminente (+5 min • Choque Agudo)",
+        "scenario": "Paciente feminina de 69 anos, cardiopata com anemia pré-operatória, em cirurgia de grande porte e alta complexidade volêmica. Monitorização contínua invasiva com perdas sanguíneas intraoperatórias expressivas.",
+        "risk_profile": "Alta Complexidade Cirúrgica (ASA III)",
         "source": "VitalDB SNUADC/ART 100 Hz",
         "total_sec": 600,
         "map_fn": lambda t: 77.0 if t < 90 else ((77.0 - ((t - 90.0) / 190.0) * 26.0) if t < 280 else ((51.0 + ((t - 280.0) / 120.0) * 2.0) if t < 400 else (53.0 + ((t - 400.0) / 200.0) * 11.0))),
@@ -222,34 +222,34 @@ CASES_METADATA = [
         "events": [
             {
                 "time_sec": 60,
-                "label": "Sangramento Vascular Maciço",
+                "label": "Perda Hemática Intraoperatória",
                 "type": "bleeding",
-                "details": "Hemorragia aguda de grande volume (perda total estimada em 1.300 mL)."
+                "details": "Hemorragia vascular aguda de grande volume (EBL maciço > 1.300 mL)."
             },
             {
                 "time_sec": 180,
-                "label": "Alerta de Choque Iminente",
+                "label": "Avaliação de Perfusão e Pré-carga",
                 "type": "hpi_alert",
-                "details": "HPI atinge 95% indicando falência hemodinâmica iminente."
+                "details": "Monitorização da contratilidade e reflexão periférica."
             },
             {
                 "time_sec": 280,
-                "label": "Colapso Hemodinâmico (PAM 51)",
+                "label": "Instabilidade Hemodinâmica Grave",
                 "type": "hypotension",
-                "details": "PAM cai para 51 mmHg (choque hipovolêmico grave)."
+                "details": "Descompensação tensional acentuada durante manipulação vascular."
             },
             {
                 "time_sec": 340,
                 "label": "Ressuscitação & Vasopressor",
                 "type": "vasopressor",
                 "drug_dose": "Efedrina 20 mg + 4.800 mL Cristaloides",
-                "details": "Infusão agressiva de volume e inotrópico para reversão do choque."
+                "details": "Infusão agressiva de volume e inotrópico para suporte circulatório."
             }
         ]
     },
     {
         "caseid": 1,
-        "title": "Caso #01 - Normovolemia & Estabilidade Sustentada (Ressecção Retal)",
+        "title": "Caso #01 - Ressecção Colorretal em Paciente Idoso",
         "op": "Ressecção Anterior de Reto",
         "age": 77,
         "gender": "M",
@@ -263,8 +263,8 @@ CASES_METADATA = [
         "transfusion_units": 0,
         "vasopressors": "Efedrina 10 mg",
         "fluids": "Cristaloides 350 mL",
-        "scenario": "Paciente normotenso e estável (PAM 85 mmHg) durante todo o procedimento, validando a alta especificidade da Kaline IA (ausência de alarmes falsos, HPI < 15%).",
-        "risk_profile": "Estável / Normotenso (Controle Negativo)",
+        "scenario": "Paciente masculino de 77 anos submetido a cirurgia colorretal eletiva sob anestesia geral balanceada inalatória e monitorização por linha arterial radial.",
+        "risk_profile": "Cirurgia Colorretal Eletiva (ASA II)",
         "source": "VitalDB SNUADC/ART 100 Hz",
         "total_sec": 600,
         "map_fn": lambda t: 85.0 + 1.2 * np.sin(t / 40.0),
@@ -273,27 +273,27 @@ CASES_METADATA = [
         "events": [
             {
                 "time_sec": 60,
-                "label": "Manutenção Anestésica Estável",
+                "label": "Manutenção Anestésica",
                 "type": "induction",
-                "details": "Plano anestésico equilibrado (Sevoflurano 2% + Remifentanil)."
+                "details": "Plano anestésico balanceado (Sevoflurano 2% + Remifentanil)."
             },
             {
                 "time_sec": 300,
                 "label": "Incisão Cirúrgica",
                 "type": "incision",
-                "details": "Início da ressecção anterior retal sem instabilidade."
+                "details": "Início da ressecção anterior retal e dissecção pélvica."
             },
             {
                 "time_sec": 480,
-                "label": "Estabilidade Validada",
+                "label": "Monitorização Hemodinâmica",
                 "type": "fluid",
-                "details": "Kaline IA confirma estabilidade hemodinâmica (HPI < 15%, sem alarmes falsos)."
+                "details": "Acompanhamento contínuo dos parâmetros hemodinâmicos da linha arterial."
             }
         ]
     },
     {
         "caseid": 4,
-        "title": "Caso #04 - VPP Oscilante com Compensação Hemodinâmica (Gastrectomia)",
+        "title": "Caso #04 - Gastrectomia Distal em Paciente Oncológico",
         "op": "Gastrectomia Distal",
         "age": 74,
         "gender": "M",
@@ -307,8 +307,8 @@ CASES_METADATA = [
         "transfusion_units": 0,
         "vasopressors": "Efedrina 50 mg",
         "fluids": "Cristaloides 2.700 mL",
-        "scenario": "Variação da Pressão de Pulso moderada com tônus vascular preservado (PAM 84 mmHg). A IA mantém score controlado sem falsos alertas de colapso.",
-        "risk_profile": "Responsivo a Volume Compensado",
+        "scenario": "Paciente de 74 anos em gastrectomia distal. Monitorização arterial invasiva contínua durante dissecção gástrica e reposição volêmica guiada por metas.",
+        "risk_profile": "Cirurgia Oncológica Gástrica (ASA II)",
         "source": "VitalDB SNUADC/ART 100 Hz",
         "total_sec": 600,
         "map_fn": lambda t: 84.0 + 1.8 * np.sin(t / 45.0),
@@ -317,28 +317,28 @@ CASES_METADATA = [
         "events": [
             {
                 "time_sec": 120,
-                "label": "Ressuscitação Volêmica Dirigida",
+                "label": "Reposição Hídrica Guiada por Metas",
                 "type": "fluid",
-                "details": "Infusão volêmica guiada por metas (Cristaloides 2.700 mL)."
+                "details": "Infusão volêmica direcionada por metas de perfusão (Cristaloides 2.700 mL)."
             },
             {
                 "time_sec": 360,
-                "label": "Incisão e Dissecção Gástrica",
+                "label": "Incisão e Dissecção Cirúrgica",
                 "type": "incision",
-                "details": "Manipulação cirúrgica com resposta hemodinâmica compensada."
+                "details": "Manipulação cirúrgica com acompanhamento contínuo da pressão de pulso."
             },
             {
                 "time_sec": 540,
-                "label": "Efedrina Profilática",
+                "label": "Suporte Farmacológico",
                 "type": "vasopressor",
                 "drug_dose": "Efedrina 10 mg fracionada",
-                "details": "Manutenção do tônus arterial sem episódios hipotensivos."
+                "details": "Manutenção do tônus arterial durante dissecção linfonodal."
             }
         ]
     },
     {
         "caseid": 10,
-        "title": "Caso #10 - Monitorização Estável em Idoso Cardiopata (Laparotomia ASA III)",
+        "title": "Caso #10 - Laparotomia Exploradora em Idoso Cardiopata",
         "op": "Cirurgia Geral / Laparotomia",
         "age": 72,
         "gender": "M",
@@ -352,8 +352,8 @@ CASES_METADATA = [
         "transfusion_units": 0,
         "vasopressors": "Fenilefrina 500 mcg + Efedrina 20 mg",
         "fluids": "Cristaloides 1.100 mL",
-        "scenario": "Paciente idoso com comorbidades e complacência vascular reduzida, mantendo PAM estável (86 mmHg) sem risco de descompensação sob titulação rigorosa de fenilefrina.",
-        "risk_profile": "Cardiopata Estável (ASA III)",
+        "scenario": "Paciente de 72 anos com antecedente de cardiopatia isquêmica sob laparotomia. Monitorização invasiva rigorosa de contratilidade e pós-carga vascular.",
+        "risk_profile": "Cardiopata sob Monitorização Invasiva (ASA III)",
         "source": "VitalDB SNUADC/ART 100 Hz",
         "total_sec": 600,
         "map_fn": lambda t: 86.0 + 1.5 * np.sin(t / 45.0),
@@ -370,11 +370,11 @@ CASES_METADATA = [
                 "time_sec": 300,
                 "label": "Perda Volêmica Cirúrgica",
                 "type": "bleeding",
-                "details": "Sangramento intraoperatório moderado de 200 mL registrado no VitalDB."
+                "details": "Sangramento intraoperatório de 200 mL registrado no VitalDB."
             },
             {
                 "time_sec": 450,
-                "label": "Titulação de Fenilefrina",
+                "label": "Titulação de Vasopressor",
                 "type": "vasopressor",
                 "drug_dose": "Fenilefrina 500 mcg em infusão",
                 "details": "Sustentação de pós-carga e estabilidade coronariana em paciente ASA III."
