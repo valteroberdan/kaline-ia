@@ -175,3 +175,37 @@ def test_synthetic_cases_are_explicitly_flagged():
     assert "Simulação Sintética" in c7["source"]
 
 
+def test_case_7_ponto_1_high_hpi():
+    """
+    REGRESSION TEST: Case 7 at 'Ponto 1 Aula' (t = 420s) must have high HPI (> 80%)
+    demonstrating early prediction of impending hypotension before critical drop at 10 min.
+    """
+    import json
+    from kaline_core.config import SAMPLE_DATA_DIR
+
+    case_file = SAMPLE_DATA_DIR / "case_7.json"
+    with open(case_file, "r") as f:
+        case_data = json.load(f)
+
+    ai = KalineAI()
+    wave = np.array(case_data["signals"]["art"])
+    fs = case_data["signals"].get("sampling_rate", 100)
+    pat = case_data.get("patient", {})
+
+    # Find Ponto 1 event dynamically from events list
+    p1_event = next(e for e in case_data.get("events", []) if "Ponto 1" in e["label"])
+    t_sec = p1_event["time_sec"]
+    idx = int(t_sec * fs)
+    win = wave[idx - 2000 : idx]
+
+    res = ai.predict_from_waveform(win, pat, fs=fs, is_simulation=True)
+    preds = res.get("predictions")
+    assert preds is not None, "Predictions must not be None for valid signal window"
+
+    hpi = preds["kaline_hpi_score"]
+    assert hpi > 80.0, f"Expected HPI > 80% at Ponto 1 da aula, got {hpi}%"
+    assert preds["alert_level"] == "CRITICAL"
+    assert preds["p_15min"] > 0.80 or preds["p_5min"] > 0.80
+
+
+

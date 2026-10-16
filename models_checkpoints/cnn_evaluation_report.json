@@ -1,0 +1,120 @@
+{
+  "model_architecture": "KalineResNet1D_Waveform_DeepNeuralNetwork",
+  "evaluated_independently": true,
+  "horizons": {
+    "5min": {
+      "auroc": 0.0,
+      "auroc_status": "Dispon\u00edvel",
+      "ci_95_auroc": [
+        0.0,
+        0.0
+      ],
+      "sensitivity": 0.0,
+      "specificity": 100.0,
+      "ppv": 0.0,
+      "npv": 66.7,
+      "f1": 0.0,
+      "mae_map_mmhg": 75.99,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 2,
+        "fn": 1
+      },
+      "roc_curve": [
+        {
+          "fpr": 0.0,
+          "tpr": 0.0
+        },
+        {
+          "fpr": 0.5,
+          "tpr": 0.0
+        },
+        {
+          "fpr": 1.0,
+          "tpr": 0.0
+        },
+        {
+          "fpr": 1.0,
+          "tpr": 1.0
+        }
+      ]
+    },
+    "10min": {
+      "auroc": 0.0,
+      "auroc_status": "Dispon\u00edvel",
+      "ci_95_auroc": [
+        0.0,
+        0.0
+      ],
+      "sensitivity": 0.0,
+      "specificity": 100.0,
+      "ppv": 0.0,
+      "npv": 75.0,
+      "f1": 0.0,
+      "mae_map_mmhg": 70.29,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 3,
+        "fn": 1
+      },
+      "roc_curve": [
+        {
+          "fpr": 0.0,
+          "tpr": 0.0
+        },
+        {
+          "fpr": 0.3333,
+          "tpr": 0.0
+        },
+        {
+          "fpr": 1.0,
+          "tpr": 0.0
+        },
+        {
+          "fpr": 1.0,
+          "tpr": 1.0
+        }
+      ]
+    },
+    "15min": {
+      "auroc": 0.0,
+      "auroc_status": "Dispon\u00edvel",
+      "ci_95_auroc": [
+        0.0,
+        0.0
+      ],
+      "sensitivity": 0.0,
+      "specificity": 100.0,
+      "ppv": 0.0,
+      "npv": 80.0,
+      "f1": 0.0,
+      "mae_map_mmhg": 65.99,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 4,
+        "fn": 1
+      },
+      "roc_curve": [
+        {
+          "fpr": 0.0,
+          "tpr": 0.0
+        },
+        {
+          "fpr": 0.25,
+          "tpr": 0.0
+        },
+        {
+          "fpr": 1.0,
+          "tpr": 0.0
+        },
+        {
+          "fpr": 1.0,
+          "tpr": 1.0
+        }
+      ]
+    }
+  }
+}

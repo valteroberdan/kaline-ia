@@ -47,7 +47,7 @@ async def websocket_monitor_endpoint(websocket: WebSocket, caseid: int):
                 "preop_cr": 1.0,
                 "opname": "Cirurgia Monitorada em Tempo Real",
             },
-            "signals": {"art": [], "sampling_rate": 100, "duration_sec": 600},
+            "signals": {"art": [], "sampling_rate": 100, "duration_sec": 1500},
         }
 
     raw_art = np.array(case_data.get("signals", {}).get("art", []), dtype=np.float32)
@@ -180,7 +180,12 @@ async def websocket_monitor_endpoint(websocket: WebSocket, caseid: int):
                             else:
                                 # Temporal smoothing across 20-second epochs (eliminates beat-to-beat flutter)
                                 smoothed_hpi_score = 0.80 * float(raw_hpi) + 0.20 * float(smoothed_hpi_score)
-                            new_prediction["predictions"]["kaline_hpi_score"] = round(smoothed_hpi_score, 0)
+
+                            new_hpi = round(smoothed_hpi_score, 0)
+                            new_prediction["predictions"]["kaline_hpi_score"] = new_hpi
+                            new_prediction["predictions"]["alert_level"] = (
+                                "CRITICAL" if new_hpi >= 75.0 else "WARNING" if new_hpi >= 50.0 else "NORMAL"
+                            )
 
                         new_prediction["predictions"]["hpi_window_sec"] = int(hpi_window_sec)
                         new_prediction["predictions"]["hpi_epoch_interval_sec"] = int(hpi_update_interval_sec)

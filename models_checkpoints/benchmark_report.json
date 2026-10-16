@@ -5,18 +5,23 @@
   "horizons": {
     "5min": {
       "kaline_metrics": {
-        "auroc": 0.997,
-        "sensitivity": 100.0,
-        "specificity": 95.2,
-        "ppv": 94.7,
-        "npv": 100.0,
-        "f1": 0.973,
-        "mae_map_mmhg": 5.1,
+        "auroc": 0.0,
+        "auroc_status": "Dispon\u00edvel",
+        "ci_95_auroc": [
+          0.0,
+          0.0
+        ],
+        "sensitivity": 0.0,
+        "specificity": 100.0,
+        "ppv": 0.0,
+        "npv": 66.7,
+        "f1": 0.0,
+        "mae_map_mmhg": 16.31,
         "confusion_matrix": {
-          "tp": 18,
-          "fp": 1,
-          "tn": 20,
-          "fn": 0
+          "tp": 0,
+          "fp": 0,
+          "tn": 2,
+          "fn": 1
         },
         "roc_curve": [
           {
@@ -24,40 +29,12 @@
             "tpr": 0.0
           },
           {
-            "fpr": 0.0,
-            "tpr": 0.0556
+            "fpr": 0.5,
+            "tpr": 0.0
           },
           {
-            "fpr": 0.0,
-            "tpr": 0.9444
-          },
-          {
-            "fpr": 0.0476,
-            "tpr": 0.9444
-          },
-          {
-            "fpr": 0.0476,
-            "tpr": 1.0
-          },
-          {
-            "fpr": 0.5714,
-            "tpr": 1.0
-          },
-          {
-            "fpr": 0.6667,
-            "tpr": 1.0
-          },
-          {
-            "fpr": 0.7143,
-            "tpr": 1.0
-          },
-          {
-            "fpr": 0.8095,
-            "tpr": 1.0
-          },
-          {
-            "fpr": 0.8571,
-            "tpr": 1.0
+            "fpr": 1.0,
+            "tpr": 0.0
           },
           {
             "fpr": 1.0,
@@ -76,18 +53,23 @@
     },
     "10min": {
       "kaline_metrics": {
-        "auroc": 1.0,
-        "sensitivity": 100.0,
+        "auroc": 0.0,
+        "auroc_status": "Dispon\u00edvel",
+        "ci_95_auroc": [
+          0.0,
+          0.0
+        ],
+        "sensitivity": 0.0,
         "specificity": 100.0,
-        "ppv": 100.0,
-        "npv": 100.0,
-        "f1": 1.0,
-        "mae_map_mmhg": 4.72,
+        "ppv": 0.0,
+        "npv": 75.0,
+        "f1": 0.0,
+        "mae_map_mmhg": 10.42,
         "confusion_matrix": {
-          "tp": 18,
+          "tp": 0,
           "fp": 0,
-          "tn": 26,
-          "fn": 0
+          "tn": 3,
+          "fn": 1
         },
         "roc_curve": [
           {
@@ -95,28 +77,12 @@
             "tpr": 0.0
           },
           {
-            "fpr": 0.0,
-            "tpr": 0.0556
+            "fpr": 0.3333,
+            "tpr": 0.0
           },
           {
-            "fpr": 0.0,
-            "tpr": 1.0
-          },
-          {
-            "fpr": 0.2308,
-            "tpr": 1.0
-          },
-          {
-            "fpr": 0.3077,
-            "tpr": 1.0
-          },
-          {
-            "fpr": 0.7308,
-            "tpr": 1.0
-          },
-          {
-            "fpr": 0.9231,
-            "tpr": 1.0
+            "fpr": 1.0,
+            "tpr": 0.0
           },
           {
             "fpr": 1.0,
@@ -135,18 +101,23 @@
     },
     "15min": {
       "kaline_metrics": {
-        "auroc": 0.974,
-        "sensitivity": 82.4,
-        "specificity": 95.0,
-        "ppv": 93.3,
-        "npv": 86.4,
-        "f1": 0.875,
-        "mae_map_mmhg": 6.53,
+        "auroc": 0.5,
+        "auroc_status": "Dispon\u00edvel",
+        "ci_95_auroc": [
+          0.0,
+          1.0
+        ],
+        "sensitivity": 0.0,
+        "specificity": 100.0,
+        "ppv": 0.0,
+        "npv": 80.0,
+        "f1": 0.0,
+        "mae_map_mmhg": 15.6,
         "confusion_matrix": {
-          "tp": 14,
-          "fp": 1,
-          "tn": 19,
-          "fn": 3
+          "tp": 0,
+          "fp": 0,
+          "tn": 4,
+          "fn": 1
         },
         "roc_curve": [
           {
@@ -154,27 +125,15 @@
             "tpr": 0.0
           },
           {
-            "fpr": 0.0,
-            "tpr": 0.0588
-          },
-          {
-            "fpr": 0.0,
-            "tpr": 0.7059
-          },
-          {
-            "fpr": 0.05,
-            "tpr": 0.7059
-          },
-          {
-            "fpr": 0.05,
-            "tpr": 0.9412
-          },
-          {
             "fpr": 0.25,
-            "tpr": 0.9412
+            "tpr": 0.0
           },
           {
-            "fpr": 0.25,
+            "fpr": 0.5,
+            "tpr": 0.0
+          },
+          {
+            "fpr": 0.5,
             "tpr": 1.0
           },
           {

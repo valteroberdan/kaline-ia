@@ -95,18 +95,18 @@ export const ClinicalTimeline: React.FC<ClinicalTimelineProps> = ({
                 Replay Interativo
               </span>
             </h4>
-            <p className="text-[11px] text-slate-500 font-mono truncate">
+            <p className="text-[11px] text-slate-500 font-mono">
               Clique em qualquer marco abaixo para navegar diretamente ao instante do evento
             </p>
           </div>
         </div>
 
         {currentEvent && (
-          <div className="flex items-center gap-1.5 text-xs font-mono bg-slate-900 text-white px-3 py-1 rounded-lg shadow-xs shrink-0 max-w-full sm:max-w-md min-w-0 overflow-hidden">
+          <div className="flex items-center gap-1.5 text-xs font-mono bg-slate-900 text-white px-3 py-1.5 rounded-lg shadow-xs shrink-0 max-w-full">
             <span className="text-red-400 font-bold shrink-0">FASE ATUAL:</span>
-            <span className="font-bold truncate">{currentEvent.label}</span>
+            <span className="font-bold">{currentEvent.label}</span>
             {currentEvent.drug_dose && (
-              <span className="text-slate-300 hidden md:inline truncate">({currentEvent.drug_dose})</span>
+              <span className="text-slate-300">({currentEvent.drug_dose})</span>
             )}
           </div>
         )}
@@ -173,7 +173,7 @@ export const ClinicalTimeline: React.FC<ClinicalTimelineProps> = ({
             <button
               key={idx}
               onClick={() => onSeek(ev.time_sec)}
-              className={`text-left p-2.5 rounded-lg border transition-all cursor-pointer flex flex-col justify-between flex-1 min-w-[150px] max-w-full overflow-hidden ${
+              className={`text-left p-3 rounded-lg border transition-all cursor-pointer flex flex-col justify-between flex-1 min-w-[175px] max-w-full ${
                 isCurrent
                   ? 'ring-2 ring-slate-900 border-slate-900 shadow-md bg-white'
                   : getEventBorderColor(ev.type)
@@ -186,17 +186,17 @@ export const ClinicalTimeline: React.FC<ClinicalTimelineProps> = ({
                 <span className="shrink-0">{getEventIcon(ev.type)}</span>
               </div>
 
-              <div className="w-full min-w-0 overflow-hidden">
-                <div className="text-xs font-bold leading-tight truncate w-full" title={ev.label}>
+              <div className="w-full min-w-0 space-y-1">
+                <div className="text-xs font-bold leading-tight break-words" title={ev.label}>
                   {ev.label}
                 </div>
                 {ev.drug_dose && (
-                  <div className="text-[10px] text-slate-600 font-mono truncate mt-0.5 w-full" title={ev.drug_dose}>
+                  <div className="text-[10px] text-slate-700 font-mono break-words leading-snug" title={ev.drug_dose}>
                     {ev.drug_dose}
                   </div>
                 )}
                 {ev.details && (
-                  <div className="text-[9px] text-slate-500 line-clamp-2 mt-0.5 leading-tight w-full" title={ev.details}>
+                  <div className="text-[9.5px] text-slate-500 leading-snug break-words" title={ev.details}>
                     {ev.details}
                   </div>
                 )}

@@ -135,7 +135,7 @@ export const ExplainabilityCard: React.FC<ExplainabilityCardProps> = ({
               className="flex flex-col sm:flex-row sm:items-center justify-between text-xs bg-white p-2.5 rounded border border-slate-200 gap-2 min-w-0 overflow-hidden"
             >
               <div className="flex items-center gap-2 min-w-0">
-                <span className="font-semibold text-slate-900 truncate">{attr.feature}</span>
+                <span className="font-semibold text-slate-900 break-words">{attr.feature}</span>
                 <span className="text-slate-600 font-mono bg-slate-100 px-1.5 py-0.5 rounded text-[11px] shrink-0">
                   {attr.value}
                 </span>

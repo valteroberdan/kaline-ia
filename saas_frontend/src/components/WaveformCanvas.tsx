@@ -192,10 +192,6 @@ export const WaveformCanvas: React.FC<WaveformCanvasProps> = ({
               ARTÉRIA [100 Hz]
             </span>
           </div>
-
-          <span className="text-[10px] font-mono text-red-700 bg-red-50 px-2 py-0.5 rounded border border-red-200">
-            Linha Vermelha: Limiar PAM &lt; 65 mmHg
-          </span>
         </div>
 
         {/* Live numerical overlay */}

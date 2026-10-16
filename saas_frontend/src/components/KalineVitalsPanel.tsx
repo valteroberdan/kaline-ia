@@ -10,7 +10,6 @@ export const KalineVitalsPanel: React.FC<KalineVitalsPanelProps> = ({ vitals }) 
   const { sbp, dbp, map, hr, ppv, dp_dt_max, pp } = vitals;
 
   const isHypotensive = map < 65.0;
-  const isPreloadHigh = ppv > 13.0;
   const isInotropyLow = dp_dt_max < 750.0;
 
   return (
@@ -78,28 +77,22 @@ export const KalineVitalsPanel: React.FC<KalineVitalsPanelProps> = ({ vitals }) 
       </div>
 
       {/* 4. VPP (Variação da Pressão de Pulso) */}
-      <div
-        className={`rounded-xl p-3 border flex flex-col justify-between transition-all shadow-xs min-w-0 overflow-hidden ${
-          isPreloadHigh
-            ? 'bg-amber-50 border-amber-300 text-amber-950'
-            : 'bg-white border-slate-200 text-slate-900'
-        }`}
-      >
+      <div className="bg-white border border-slate-200 rounded-xl p-3 flex flex-col justify-between shadow-xs min-w-0 overflow-hidden">
         <div className="flex items-center justify-between text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500 min-w-0">
           <span className="truncate">VPP (PPV)</span>
-          <Wind className={`h-3.5 w-3.5 shrink-0 ${isPreloadHigh ? 'text-amber-600' : 'text-slate-400'}`} />
+          <Wind className="h-3.5 w-3.5 text-slate-400 shrink-0" />
         </div>
         <div className="my-1 min-w-0">
-          <div className={`text-2xl sm:text-3xl font-black font-mono tracking-tight truncate ${isPreloadHigh ? 'text-amber-700' : 'text-slate-900'}`}>
+          <div className="text-2xl sm:text-3xl font-black font-mono text-slate-900 tracking-tight truncate">
             {ppv.toFixed(1)}
             <span className="text-xs font-normal text-slate-500 ml-0.5">%</span>
           </div>
           <span className="text-[10px] font-mono text-slate-500 truncate block">Variação Resp.</span>
         </div>
-        <div className="text-[10px] border-t border-slate-100 pt-1 font-mono flex justify-between min-w-0">
-          <span className="text-slate-500 truncate">Alvo &le;13%</span>
-          <span className={`shrink-0 ${isPreloadHigh ? 'text-amber-700 font-bold' : 'text-slate-600'}`}>
-            {isPreloadHigh ? 'RESPONDE' : 'ESTÁVEL'}
+        <div className="text-[10px] text-slate-500 border-t border-slate-100 pt-1 font-mono flex justify-between min-w-0">
+          <span className="truncate">Alvo &le;13%</span>
+          <span className="shrink-0 text-slate-600 font-mono">
+            {ppv > 13.0 ? 'RESPONDE' : 'ESTÁVEL'}
           </span>
         </div>
       </div>

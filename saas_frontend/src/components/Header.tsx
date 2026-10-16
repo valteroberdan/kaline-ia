@@ -237,7 +237,7 @@ export const Header: React.FC<HeaderProps> = ({
           <input
             type="range"
             min={0}
-            max={totalSec || 600}
+            max={totalSec || 1500}
             step={1}
             value={elapsedSec}
             onChange={(e) => onSeek(Number(e.target.value))}
@@ -247,7 +247,7 @@ export const Header: React.FC<HeaderProps> = ({
           {currentEvent && (
             <div className="hidden lg:flex items-center gap-1 font-mono text-[10px] bg-red-100 text-red-800 px-2 py-0.5 rounded border border-red-200 shrink-0">
               <span className="text-red-600 font-bold">Fase:</span>
-              <span className="font-bold truncate max-w-[130px]">{currentEvent.label}</span>
+              <span className="font-bold">{currentEvent.label}</span>
             </div>
           )}
 

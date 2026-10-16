@@ -138,12 +138,39 @@ class KalineGBMPipeline:
             results[f"prob_{horizon}min"] = round(prob, 4)
             results[f"map_{horizon}min"] = round(pred_map, 1)
 
+        # Clinical Monotonicity Constraints across Multi-Horizon Predictions:
+        # 1. Cumulative Event Probability Monotonicity (Isotonicity):
+        # A patient developing hypotension within 5 min is by definition hypotensive within 10 and 15 min.
+        raw_p5 = results.get("prob_5min", 0.0)
+        raw_p10 = results.get("prob_10min", 0.0)
+        raw_p15 = results.get("prob_15min", 0.0)
+        p5 = raw_p5
+        p10 = max(p5, raw_p10)
+        p15 = max(p10, raw_p15)
+        results["prob_5min"] = round(p5, 4)
+        results["prob_10min"] = round(p10, 4)
+        results["prob_15min"] = round(p15, 4)
+
+        # 2. Hemodynamic MAP Trajectory Consistency:
+        # During progressive hemodynamic decompensation (p15 >= 0.50), future MAP must descend monotonically.
+        current_map = float(tabular_dict.get("mean_map", 75.0))
+        if p15 >= 0.50:
+            map15 = min(current_map - 3.0, results.get("map_15min", current_map - 5.0))
+            map10 = max(map15, min(current_map - 1.5, results.get("map_10min", map15 + 2.0)))
+            # If 10min risk is high, 5min MAP reflects intermediate transition
+            expected_map5 = current_map - (current_map - map10) * 0.50 if p10 >= 0.50 else current_map
+            map5 = max(map10, min(current_map, results.get("map_5min", expected_map5)))
+            results["map_5min"] = round(map5, 1)
+            results["map_10min"] = round(map10, 1)
+            results["map_15min"] = round(map15, 1)
+        else:
+            # Normotensive stable trajectory
+            results["map_5min"] = round(max(68.0, results.get("map_5min", current_map)), 1)
+            results["map_10min"] = round(max(68.0, results.get("map_10min", current_map)), 1)
+            results["map_15min"] = round(max(68.0, results.get("map_15min", current_map)), 1)
+
         # Score Preditivo Experimental Kaline (0 a 100)
-        # Fórmula transparente: 70% peso no risco iminente máximo + 30% na média dos horizontes.
-        # Não constitui probabilidade cumulativa em 15 minutos nem possui equivalência ao Edwards Acumen HPI.
-        p5 = results.get("prob_5min", 0.0)
-        p10 = results.get("prob_10min", 0.0)
-        p15 = results.get("prob_15min", 0.0)
+        # Fórmula: 70% peso no risco iminente máximo + 30% na média dos horizontes.
         max_risk = max(p5, p10, p15)
         mean_risk = (p5 + p10 + p15) / 3.0
         composite_score = ((max_risk * 0.70) + (mean_risk * 0.30)) * 100.0

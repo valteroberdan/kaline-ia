@@ -128,13 +128,13 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
                             </span>
                           )}
                         </div>
-                        <h3 className="text-base font-bold text-slate-900 mt-1 leading-snug truncate" title={c.op}>
+                        <h3 className="text-base font-bold text-slate-900 mt-1 leading-snug break-words">
                           {c.op}
                         </h3>
                       </div>
 
                       <span
-                        className={`text-[10px] font-mono px-2 py-0.5 rounded border shrink-0 text-right max-w-[140px] sm:max-w-[170px] truncate ${badgeStyle}`}
+                        className={`text-[10px] font-mono px-2 py-0.5 rounded border shrink-0 text-right ${badgeStyle}`}
                         title={badgeText}
                       >
                         {badgeText}
@@ -208,7 +208,7 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
                         {c.vasopressors && (
                           <div className="bg-white p-1.5 rounded border border-slate-200 flex items-center justify-between gap-1.5 min-w-0 overflow-hidden">
                             <span className="text-slate-500 text-[9px] uppercase font-bold shrink-0">Vasopressor</span>
-                            <span className="font-bold text-slate-800 truncate text-[10px] min-w-0 text-right flex-1" title={c.vasopressors}>
+                            <span className="font-bold text-slate-800 text-[10px] min-w-0 text-right flex-1 break-words" title={c.vasopressors}>
                               {c.vasopressors}
                             </span>
                           </div>
@@ -218,8 +218,8 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
 
                     {/* Timeline of Simulated or Real Clinical Events */}
                     {c.events && c.events.length > 0 && (
-                      <div className="space-y-1.5 bg-slate-50 border border-slate-200 rounded-lg p-2.5 min-w-0 overflow-hidden">
-                        <span className="text-[10px] font-mono text-slate-500 uppercase font-bold flex items-center gap-1 truncate">
+                      <div className="space-y-1.5 bg-slate-50 border border-slate-200 rounded-lg p-2.5 min-w-0">
+                        <span className="text-[10px] font-mono text-slate-500 uppercase font-bold flex items-center gap-1">
                           <Clock className="h-3 w-3 text-slate-600 shrink-0" />
                           <span>{c.is_synthetic_simulation === false ? 'Marcos Clínicos Hospitalares (VitalDB):' : 'Marcos Clínicos Simulados:'}</span>
                         </span>
@@ -229,13 +229,13 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
                               <span className="bg-slate-200 text-slate-700 px-1 py-0.2 rounded text-[10px] font-bold shrink-0">
                                 {Math.floor(ev.time_sec / 60)}:{(ev.time_sec % 60).toString().padStart(2, '0')}
                               </span>
-                              <span className="text-slate-800 truncate min-w-0 flex-1" title={ev.label}>
+                              <span className="text-slate-800 break-words min-w-0 flex-1" title={ev.label}>
                                 {ev.label}
                               </span>
                             </div>
                           ))}
                           {c.events.length > 3 && (
-                            <div className="text-[10px] text-slate-500 font-mono italic truncate">
+                            <div className="text-[10px] text-slate-500 font-mono italic">
                               + {c.events.length - 3} outros marcos registrados
                             </div>
                           )}
@@ -253,7 +253,7 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
                         <div className="text-emerald-800 text-[10px]">
                           Canal: <strong>{c.provenance_metadata.channel}</strong> • Intervalo: {c.provenance_metadata.original_interval_sec?.[0]}s - {c.provenance_metadata.original_interval_sec?.[1]}s
                         </div>
-                        <div className="text-slate-500 text-[9px] truncate" title={c.provenance_metadata.raw_signal_sha256}>
+                        <div className="text-slate-500 text-[9px] break-all" title={c.provenance_metadata.raw_signal_sha256}>
                           SHA256: {c.provenance_metadata.raw_signal_sha256}
                         </div>
                       </div>
@@ -264,7 +264,7 @@ export const CaseSelectionView: React.FC<CaseSelectionViewProps> = ({
                       <span className="text-[10px] font-mono text-slate-400 uppercase font-bold block">
                         Cenário da Linha Arterial:
                       </span>
-                      <p className="text-xs text-slate-600 leading-relaxed line-clamp-3" title={c.scenario}>
+                      <p className="text-xs text-slate-600 leading-relaxed break-words whitespace-normal" title={c.scenario}>
                         {c.scenario ||
                           'Registro contínuo intraoperatório com dados de morfometria arterial a 100 Hz.'}
                       </p>

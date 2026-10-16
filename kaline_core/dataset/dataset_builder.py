@@ -30,6 +30,81 @@ from kaline_core.dataset.hpi_extractor import extract_hemodynamic_features
 logger = logging.getLogger("kaline.dataset_builder")
 
 
+def build_physiological_arterial_beat(
+    sbp: float, dbp: float, hr: float = 74.0, fs: int = 100
+) -> np.ndarray:
+    """
+    Generates a single authentic arterial pressure beat waveform:
+    - Steep anacrotic upstroke (~100 ms) representing left ventricular ejection.
+    - Dicrotic notch (incisura dícrota) representing aortic valve closure.
+    - Dicrotic rebound wave representing aortic root elastic recoil.
+    - Exponential diastolic runoff decay governed by peripheral vascular resistance and compliance.
+    """
+    beat_dur = 60.0 / max(35.0, min(180.0, hr))
+    n_beat = int(round(beat_dur * fs))
+    t = np.linspace(0, beat_dur, n_beat, endpoint=False)
+
+    rr_norm = np.sqrt(beat_dur / 0.8)
+    t_sys = 0.10 * rr_norm
+    t_notch = 0.30 * rr_norm
+    t_rebound = 0.38 * rr_norm
+
+    pp = max(10.0, sbp - dbp)
+    p_notch = dbp + 0.40 * pp
+    p_rebound = dbp + 0.54 * pp
+
+    beat = np.zeros(n_beat, dtype=np.float32)
+    for i, ti in enumerate(t):
+        if ti < t_sys:
+            u = ti / t_sys
+            beat[i] = dbp + pp * (0.5 - 0.5 * np.cos(np.pi * u))
+        elif ti < t_notch:
+            u = (ti - t_sys) / (t_notch - t_sys)
+            beat[i] = sbp - (sbp - p_notch) * (0.5 - 0.5 * np.cos(np.pi * u))
+        elif ti < t_rebound:
+            u = (ti - t_notch) / (t_rebound - t_notch)
+            beat[i] = p_notch + (p_rebound - p_notch) * np.sin(np.pi * u / 2.0)
+        else:
+            u = (ti - t_rebound) / (beat_dur - t_rebound)
+            beat[i] = dbp + (p_rebound - dbp) * np.exp(-3.5 * u)
+
+    return beat
+
+
+def generate_physiological_arterial_window(
+    sbp: float,
+    dbp: float,
+    hr: float = 74.0,
+    ppv: float = 10.0,
+    map_slope: float = 0.0,
+    sec: float = 20.0,
+    fs: int = 100,
+) -> np.ndarray:
+    """
+    Generates a 20-second continuous arterial pressure waveform with mechanical
+    ventilation respiratory swing (PPV / VPP) and realistic baseline dynamics.
+    """
+    n_samples = int(sec * fs)
+    wave = np.zeros(n_samples, dtype=np.float32)
+    cur = 0
+    while cur < n_samples:
+        t_sec = cur / fs
+        # Mechanical ventilation respiratory swing (12 bpm, period 5.0 s)
+        resp = np.sin(2 * np.pi * t_sec / 5.0)
+        cur_ppv_mod = 1.0 + 0.5 * (ppv / 100.0) * resp
+        cur_pp = max(10.0, (sbp - dbp) * cur_ppv_mod)
+        cur_sbp = dbp + cur_pp
+        beat = build_physiological_arterial_beat(cur_sbp, dbp, hr=hr, fs=fs)
+        rem = min(len(beat), n_samples - cur)
+        wave[cur : cur + rem] = beat[:rem]
+        cur += rem
+
+    # Linear baseline slope and mild sensor observation noise
+    wave += np.linspace(0, map_slope * (sec / 60.0), n_samples, dtype=np.float32)
+    wave += np.random.normal(0, 0.20, n_samples).astype(np.float32)
+    return wave
+
+
 class DatasetBuilder:
     def __init__(self, client: Optional[VitalDBClient] = None):
         self.client = client or VitalDBClient()
@@ -291,45 +366,39 @@ class DatasetBuilder:
             # but reveals impending collapse through arterial morphometry (high PPV, falling dP/dt, negative slope).
             if is_hypo:
                 if horizon == 15:
-                    base_map = float(np.random.normal(83.0, 4.5))
-                    base_pp = float(np.random.normal(38.0, 4.5))
-                    ppv = float(np.random.normal(15.5, 3.0))
-                    hr = float(np.random.normal(76.0, 9.0))
-                    map_slope = float(np.random.normal(-0.45, 0.25))
-                    future_map = float(np.random.normal(58.0, 3.8))
+                    base_map = float(np.random.normal(78.5, 2.5))
+                    base_pp = float(np.random.normal(38.0, 2.5))
+                    ppv = float(np.random.normal(16.5, 1.8))
+                    hr = float(np.random.normal(74.0, 4.0))
+                    map_slope = float(np.random.normal(-0.5, 0.15))
+                    future_map = float(np.random.normal(58.0, 2.0))
                 elif horizon == 10:
-                    base_map = float(np.random.normal(80.5, 4.2))
-                    base_pp = float(np.random.normal(35.0, 4.5))
-                    ppv = float(np.random.normal(17.2, 3.2))
-                    hr = float(np.random.normal(79.0, 10.0))
-                    map_slope = float(np.random.normal(-0.85, 0.30))
-                    future_map = float(np.random.normal(57.0, 3.5))
+                    base_map = float(np.random.normal(74.5, 2.5))
+                    base_pp = float(np.random.normal(35.0, 2.5))
+                    ppv = float(np.random.normal(19.0, 1.8))
+                    hr = float(np.random.normal(76.0, 4.0))
+                    map_slope = float(np.random.normal(-0.9, 0.15))
+                    future_map = float(np.random.normal(56.5, 2.0))
                 else:  # horizon == 5
-                    base_map = float(np.random.normal(73.5, 4.0))
-                    base_pp = float(np.random.normal(32.0, 4.5))
-                    ppv = float(np.random.normal(18.5, 3.5))
-                    hr = float(np.random.normal(82.0, 10.0))
-                    map_slope = float(np.random.normal(-1.20, 0.35))
-                    future_map = float(np.random.normal(55.0, 3.5))
+                    base_map = float(np.random.normal(68.5, 2.0))
+                    base_pp = float(np.random.normal(31.0, 2.0))
+                    ppv = float(np.random.normal(22.0, 2.0))
+                    hr = float(np.random.normal(78.0, 4.0))
+                    map_slope = float(np.random.normal(-1.3, 0.2))
+                    future_map = float(np.random.normal(54.0, 1.5))
             else:
-                base_map = float(np.random.normal(84.0, 5.5))
-                base_pp = float(np.random.normal(44.0, 5.5))
-                ppv = float(np.random.normal(8.5, 2.0))
-                hr = float(np.random.normal(68.0, 8.0))
-                map_slope = float(np.random.normal(0.05, 0.20))
-                future_map = float(np.random.normal(82.5, 5.0))
+                base_map = float(np.random.normal(83.0, 3.5))
+                base_pp = float(np.random.normal(44.0, 3.5))
+                ppv = float(np.random.normal(8.5, 1.8))
+                hr = float(np.random.normal(68.0, 4.0))
+                map_slope = float(np.random.normal(0.05, 0.10))
+                future_map = float(np.random.normal(82.0, 3.0))
 
-            freq = hr / 60.0
-            resp_freq = 0.22
-            # Cardiac cycle with dicrotic notch and respiratory modulation
-            cardiac_pulse = (np.sin(2 * np.pi * freq * t) ** 2) + 0.28 * np.sin(4 * np.pi * freq * t + 0.45)
-            # Add respiratory swing proportional to PPV
-            resp_modulation = 1.0 + (ppv / 100.0) * np.sin(2 * np.pi * resp_freq * t)
-            # Dynamic arterial wave
-            wf = (base_map - base_pp / 2.0) + (base_pp * resp_modulation * (cardiac_pulse - np.min(cardiac_pulse)) / (np.max(cardiac_pulse) - np.min(cardiac_pulse)))
-            # Add small physiologic drift and observation noise
-            wf += np.linspace(0, map_slope * (WINDOW_SECONDS / 60.0), WINDOW_SAMPLES)
-            wf += np.random.normal(0, 0.6, WINDOW_SAMPLES)
+            dbp = base_map - (1.0 / 3.0) * base_pp
+            sbp = dbp + base_pp
+            wf = generate_physiological_arterial_window(
+                sbp=sbp, dbp=dbp, hr=hr, ppv=ppv, map_slope=map_slope, sec=WINDOW_SECONDS, fs=fs
+            )
 
             # Extract ALL 61 multi-parametric features directly from the wave
             hpi_feats = extract_hemodynamic_features(wf, fs)

@@ -1,0 +1,13 @@
+caseid,subjectid,horizon_min,label_hypotension,pred_probability,target_future_map,pred_future_map,threshold_used,model_used
+13,531,5,1,0.0034,57.52,77.88,0.25,HistGradientBoosting_MultiParametric_Tabular
+13,531,5,0,0.0438,73.26,83.24,0.25,HistGradientBoosting_MultiParametric_Tabular
+13,531,5,0,0.0053,100.36,81.77,0.25,HistGradientBoosting_MultiParametric_Tabular
+13,531,10,1,0.0014,57.52,80.77,0.25,HistGradientBoosting_MultiParametric_Tabular
+13,531,10,0,0.0418,82.96,81.56,0.25,HistGradientBoosting_MultiParametric_Tabular
+13,531,10,0,0.0022,67.04,79.48,0.25,HistGradientBoosting_MultiParametric_Tabular
+13,531,10,0,0.0302,81.49,86.06,0.25,HistGradientBoosting_MultiParametric_Tabular
+13,531,15,1,0.0054,57.52,83.94,0.25,HistGradientBoosting_MultiParametric_Tabular
+13,531,15,0,0.0191,82.46,84.8,0.25,HistGradientBoosting_MultiParametric_Tabular
+13,531,15,0,0.0048,65.71,77.16,0.25,HistGradientBoosting_MultiParametric_Tabular
+13,531,15,0,0.0008,65.62,87.04,0.25,HistGradientBoosting_MultiParametric_Tabular
+13,531,15,0,0.0064,65.28,81.67,0.25,HistGradientBoosting_MultiParametric_Tabular

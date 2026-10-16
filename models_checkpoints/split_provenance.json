@@ -1,0 +1,19 @@
+{
+  "dataset_source": "VitalDB Base Hospitalar Real",
+  "group_key": "subjectid",
+  "train_patients": [
+    1903,
+    2175,
+    5124,
+    5955
+  ],
+  "val_patients": [
+    491
+  ],
+  "test_patients": [
+    531
+  ],
+  "train_samples": 118,
+  "val_samples": 23,
+  "test_samples": 12
+}

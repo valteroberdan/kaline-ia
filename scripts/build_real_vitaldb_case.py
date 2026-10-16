@@ -20,7 +20,7 @@ from kaline_core.dataset.preprocessor import filter_arterial_waveform
 def build_real_vitaldb_case(
     caseid: int = 1,
     start_sec: float = 1530.0,
-    duration_sec: float = 600.0,
+    duration_sec: float = 1500.0,
     fs: int = 100,
     output_filename: str = "case_real_1.json",
 ) -> Dict[str, Any]:
@@ -65,7 +65,7 @@ def build_real_vitaldb_case(
             if first_dt is None and dt is not None:
                 first_dt = dt
             
-            # Compute relative time from start of this 10-minute segment if within bounds
+            # Compute relative time from start of this 25-minute segment if within bounds
             if dt is not None and first_dt is not None:
                 rel_sec = dt - first_dt
                 if start_sec <= rel_sec <= (start_sec + duration_sec):
@@ -77,24 +77,24 @@ def build_real_vitaldb_case(
                         "details": f"Registro temporal clínico documentado na ficha do centro cirúrgico (t={rel_sec:.0f}s pós-admissão)."
                     })
 
-    # If no hospital marker happened inside this exact 10 min window, record surgical status
+    # If no hospital marker happened inside this exact 25 min window, record surgical milestones
     if not events:
         events = [
             {
-                "time_sec": 60,
+                "time_sec": 180,
                 "label": "Manutenção Anestésica",
                 "type": "hospital_event",
                 "details": f"Segmento intraoperatório contínuo ({profile['opname']}) sob ventilação mecânica e monitorização arterial invasiva.",
             },
             {
-                "time_sec": 300,
-                "label": "Marco Avaliativo (5 min)",
+                "time_sec": 600,
+                "label": "Marco Avaliativo (10 min)",
                 "type": "assessment",
                 "details": "Avaliação morfométrica da curva arterial a 100 Hz e cálculo de predição hemodinâmica.",
             },
             {
-                "time_sec": 540,
-                "label": "Marco Avaliativo (9 min)",
+                "time_sec": 1200,
+                "label": "Marco Avaliativo (20 min)",
                 "type": "assessment",
                 "details": "Conferência da estabilidade da PAM e perfusão tecidual.",
             }
@@ -166,10 +166,17 @@ def build_real_vitaldb_case(
 
 
 if __name__ == "__main__":
-    # Generate Real Case 1
+    # Generate Real Case 1 (1500s = 25 min)
     build_real_vitaldb_case(
         caseid=1,
         start_sec=1530.0,
-        duration_sec=600.0,
+        duration_sec=1500.0,
         output_filename="case_1.json",
+    )
+    # Generate Real Case 20 (1500s = 25 min)
+    build_real_vitaldb_case(
+        caseid=20,
+        start_sec=1800.0,
+        duration_sec=1500.0,
+        output_filename="case_20.json",
     )

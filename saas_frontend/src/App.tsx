@@ -212,6 +212,9 @@ export const App: React.FC = () => {
               vitals={telemetry?.hemodynamic_vitals}
             />
 
+            {/* Sinais Vitais Numéricos & Fisiologia (6 Tiles) */}
+            <KalineVitalsPanel vitals={telemetry.hemodynamic_vitals} />
+
             {/* Linha do Tempo Cirúrgica Interativa VitalDB */}
             {currentCase?.events && (
               <ClinicalTimeline
@@ -221,9 +224,6 @@ export const App: React.FC = () => {
                 onSeek={handleSeek}
               />
             )}
-
-            {/* Sinais Vitais Numéricos (6 Tiles) */}
-            <KalineVitalsPanel vitals={telemetry.hemodynamic_vitals} />
 
             {/* Módulo Preditivo HPI & Projeção Contínua */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

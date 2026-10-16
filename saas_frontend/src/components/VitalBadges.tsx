@@ -85,29 +85,15 @@ export const VitalBadges: React.FC<VitalBadgesProps> = ({ vitals }) => {
       </div>
 
       {/* 4. PPV (Variação de Pressão de Pulso) */}
-      <div
-        className={`border rounded-2xl p-4 shadow-lg flex flex-col justify-between transition-all ${
-          ppv > 13.0
-            ? 'bg-amber-950/40 border-amber-500/60 text-amber-200'
-            : 'bg-[#0f172a] border-slate-800'
-        }`}
-      >
+      <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-4 shadow-lg flex flex-col justify-between transition-all">
         <div className="flex items-center justify-between text-slate-400">
-          <span
-            className={`text-xs font-mono font-bold uppercase tracking-wider ${
-              ppv > 13.0 ? 'text-amber-400' : 'text-cyan-400'
-            }`}
-          >
+          <span className="text-xs font-mono font-bold uppercase tracking-wider text-cyan-400">
             VPP (PPV)
           </span>
-          <Wind className={`h-4 w-4 ${ppv > 13.0 ? 'text-amber-400' : 'text-cyan-400'}`} />
+          <Wind className="h-4 w-4 text-cyan-400" />
         </div>
         <div className="my-1.5">
-          <div
-            className={`text-3xl font-black font-mono tracking-tight ${
-              ppv > 13.0 ? 'text-amber-400' : 'text-cyan-400'
-            }`}
-          >
+          <div className="text-3xl font-black font-mono tracking-tight text-cyan-400">
             {ppv.toFixed(1)}
             <span className="text-sm font-normal text-slate-400 ml-0.5">%</span>
           </div>

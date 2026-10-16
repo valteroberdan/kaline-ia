@@ -22,32 +22,66 @@
     "fluids": "Cristaloides 700 mL",
     "events": [
       {
-        "time_sec": 120,
+        "time_sec": 180,
         "label": "Indução Anestésica",
         "type": "induction",
         "drug_dose": "Propofol 140 mg + Fentanil 200 mcg + Rocurônio 50 mg",
-        "details": "Início da indução e perda do tônus simpático."
+        "details": "Início da indução e perda gradual do tônus simpático."
       },
       {
-        "time_sec": 240,
+        "time_sec": 300,
         "label": "Ventilação Mecânica / VPP",
         "type": "fluid",
         "details": "Intubação orotraqueal e início da ventilação com pressão positiva."
       },
       {
-        "time_sec": 420,
+        "time_sec": 480,
         "label": "Ponto 1 Aula",
         "type": "hpi_alert",
         "details": "Marco avaliativo 1: análise da dinâmica arterial e morfometria sob ventilação."
       },
       {
-        "time_sec": 600,
+        "time_sec": 1080,
         "label": "Ponto 2 Aula",
         "type": "hypotension",
-        "details": "Marco avaliativo 2: avaliação hemodinâmica e estabilidade pressórica."
+        "details": "Marco avaliativo 2: avaliação hemodinâmica e confirmação da hipotensão prevista."
       },
       {
-        "time_sec": 660,
+        "time_sec": 1200,
+        "label": "Intervenção Hemodinâmica",
+        "type": "vasopressor",
+        "drug_dose": "Efedrina 10 mg IV + 500 mL Cristaloide",
+        "details": "Administração de vasopressor e reposição volêmica para recuperação da PAM."
+      }
+    ],
+    "clinical_timeline": [
+      {
+        "time_sec": 180,
+        "label": "Indução Anestésica",
+        "type": "induction",
+        "drug_dose": "Propofol 140 mg + Fentanil 200 mcg + Rocurônio 50 mg",
+        "details": "Início da indução e perda gradual do tônus simpático."
+      },
+      {
+        "time_sec": 300,
+        "label": "Ventilação Mecânica / VPP",
+        "type": "fluid",
+        "details": "Intubação orotraqueal e início da ventilação com pressão positiva."
+      },
+      {
+        "time_sec": 480,
+        "label": "Ponto 1 Aula",
+        "type": "hpi_alert",
+        "details": "Marco avaliativo 1: análise da dinâmica arterial e morfometria sob ventilação."
+      },
+      {
+        "time_sec": 1080,
+        "label": "Ponto 2 Aula",
+        "type": "hypotension",
+        "details": "Marco avaliativo 2: avaliação hemodinâmica e confirmação da hipotensão prevista."
+      },
+      {
+        "time_sec": 1200,
         "label": "Intervenção Hemodinâmica",
         "type": "vasopressor",
         "drug_dose": "Efedrina 10 mg IV + 500 mL Cristaloide",
@@ -58,66 +92,84 @@
   {
     "caseid": 20,
     "title": "Caso Real #20 - Lung lobectomy (VitalDB)",
-    "op": "Lobectomia Pulmonar",
+    "op": "Lung lobectomy",
     "age": 75,
     "gender": "M",
     "asa": 2,
-    "bmi": 24.7,
+    "bmi": 20.3,
     "preop_htn": 1,
-    "preop_dm": 1,
+    "preop_dm": 0,
     "preop_hb": 11.8,
     "preop_cr": 1.1,
-    "scenario": "Paciente masculino de 75 anos, submetido a lobectomia pulmonar sob anestesia geral e ventilação monopulmonar. Traçado hemodinâmico real do transdutor arterial a 100 Hz (SNUADC/ART) registrado durante procedimento cirúrgico na coorte VitalDB.",
+    "scenario": "Paciente masculino de 75 anos submetido a toracotomia e lobectomia pulmonar com monitorização invasiva contínua da pressão arterial. Cenário de simulação fisiológica parametrizado com base no caso do VitalDB.",
     "risk_profile": "Cirurgia Torácica Aberta (ASA II)",
     "source": "Registro Clínico Real VitalDB (Seoul National University Hospital)",
     "is_synthetic_simulation": false,
     "provenance": "Gravação clínica real de monitorização invasiva por cateter arterial (SNUADC/ART a 100 Hz). Dados brutos hospitalares da coorte VitalDB.",
-    "ebl_ml": 800,
-    "transfusion_units": 2,
-    "vasopressors": "Fenilefrina 250 mcg + Efedrina 5 mg",
-    "fluids": "Cristaloides 2.300 mL + Coloides 500 mL",
+    "ebl_ml": 0,
+    "transfusion_units": 0,
+    "vasopressors": "",
+    "fluids": "",
     "events": [
       {
-        "time_sec": 60,
+        "time_sec": 180,
         "label": "Manutenção Anestésica",
         "type": "hospital_event",
         "details": "Segmento intraoperatório contínuo (Lung lobectomy) sob ventilação mecânica e monitorização arterial invasiva."
       },
       {
-        "time_sec": 300,
-        "label": "Marco Avaliativo (5 min)",
+        "time_sec": 600,
+        "label": "Marco Avaliativo (10 min)",
         "type": "assessment",
         "details": "Avaliação morfométrica da curva arterial a 100 Hz e cálculo de predição hemodinâmica."
       },
       {
-        "time_sec": 540,
-        "label": "Marco Avaliativo (9 min)",
+        "time_sec": 1200,
+        "label": "Marco Avaliativo (20 min)",
         "type": "assessment",
         "details": "Conferência da estabilidade da PAM e perfusão tecidual."
       }
     ],
-    "provenance_metadata": {
-      "channel": "SNUADC/ART",
-      "original_interval_sec": [
-        1950.0,
-        2550.0
-      ],
-      "duration_sec": 600.0,
-      "sampling_rate_hz": 100,
-      "total_samples": 60000,
-      "raw_signal_sha256": "71e2efdc79683b45d6a20eb8e6c2cf1bc25a24add8b56d8ea73fd8cddf191ca3",
-      "observed_vitals": {
-        "mean_sbp": 103.5,
-        "mean_dbp": 48.4,
-        "mean_map": 70.2
+    "clinical_timeline": [
+      {
+        "time_sec": 180,
+        "label": "Indução Anestésica",
+        "type": "induction",
+        "drug_dose": "Propofol + Rocurônio",
+        "details": "Indução rápida registrada no VitalDB."
       },
-      "transformations": [
-        "Extração nativa de sinal hospitalar via VitalFile",
-        "Seleção de janela contínua validada de 600.0s [1950.0s - 2550.0s]",
-        "Filtro passa-faixa Butterworth 0.5-40 Hz para atenuação de oscilações de linha base",
-        "Arredondamento para 2 casas decimais para serialização"
-      ]
-    }
+      {
+        "time_sec": 480,
+        "label": "Toracotomia & Incisão",
+        "type": "incision",
+        "details": "Abertura de cavidade torácica e dissecção hilar pulmonar."
+      },
+      {
+        "time_sec": 720,
+        "label": "Sangramento Torácico",
+        "type": "bleeding",
+        "details": "Início de sangramento intraoperatório torácico expressivo (EBL 800 mL)."
+      },
+      {
+        "time_sec": 960,
+        "label": "Avaliação Dinâmica de Volume",
+        "type": "hpi_alert",
+        "details": "Análise da contratilidade e reflexão aórtica sob perdas volêmicas."
+      },
+      {
+        "time_sec": 1140,
+        "label": "Alteração Hemodinâmica Aguda",
+        "type": "hypotension",
+        "details": "Registro de alteração tensional durante o tempo cirúrgico."
+      },
+      {
+        "time_sec": 1260,
+        "label": "Vasopressor & Transfusão",
+        "type": "vasopressor",
+        "drug_dose": "Fenilefrina 250 mcg + 2 CH",
+        "details": "Aporte de vasoconstritor arterial de ação rápida e transfusão de resgate."
+      }
+    ]
   },
   {
     "caseid": 12,
@@ -142,25 +194,64 @@
     "fluids": "Cristaloides 4.800 mL + Coloides 200 mL",
     "events": [
       {
-        "time_sec": 60,
+        "time_sec": 180,
+        "label": "Manipulação Hepato-biliar",
+        "type": "incision",
+        "details": "Início da dissecção vascular e manipulação do parênquima hepático."
+      },
+      {
+        "time_sec": 540,
         "label": "Perda Hemática Intraoperatória",
         "type": "bleeding",
         "details": "Hemorragia vascular aguda de grande volume (EBL maciço > 1.300 mL)."
       },
       {
-        "time_sec": 180,
+        "time_sec": 780,
         "label": "Avaliação de Perfusão e Pré-carga",
         "type": "hpi_alert",
         "details": "Monitorização da contratilidade e reflexão periférica."
       },
       {
-        "time_sec": 280,
+        "time_sec": 1020,
         "label": "Instabilidade Hemodinâmica Grave",
         "type": "hypotension",
         "details": "Descompensação tensional acentuada durante manipulação vascular."
       },
       {
-        "time_sec": 340,
+        "time_sec": 1140,
+        "label": "Ressuscitação & Vasopressor",
+        "type": "vasopressor",
+        "drug_dose": "Efedrina 20 mg + 4.800 mL Cristaloides",
+        "details": "Infusão agressiva de volume e inotrópico para suporte circulatório."
+      }
+    ],
+    "clinical_timeline": [
+      {
+        "time_sec": 180,
+        "label": "Manipulação Hepato-biliar",
+        "type": "incision",
+        "details": "Início da dissecção vascular e manipulação do parênquima hepático."
+      },
+      {
+        "time_sec": 540,
+        "label": "Perda Hemática Intraoperatória",
+        "type": "bleeding",
+        "details": "Hemorragia vascular aguda de grande volume (EBL maciço > 1.300 mL)."
+      },
+      {
+        "time_sec": 780,
+        "label": "Avaliação de Perfusão e Pré-carga",
+        "type": "hpi_alert",
+        "details": "Monitorização da contratilidade e reflexão periférica."
+      },
+      {
+        "time_sec": 1020,
+        "label": "Instabilidade Hemodinâmica Grave",
+        "type": "hypotension",
+        "details": "Descompensação tensional acentuada durante manipulação vascular."
+      },
+      {
+        "time_sec": 1140,
         "label": "Ressuscitação & Vasopressor",
         "type": "vasopressor",
         "drug_dose": "Efedrina 20 mg + 4.800 mL Cristaloides",
@@ -171,66 +262,64 @@
   {
     "caseid": 1,
     "title": "Caso Real #01 - Low anterior resection (VitalDB)",
-    "op": "Ressecção Anterior de Reto",
+    "op": "Low anterior resection",
     "age": 77,
     "gender": "M",
     "asa": 2,
-    "bmi": 23.0,
+    "bmi": 26.3,
     "preop_htn": 1,
     "preop_dm": 0,
-    "preop_hb": 12.5,
-    "preop_cr": 1.0,
-    "scenario": "Paciente masculino de 77 anos, submetido a ressecção anterior baixa (cirurgia colorretal) sob anestesia geral e ventilação mecânica. Registro clínico real do cateter arterial radial hospitalar a 100 Hz (SNUADC/ART) com proveniência criptográfica verificada.",
+    "preop_hb": 14.1,
+    "preop_cr": 0.82,
+    "scenario": "Paciente masculino de 77 anos submetido a cirurgia colorretal eletiva sob anestesia geral balanceada inalatória e monitorização por linha arterial radial. Cenário de simulação fisiológica parametrizado com base no perfil do VitalDB.",
     "risk_profile": "Cirurgia Colorretal Eletiva (ASA II)",
     "source": "Registro Clínico Real VitalDB (Seoul National University Hospital)",
     "is_synthetic_simulation": false,
     "provenance": "Gravação clínica real de monitorização invasiva por cateter arterial (SNUADC/ART a 100 Hz). Dados brutos hospitalares da coorte VitalDB.",
-    "ebl_ml": 50,
+    "ebl_ml": 0,
     "transfusion_units": 0,
-    "vasopressors": "Efedrina 10 mg",
-    "fluids": "Cristaloides 350 mL",
+    "vasopressors": "",
+    "fluids": "",
     "events": [
       {
-        "time_sec": 60,
+        "time_sec": 180,
         "label": "Manutenção Anestésica",
         "type": "hospital_event",
         "details": "Segmento intraoperatório contínuo (Low anterior resection) sob ventilação mecânica e monitorização arterial invasiva."
       },
       {
-        "time_sec": 300,
-        "label": "Marco Avaliativo (5 min)",
+        "time_sec": 600,
+        "label": "Marco Avaliativo (10 min)",
         "type": "assessment",
         "details": "Avaliação morfométrica da curva arterial a 100 Hz e cálculo de predição hemodinâmica."
       },
       {
-        "time_sec": 540,
-        "label": "Marco Avaliativo (9 min)",
+        "time_sec": 1200,
+        "label": "Marco Avaliativo (20 min)",
         "type": "assessment",
         "details": "Conferência da estabilidade da PAM e perfusão tecidual."
       }
     ],
-    "provenance_metadata": {
-      "channel": "SNUADC/ART",
-      "original_interval_sec": [
-        1530.0,
-        2130.0
-      ],
-      "duration_sec": 600.0,
-      "sampling_rate_hz": 100,
-      "total_samples": 60000,
-      "raw_signal_sha256": "cdc854bbf92a6dbec2ac301922c32a290bd53bd6d46f062cb5edd8e65756f897",
-      "observed_vitals": {
-        "mean_sbp": 91.1,
-        "mean_dbp": 39.6,
-        "mean_map": 59.3
+    "clinical_timeline": [
+      {
+        "time_sec": 180,
+        "label": "Manutenção Anestésica",
+        "type": "induction",
+        "details": "Plano anestésico balanceado (Sevoflurano 2% + Remifentanil)."
       },
-      "transformations": [
-        "Extração nativa de sinal hospitalar via VitalFile",
-        "Seleção de janela contínua validada de 600.0s [1530.0s - 2130.0s]",
-        "Filtro passa-faixa Butterworth 0.5-40 Hz para atenuação de oscilações de linha base",
-        "Arredondamento para 2 casas decimais para serialização"
-      ]
-    }
+      {
+        "time_sec": 600,
+        "label": "Incisão Cirúrgica",
+        "type": "incision",
+        "details": "Início da ressecção anterior retal e dissecção pélvica."
+      },
+      {
+        "time_sec": 1080,
+        "label": "Monitorização Hemodinâmica",
+        "type": "fluid",
+        "details": "Acompanhamento contínuo dos parâmetros hemodinâmicos da linha arterial."
+      }
+    ]
   },
   {
     "caseid": 4,
@@ -255,19 +344,40 @@
     "fluids": "Cristaloides 2.700 mL",
     "events": [
       {
-        "time_sec": 120,
+        "time_sec": 240,
         "label": "Reposição Hídrica Guiada por Metas",
         "type": "fluid",
         "details": "Infusão volêmica direcionada por metas de perfusão (Cristaloides 2.700 mL)."
       },
       {
-        "time_sec": 360,
+        "time_sec": 720,
         "label": "Incisão e Dissecção Cirúrgica",
         "type": "incision",
         "details": "Manipulação cirúrgica com acompanhamento contínuo da pressão de pulso."
       },
       {
-        "time_sec": 540,
+        "time_sec": 1140,
+        "label": "Suporte Farmacológico",
+        "type": "vasopressor",
+        "drug_dose": "Efedrina 10 mg fracionada",
+        "details": "Manutenção do tônus arterial durante dissecção linfonodal."
+      }
+    ],
+    "clinical_timeline": [
+      {
+        "time_sec": 240,
+        "label": "Reposição Hídrica Guiada por Metas",
+        "type": "fluid",
+        "details": "Infusão volêmica direcionada por metas de perfusão (Cristaloides 2.700 mL)."
+      },
+      {
+        "time_sec": 720,
+        "label": "Incisão e Dissecção Cirúrgica",
+        "type": "incision",
+        "details": "Manipulação cirúrgica com acompanhamento contínuo da pressão de pulso."
+      },
+      {
+        "time_sec": 1140,
         "label": "Suporte Farmacológico",
         "type": "vasopressor",
         "drug_dose": "Efedrina 10 mg fracionada",
@@ -298,19 +408,40 @@
     "fluids": "Cristaloides 1.100 mL",
     "events": [
       {
-        "time_sec": 90,
+        "time_sec": 210,
         "label": "Incisão Cirúrgica",
         "type": "incision",
         "details": "Abertura de parede abdominal / laparotomia."
       },
       {
-        "time_sec": 300,
+        "time_sec": 720,
         "label": "Perda Volêmica Cirúrgica",
         "type": "bleeding",
         "details": "Sangramento intraoperatório de 200 mL registrado no VitalDB."
       },
       {
-        "time_sec": 450,
+        "time_sec": 1140,
+        "label": "Titulação de Vasopressor",
+        "type": "vasopressor",
+        "drug_dose": "Fenilefrina 500 mcg em infusão",
+        "details": "Sustentação de pós-carga e estabilidade coronariana em paciente ASA III."
+      }
+    ],
+    "clinical_timeline": [
+      {
+        "time_sec": 210,
+        "label": "Incisão Cirúrgica",
+        "type": "incision",
+        "details": "Abertura de parede abdominal / laparotomia."
+      },
+      {
+        "time_sec": 720,
+        "label": "Perda Volêmica Cirúrgica",
+        "type": "bleeding",
+        "details": "Sangramento intraoperatório de 200 mL registrado no VitalDB."
+      },
+      {
+        "time_sec": 1140,
         "label": "Titulação de Vasopressor",
         "type": "vasopressor",
         "drug_dose": "Fenilefrina 500 mcg em infusão",

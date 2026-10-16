@@ -58,23 +58,13 @@ export const KalinePhysiologyPanel: React.FC<KalinePhysiologyPanelProps> = ({
       {/* 4 Hemodynamic Pillars */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* 1. Pré-Carga */}
-        <div
-          className={`p-3.5 sm:p-4 rounded-xl border flex flex-col justify-between ${
-            isPreloadHigh
-              ? 'bg-amber-50 border-amber-300 text-amber-950'
-              : 'bg-slate-50 border-slate-200 text-slate-800'
-          }`}
-        >
+        <div className="p-3.5 sm:p-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between text-xs font-bold mb-2">
               <span className="flex items-center gap-1.5 uppercase font-mono text-slate-700">
-                <Wind className="h-4 w-4 text-amber-600" /> 1. Pré-Carga
+                <Wind className="h-4 w-4 text-slate-500" /> 1. Pré-Carga
               </span>
-              <span
-                className={`px-1.5 py-0.5 rounded text-[10px] font-mono ${
-                  isPreloadHigh ? 'bg-amber-100 text-amber-800 font-bold' : 'bg-slate-200 text-slate-600'
-                }`}
-              >
+              <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-200 text-slate-700 font-medium">
                 {isPreloadHigh ? 'RESPONSIVO' : 'ESTÁVEL'}
               </span>
             </div>
